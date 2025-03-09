@@ -120,7 +120,7 @@ const logout = () => {
     <!-- Desktop Sidebar -->
     <aside
         :class="[
-            'hidden border-r border-gray-100 bg-white shadow-sm transition-all duration-300 ease-in-out md:flex',
+            'hidden overflow-x-hidden border-r border-gray-100 bg-white shadow-sm transition-all duration-300 ease-in-out md:flex',
             props.collapsed ? 'w-20' : 'w-64',
         ]"
     >
@@ -143,8 +143,8 @@ const logout = () => {
             </div>
 
             <!-- Navigation Links -->
-            <div class="w-full flex-1 overflow-y-auto py-6">
-                <div class="w-full space-y-2 px-2">
+            <div class="flex-1 overflow-y-auto py-6">
+                <div class="space-y-2 px-2">
                     <template v-for="item in navigationItems" :key="item.name">
                         <SidebarLink
                             :href="route(item.route)"
@@ -264,7 +264,7 @@ const logout = () => {
                 <div
                     v-if="showUserMenu && props.collapsed"
                     ref="userMenuRef"
-                    class="absolute bottom-0 left-full ml-2 w-48 transform rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-100 ease-in-out"
+                    class="absolute bottom-0 left-full z-50 ml-2 w-48 transform rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-100 ease-in-out"
                 >
                     <div class="border-b border-gray-100 px-4 py-3">
                         <p class="text-sm font-medium text-gray-900">

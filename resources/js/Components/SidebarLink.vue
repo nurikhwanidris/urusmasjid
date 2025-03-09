@@ -35,12 +35,18 @@ const iconClasses = computed(() =>
 </script>
 
 <template>
-    <Link :href="href" :class="[classes, 'group']">
+    <Link
+        :href="href"
+        :class="[classes, 'group', collapsed ? 'justify-center' : '']"
+    >
         <div
             v-if="active"
             class="absolute inset-y-0 left-0 w-1 rounded-r-md bg-emerald-500"
         ></div>
-        <div class="flex w-full items-center">
+        <div
+            class="flex w-full items-center"
+            :class="{ 'justify-center': collapsed }"
+        >
             <!-- Icon slot -->
             <div
                 :class="[
@@ -65,7 +71,7 @@ const iconClasses = computed(() =>
         <!-- Tooltip for collapsed state -->
         <div
             v-if="collapsed"
-            class="absolute left-full top-1/2 ml-2 -translate-y-1/2 transform rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+            class="absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 transform rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
         >
             <slot></slot>
         </div>

@@ -1,8 +1,10 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { usePage } from '@inertiajs/vue3';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import Sidebar from '@/Components/Sidebar.vue';
+import Breadcrumb from '@/Components/Breadcrumb.vue';
 
 const showingSidebar = ref(true);
 const showingMobileMenu = ref(false);
@@ -18,6 +20,43 @@ const toggleMobileMenu = () => {
 const closeMobileMenu = () => {
     showingMobileMenu.value = false;
 };
+
+// Get current route information for breadcrumbs
+const page = usePage();
+const currentRouteName = computed(() => page.component);
+
+// Generate breadcrumb items based on current route
+const breadcrumbItems = computed(() => {
+    const routeName = currentRouteName.value;
+
+    // Default breadcrumb items
+    const items = [];
+
+    // Add breadcrumb items based on route
+    if (routeName === 'Dashboard') {
+        // Dashboard has no additional breadcrumbs
+    } else if (routeName === 'Profile/Edit') {
+        items.push({ label: 'Profile', url: route('profile.edit') });
+    } else if (routeName.startsWith('Masjid')) {
+        items.push({ label: 'Masjid', url: route('masjid.index') });
+
+        // Add more specific breadcrumbs for Masjid routes if needed
+        if (routeName === 'Masjid/Show') {
+            const masjidName = page.props.masjid?.name || 'Details';
+            items.push({ label: masjidName });
+        } else if (routeName === 'Masjid/Edit') {
+            items.push({ label: 'Edit' });
+        }
+    } else if (routeName.startsWith('Events')) {
+        items.push({ label: 'Events', url: route('masjid.index') });
+    } else if (routeName.startsWith('Donations')) {
+        items.push({ label: 'Donations', url: route('masjid.index') });
+    } else if (routeName.startsWith('Settings')) {
+        items.push({ label: 'Settings', url: route('masjid.index') });
+    }
+
+    return items;
+});
 </script>
 
 <template>
@@ -35,7 +74,7 @@ const closeMobileMenu = () => {
             <div
                 class="flex h-16 items-center justify-between border-b border-gray-100 bg-white px-4 shadow-sm"
             >
-                <div class="flex items-center">
+                <div class="flex items-center space-x-4">
                     <!-- Sidebar Toggle Button (Desktop) -->
                     <button
                         @click="toggleSidebar"
@@ -108,93 +147,107 @@ const closeMobileMenu = () => {
                             />
                         </svg>
                     </button>
+
+                    <!-- Breadcrumbs -->
+                    <div class="hidden md:block">
+                        <Breadcrumb :items="breadcrumbItems" />
+                    </div>
                 </div>
 
-                <!-- Page Title (optional) -->
-                <div v-if="$slots.header" class="hidden md:block">
-                    <h1 class="text-lg font-semibold text-gray-800">
-                        <slot name="header" />
-                    </h1>
-                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Page Title (optional) -->
+                    <div v-if="$slots.header" class="hidden md:block">
+                        <h1 class="text-lg font-semibold text-gray-800">
+                            <slot name="header" />
+                        </h1>
+                    </div>
 
-                <!-- Mobile User Menu (visible only on small screens) -->
-                <div class="ml-auto sm:hidden">
-                    <Dropdown align="right" width="48">
-                        <template #trigger>
-                            <button
-                                type="button"
-                                class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition-all duration-200 ease-in-out hover:bg-gray-50 hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1"
-                            >
-                                {{ $page.props.auth.user.name }}
-                                <svg
-                                    class="ml-2 h-4 w-4"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20"
-                                    fill="currentColor"
+                    <!-- Mobile User Menu (visible only on small screens) -->
+                    <div class="ml-auto sm:hidden">
+                        <Dropdown align="right" width="48">
+                            <template #trigger>
+                                <button
+                                    type="button"
+                                    class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition-all duration-200 ease-in-out hover:bg-gray-50 hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1"
                                 >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                        clip-rule="evenodd"
-                                    />
-                                </svg>
-                            </button>
-                        </template>
-
-                        <template #content>
-                            <div class="border-b border-gray-100 px-4 py-3">
-                                <p class="text-sm font-medium text-gray-900">
                                     {{ $page.props.auth.user.name }}
-                                </p>
-                                <p class="truncate text-xs text-gray-500">
-                                    {{ $page.props.auth.user.email }}
-                                </p>
-                            </div>
-                            <DropdownLink
-                                :href="route('profile.edit')"
-                                class="flex items-center"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-2 h-4 w-4"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
+                                    <svg
+                                        class="ml-2 h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                </button>
+                            </template>
+
+                            <template #content>
+                                <div class="border-b border-gray-100 px-4 py-3">
+                                    <p
+                                        class="text-sm font-medium text-gray-900"
+                                    >
+                                        {{ $page.props.auth.user.name }}
+                                    </p>
+                                    <p class="truncate text-xs text-gray-500">
+                                        {{ $page.props.auth.user.email }}
+                                    </p>
+                                </div>
+                                <DropdownLink
+                                    :href="route('profile.edit')"
+                                    class="flex items-center"
                                 >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                                    />
-                                </svg>
-                                Profile
-                            </DropdownLink>
-                            <DropdownLink
-                                :href="route('logout')"
-                                method="post"
-                                as="button"
-                                class="flex w-full items-center"
-                            >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    class="mr-2 h-4 w-4"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="mr-2 h-4 w-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                        />
+                                    </svg>
+                                    Profile
+                                </DropdownLink>
+                                <DropdownLink
+                                    :href="route('logout')"
+                                    method="post"
+                                    as="button"
+                                    class="flex w-full items-center"
                                 >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                                    />
-                                </svg>
-                                Log Out
-                            </DropdownLink>
-                        </template>
-                    </Dropdown>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="mr-2 h-4 w-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                                        />
+                                    </svg>
+                                    Log Out
+                                </DropdownLink>
+                            </template>
+                        </Dropdown>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Mobile Breadcrumbs (visible only on small screens) -->
+            <div class="bg-white px-4 py-2 shadow-sm md:hidden">
+                <Breadcrumb :items="breadcrumbItems" />
             </div>
 
             <!-- Page Heading (Mobile) -->
