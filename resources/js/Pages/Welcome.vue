@@ -1,5 +1,6 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 
 defineProps({
     canLogin: {
@@ -37,58 +38,38 @@ const scrollToSection = (sectionId) => {
         <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <header class="flex items-center justify-between py-6">
                 <div class="flex items-center gap-4">
-                    <svg
-                        class="h-10 w-auto text-emerald-600"
-                        viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                            d="M12 21.9999C17.5228 21.9999 22 17.5228 22 11.9999C22 6.47709 17.5228 1.99994 12 1.99994C6.47715 1.99994 2 6.47709 2 11.9999C2 17.5228 6.47715 21.9999 12 21.9999Z"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                        <path
-                            d="M12 15.9999C14.2091 15.9999 16 14.2091 16 11.9999C16 9.79081 14.2091 7.99994 12 7.99994C9.79086 7.99994 8 9.79081 8 11.9999C8 14.2091 9.79086 15.9999 12 15.9999Z"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            />
-                        </svg>
+                    <ApplicationLogo class="h-[50px] w-auto" />
                     <span class="text-xl font-semibold text-emerald-900"
                         >Urus Masjid</span
                     >
-                    </div>
+                </div>
                 <nav v-if="canLogin" class="flex items-center gap-4">
-                        <Link
-                            v-if="$page.props.auth.user"
-                            :href="route('dashboard')"
+                    <Link
+                        v-if="$page.props.auth.user"
+                        :href="route('dashboard')"
                         class="rounded-full bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+                    >
+                        Dashboard
+                    </Link>
+
+                    <template v-else>
+                        <Link
+                            :href="route('login')"
+                            class="rounded-full bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                         >
-                            Dashboard
+                            Log Masuk
                         </Link>
 
-                        <template v-else>
-                            <Link
-                                :href="route('login')"
-                            class="rounded-full bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
-                            >
-                            Log Masuk
-                            </Link>
-
-                            <Link
-                                v-if="canRegister"
-                                :href="route('register')"
+                        <Link
+                            v-if="canRegister"
+                            :href="route('register')"
                             class="rounded-full border border-emerald-600 px-4 py-2 text-sm font-medium text-emerald-600 hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
-                            >
+                        >
                             Daftar
-                            </Link>
-                        </template>
-                    </nav>
-                </header>
+                        </Link>
+                    </template>
+                </nav>
+            </header>
 
             <main class="py-16">
                 <!-- Hero Section -->
@@ -118,7 +99,7 @@ const scrollToSection = (sectionId) => {
                             Ketahui Lebih Lanjut
                         </button>
                     </div>
-                            </div>
+                </div>
 
                 <!-- Feature Cards -->
                 <div id="features" class="mb-24">
@@ -134,22 +115,22 @@ const scrollToSection = (sectionId) => {
                         >
                             <div
                                 class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"
-                                    >
-                                        <svg
+                            >
+                                <svg
                                     class="h-6 w-6"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
                                     stroke="currentColor"
-                                        >
-                                            <path
+                                >
+                                    <path
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
                                         stroke-width="2"
                                         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                                            />
-                                        </svg>
-                                    </div>
+                                    />
+                                </svg>
+                            </div>
                             <h3
                                 class="mb-2 text-xl font-semibold text-emerald-900"
                             >
@@ -210,12 +191,12 @@ const scrollToSection = (sectionId) => {
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
                                 >
-                                        <path
+                                    <path
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
                                         stroke-width="2"
                                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                        />
+                                    />
                                 </svg>
                             </div>
                             <h3
@@ -244,7 +225,7 @@ const scrollToSection = (sectionId) => {
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
                                 >
-                                        <path
+                                    <path
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
                                         stroke-width="2"
@@ -263,7 +244,7 @@ const scrollToSection = (sectionId) => {
                             </p>
                         </button>
                     </div>
-                            </div>
+                </div>
 
                 <!-- Detailed Feature Sections -->
                 <div class="space-y-32">
@@ -410,12 +391,12 @@ const scrollToSection = (sectionId) => {
                                                 viewBox="0 0 20 20"
                                                 fill="currentColor"
                                             >
-                                        <path
+                                                <path
                                                     fill-rule="evenodd"
                                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                                     clip-rule="evenodd"
-                                        />
-                                </svg>
+                                                />
+                                            </svg>
                                             <span
                                                 >Pengurusan maklumat
                                                 kecemasan</span
@@ -586,8 +567,8 @@ const scrollToSection = (sectionId) => {
                             </div>
                         </div>
                     </section>
-                    </div>
-                </main>
+                </div>
+            </main>
 
             <footer class="border-t border-gray-200 py-12 text-center">
                 <p class="text-sm text-gray-600">
@@ -599,7 +580,7 @@ const scrollToSection = (sectionId) => {
                         >Nur Ikhwan Idris</a
                     >
                 </p>
-                </footer>
+            </footer>
         </div>
     </div>
 </template>
