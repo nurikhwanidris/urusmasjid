@@ -9,6 +9,8 @@ const zones = ref(
     })),
 );
 
+const defaultZone = ref('SGR01');
+
 // Dummy data for fallback
 const dummyPrayerTimes = {
     SGR01: {
@@ -54,7 +56,9 @@ export function usePrayerTimes() {
     const prayerTimes = ref(null);
     const loading = ref(true);
     const error = ref(null);
-    const selectedZone = ref(localStorage.getItem('selectedZone') || 'SGR01');
+    const selectedZone = ref(
+        localStorage.getItem('selectedZone') || defaultZone.value,
+    );
     const refreshInterval = ref(null);
     const midnightRefreshTimeout = ref(null);
 
@@ -100,7 +104,6 @@ export function usePrayerTimes() {
 
             // Use the API route for prayer times
             const apiUrl = `${baseUrl}/api/prayer-times/${selectedZone.value}`;
-            console.log('Fetching prayer times from API:', apiUrl);
 
             const response = await fetch(apiUrl, {
                 headers: {
@@ -116,7 +119,6 @@ export function usePrayerTimes() {
             }
 
             const data = await response.json();
-            console.log('API response data:', data);
 
             if (data.prayerTime && data.prayerTime.length > 0) {
                 const todayData = data.prayerTime[0];
@@ -145,6 +147,11 @@ export function usePrayerTimes() {
 
     // Change the selected zone and fetch new prayer times
     const changeZone = async (zoneCode) => {
+        // Check if zoneCode is an event object (from v-model change event)
+        if (zoneCode && zoneCode.target && zoneCode.target.value) {
+            zoneCode = zoneCode.target.value;
+        }
+
         selectedZone.value = zoneCode;
         localStorage.setItem('selectedZone', zoneCode);
         await fetchPrayerTimes();

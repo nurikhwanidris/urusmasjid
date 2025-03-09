@@ -26,11 +26,11 @@ const upcomingEvents = ref([
     },
     {
         id: 3,
-        title: 'Community Iftar',
+        title: 'Gotong Royong',
         date: '2023-06-11',
         time: '7:15 PM',
-        location: 'Dining Hall',
-        description: 'Community breaking fast together',
+        location: 'Persekitaran Masjid',
+        description: 'Gotong royong bersama ahli khariah masjid',
         attendees: 85,
     },
 ]);
@@ -364,7 +364,7 @@ onBeforeUnmount(() => {
                                     <div class="relative">
                                         <select
                                             v-model="selectedZone"
-                                            @change="changeZone"
+                                            @change="changeZone(selectedZone)"
                                             class="w-48 rounded-md border-gray-300 py-1 pl-3 pr-10 text-sm focus:border-emerald-500 focus:outline-none focus:ring-emerald-500"
                                         >
                                             <optgroup
