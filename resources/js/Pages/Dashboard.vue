@@ -70,7 +70,7 @@ const masjidStats = ref({
 const announcements = ref([
     {
         id: 1,
-        title: 'Ramadan Schedule',
+        title: 'Jadual Solat Bulan Ramadan',
         date: '05-03-2025',
         content:
             'Jadual solat Ramadan telah diperbarui. Sila semak papan pengumuman untuk maklumat lanjut.',
@@ -78,7 +78,7 @@ const announcements = ref([
     },
     {
         id: 2,
-        title: 'Maintenance Work',
+        title: 'Kerja Pembaikan',
         date: '04-03-2025',
         content:
             'Area parkir akan ditutup untuk pembaikan dari 15-17 Jun. Sila gunakan parkir alternatif.',
@@ -86,7 +86,7 @@ const announcements = ref([
     },
     {
         id: 3,
-        title: 'New Imam Appointment',
+        title: 'Lantikan Imam Baru',
         date: '02-03-2025',
         content:
             'Ustaz Ahmad telah dipilih sebagai imam baru kami. Sila semak papan pengumuman untuk maklumat lanjut.',

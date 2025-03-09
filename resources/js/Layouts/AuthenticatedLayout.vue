@@ -162,17 +162,45 @@ const breadcrumbItems = computed(() => {
                         </h1>
                     </div>
 
-                    <!-- Mobile User Menu (visible only on small screens) -->
-                    <div class="ml-auto sm:hidden">
+                    <!-- User Profile Dropdown (Desktop) -->
+                    <div class="hidden sm:block">
                         <Dropdown align="right" width="48">
                             <template #trigger>
                                 <button
                                     type="button"
-                                    class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition-all duration-200 ease-in-out hover:bg-gray-50 hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1"
+                                    class="flex items-center space-x-3 rounded-full bg-white px-2 py-1.5 text-sm transition-all duration-200 ease-in-out hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1"
                                 >
-                                    {{ $page.props.auth.user.name }}
+                                    <!-- User Avatar -->
+                                    <div
+                                        class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-emerald-100 text-emerald-600"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="h-5 w-5"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </div>
+
+                                    <!-- User Info -->
+                                    <div class="hidden text-left md:block">
+                                        <p class="font-medium text-gray-700">
+                                            {{ $page.props.auth.user.name }}
+                                        </p>
+                                        <p class="text-xs text-gray-500">
+                                            {{ $page.props.auth.user.email }}
+                                        </p>
+                                    </div>
+
+                                    <!-- Dropdown Arrow -->
                                     <svg
-                                        class="ml-2 h-4 w-4"
+                                        class="h-4 w-4 text-gray-400"
                                         xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 20 20"
                                         fill="currentColor"
@@ -187,7 +215,9 @@ const breadcrumbItems = computed(() => {
                             </template>
 
                             <template #content>
-                                <div class="border-b border-gray-100 px-4 py-3">
+                                <div
+                                    class="border-b border-gray-100 bg-gray-50 px-4 py-3"
+                                >
                                     <p
                                         class="text-sm font-medium text-gray-900"
                                     >
@@ -197,48 +227,134 @@ const breadcrumbItems = computed(() => {
                                         {{ $page.props.auth.user.email }}
                                     </p>
                                 </div>
-                                <DropdownLink
-                                    :href="route('profile.edit')"
-                                    class="flex items-center"
+                                <div class="py-1">
+                                    <DropdownLink
+                                        :href="route('profile.edit')"
+                                        class="flex items-center"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="mr-2 h-4 w-4 text-gray-500"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                            />
+                                        </svg>
+                                        Profile
+                                    </DropdownLink>
+                                    <DropdownLink
+                                        :href="route('logout')"
+                                        method="post"
+                                        as="button"
+                                        class="flex w-full items-center text-red-600 hover:bg-red-50"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="mr-2 h-4 w-4"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                                            />
+                                        </svg>
+                                        Log Out
+                                    </DropdownLink>
+                                </div>
+                            </template>
+                        </Dropdown>
+                    </div>
+
+                    <!-- Mobile User Menu (visible only on small screens) -->
+                    <div class="sm:hidden">
+                        <Dropdown align="right" width="48">
+                            <template #trigger>
+                                <button
+                                    type="button"
+                                    class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 transition-all duration-200 ease-in-out hover:bg-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1"
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
-                                        class="mr-2 h-4 w-4"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
+                                        class="h-5 w-5"
+                                        viewBox="0 0 20 20"
+                                        fill="currentColor"
                                     >
                                         <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                            fill-rule="evenodd"
+                                            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                            clip-rule="evenodd"
                                         />
                                     </svg>
-                                    Profile
-                                </DropdownLink>
-                                <DropdownLink
-                                    :href="route('logout')"
-                                    method="post"
-                                    as="button"
-                                    class="flex w-full items-center"
+                                </button>
+                            </template>
+
+                            <template #content>
+                                <div
+                                    class="border-b border-gray-100 bg-gray-50 px-4 py-3"
                                 >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="mr-2 h-4 w-4"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
+                                    <p
+                                        class="text-sm font-medium text-gray-900"
                                     >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                                        />
-                                    </svg>
-                                    Log Out
-                                </DropdownLink>
+                                        {{ $page.props.auth.user.name }}
+                                    </p>
+                                    <p class="truncate text-xs text-gray-500">
+                                        {{ $page.props.auth.user.email }}
+                                    </p>
+                                </div>
+                                <div class="py-1">
+                                    <DropdownLink
+                                        :href="route('profile.edit')"
+                                        class="flex items-center"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="mr-2 h-4 w-4 text-gray-500"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                            />
+                                        </svg>
+                                        Profile
+                                    </DropdownLink>
+                                    <DropdownLink
+                                        :href="route('logout')"
+                                        method="post"
+                                        as="button"
+                                        class="flex w-full items-center text-red-600 hover:bg-red-50"
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="mr-2 h-4 w-4"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                                            />
+                                        </svg>
+                                        Log Out
+                                    </DropdownLink>
+                                </div>
                             </template>
                         </Dropdown>
                     </div>

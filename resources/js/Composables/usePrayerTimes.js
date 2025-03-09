@@ -9,6 +9,7 @@ const zones = ref(
     })),
 );
 
+// Default zone
 const defaultZone = ref('SGR01');
 
 // Dummy data for fallback

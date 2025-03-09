@@ -16,14 +16,35 @@ const props = defineProps({
     },
 });
 
+const dropdownRef = ref(null);
+const open = ref(false);
+
 const closeOnEscape = (e) => {
     if (open.value && e.key === 'Escape') {
         open.value = false;
     }
 };
 
-onMounted(() => document.addEventListener('keydown', closeOnEscape));
-onUnmounted(() => document.removeEventListener('keydown', closeOnEscape));
+const closeOnClickOutside = (e) => {
+    if (open.value && dropdownRef.value && !dropdownRef.value.contains(e.target)) {
+        open.value = false;
+    }
+};
+
+onMounted(() => {
+    document.addEventListener('keydown', closeOnEscape);
+    document.addEventListener('click', closeOnClickOutside);
+});
+
+onUnmounted(() => {
+    document.removeEventListener('keydown', closeOnEscape);
+    document.removeEventListener('click', closeOnClickOutside);
+});
+
+const toggleDropdown = (e) => {
+    e.stopPropagation();
+    open.value = !open.value;
+};
 
 const widthClass = computed(() => {
     return {
@@ -40,13 +61,11 @@ const alignmentClasses = computed(() => {
         return 'origin-top';
     }
 });
-
-const open = ref(false);
 </script>
 
 <template>
-    <div class="relative">
-        <div @click="open = !open">
+    <div class="relative" ref="dropdownRef">
+        <div @click="toggleDropdown">
             <slot name="trigger" />
         </div>
 
@@ -69,8 +88,6 @@ const open = ref(false);
                 v-show="open"
                 class="absolute z-50 mt-2 rounded-md shadow-lg"
                 :class="[widthClass, alignmentClasses]"
-                style="display: none"
-                @click="open = false"
             >
                 <div
                     class="rounded-md ring-1 ring-black ring-opacity-5"
