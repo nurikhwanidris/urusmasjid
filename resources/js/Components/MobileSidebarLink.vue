@@ -28,7 +28,7 @@ const iconClasses = computed(() =>
 
 <template>
     <Link :href="href" :class="[classes, 'group']">
-        <div class="flex items-center">
+        <div class="flex w-full items-center">
             <!-- Icon slot -->
             <div :class="['mr-3', iconClasses]" v-if="$slots.icon">
                 <slot name="icon"></slot>

@@ -23,8 +23,8 @@ const props = defineProps({
 
 const classes = computed(() =>
     props.active
-        ? 'relative flex items-center rounded-md px-4 py-2.5 text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-all duration-200 ease-in-out'
-        : 'relative flex items-center rounded-md px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-gray-50 transition-all duration-200 ease-in-out',
+        ? 'relative flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-all duration-200 ease-in-out'
+        : 'relative flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-gray-50 transition-all duration-200 ease-in-out',
 );
 
 const iconClasses = computed(() =>
@@ -40,7 +40,7 @@ const iconClasses = computed(() =>
             v-if="active"
             class="absolute inset-y-0 left-0 w-1 rounded-r-md bg-emerald-500"
         ></div>
-        <div class="flex items-center">
+        <div class="flex w-full items-center">
             <!-- Icon slot -->
             <div
                 :class="[

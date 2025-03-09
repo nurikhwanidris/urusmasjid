@@ -124,7 +124,7 @@ const logout = () => {
             props.collapsed ? 'w-20' : 'w-64',
         ]"
     >
-        <div class="flex h-full flex-col">
+        <div class="flex h-full w-full flex-col">
             <!-- Logo -->
             <div
                 class="flex h-16 items-center justify-center border-b border-gray-50 px-4"
@@ -143,8 +143,8 @@ const logout = () => {
             </div>
 
             <!-- Navigation Links -->
-            <div class="flex-1 overflow-y-auto py-6">
-                <div class="space-y-2 px-3">
+            <div class="w-full flex-1 overflow-y-auto py-6">
+                <div class="w-full space-y-2 px-2">
                     <template v-for="item in navigationItems" :key="item.name">
                         <SidebarLink
                             :href="route(item.route)"
@@ -161,48 +161,110 @@ const logout = () => {
             </div>
 
             <!-- User Profile Section -->
-            <div class="relative border-t border-gray-100 bg-gray-50 p-4">
-                <!-- Custom dropdown implementation -->
-                <button
-                    ref="userButtonRef"
-                    type="button"
-                    @click="toggleUserMenu"
-                    class="flex w-full items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-600 shadow-sm transition duration-150 ease-in-out hover:bg-gray-50 hover:text-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-1"
-                >
-                    <span v-if="!props.collapsed" class="truncate">
-                        {{ user.name }}
-                    </span>
-                    <span
-                        v-else
-                        class="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"
-                    >
-                        {{ user.name.charAt(0) }}
-                    </span>
-
-                    <svg
-                        v-if="!props.collapsed"
-                        class="ml-auto h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                    >
-                        <path
-                            fill-rule="evenodd"
-                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                            clip-rule="evenodd"
-                        />
-                    </svg>
-                </button>
-
-                <!-- Dropdown menu -->
+            <div class="border-t border-gray-100 bg-gray-50">
+                <!-- User Profile Header -->
                 <div
-                    v-if="showUserMenu"
+                    ref="userButtonRef"
+                    @click="toggleUserMenu"
+                    class="flex w-full cursor-pointer items-center p-4 transition-colors duration-200 hover:bg-gray-100"
+                >
+                    <!-- User Avatar -->
+                    <div
+                        class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"
+                    >
+                        {{
+                            user.name
+                                .split(' ')
+                                .map((word) => word.charAt(0).toUpperCase())
+                                .join('')
+                        }}
+                    </div>
+
+                    <!-- User Info (only visible when not collapsed) -->
+                    <div
+                        v-if="!props.collapsed"
+                        class="ml-3 flex-1 overflow-hidden"
+                    >
+                        <p class="truncate text-sm font-medium text-gray-800">
+                            {{ user.name }}
+                        </p>
+                        <p class="truncate text-xs text-gray-500">
+                            {{ user.email }}
+                        </p>
+                    </div>
+
+                    <!-- Dropdown Icon (only visible when not collapsed) -->
+                    <div v-if="!props.collapsed" class="ml-2">
+                        <svg
+                            class="h-5 w-5 text-gray-400 transition-transform duration-200"
+                            :class="{ 'rotate-180': showUserMenu }"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                        >
+                            <path
+                                fill-rule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clip-rule="evenodd"
+                            />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Accordion Menu -->
+                <div
+                    v-if="showUserMenu && !props.collapsed"
+                    class="overflow-hidden transition-all duration-200 ease-in-out"
+                >
+                    <div class="border-t border-gray-100 bg-white">
+                        <Link
+                            :href="route('profile.edit')"
+                            class="flex w-full items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-emerald-600"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="mr-3 h-5 w-5 text-gray-400"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                />
+                            </svg>
+                            Profile
+                        </Link>
+                        <button
+                            @click="logout"
+                            class="flex w-full items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-emerald-600"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="mr-3 h-5 w-5 text-gray-400"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                                />
+                            </svg>
+                            Log Out
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Collapsed State Dropdown -->
+                <div
+                    v-if="showUserMenu && props.collapsed"
                     ref="userMenuRef"
-                    :class="[
-                        'absolute bottom-full left-0 mb-2 w-full transform rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-100 ease-in-out',
-                        props.collapsed ? 'min-w-[256px]' : '',
-                    ]"
-                    style="width: calc(100% - 8px); margin-left: 4px"
+                    class="absolute bottom-0 left-full ml-2 w-48 transform rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-100 ease-in-out"
                 >
                     <div class="border-b border-gray-100 px-4 py-3">
                         <p class="text-sm font-medium text-gray-900">
@@ -307,7 +369,7 @@ const logout = () => {
 
             <!-- Mobile Navigation -->
             <div class="flex-1 overflow-y-auto py-6">
-                <div class="space-y-2 px-3">
+                <div class="w-full space-y-2 px-3">
                     <template v-for="item in navigationItems" :key="item.name">
                         <MobileSidebarLink
                             :href="route(item.route)"
@@ -323,14 +385,18 @@ const logout = () => {
             </div>
 
             <!-- Mobile User Profile -->
-            <div class="border-t border-gray-100 bg-gray-50 p-4">
-                <div class="flex items-center">
+            <div class="border-t border-gray-100 bg-gray-50">
+                <!-- Mobile User Profile Header -->
+                <div
+                    @click="toggleUserMenu"
+                    class="flex w-full cursor-pointer items-center p-4 transition-colors duration-200 hover:bg-gray-100"
+                >
                     <div
                         class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-600"
                     >
-                        {{ user.name.charAt(0) }}
+                        {{ user.name.charAt(0).toUpperCase() }}
                     </div>
-                    <div class="ml-3">
+                    <div class="ml-3 flex-1">
                         <div class="text-base font-medium text-gray-800">
                             {{ user.name }}
                         </div>
@@ -338,13 +404,36 @@ const logout = () => {
                             {{ user.email }}
                         </div>
                     </div>
+                    <div class="ml-2">
+                        <svg
+                            class="h-5 w-5 text-gray-400 transition-transform duration-200"
+                            :class="{ 'rotate-180': showUserMenu }"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                        >
+                            <path
+                                fill-rule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clip-rule="evenodd"
+                            />
+                        </svg>
+                    </div>
                 </div>
-                <div class="mt-5 space-y-2">
-                    <MobileSidebarLink :href="route('profile.edit')">
-                        <template #icon>
+
+                <!-- Mobile Accordion Menu -->
+                <div
+                    v-if="showUserMenu"
+                    class="overflow-hidden transition-all duration-200 ease-in-out"
+                >
+                    <div class="border-t border-gray-100 bg-white">
+                        <Link
+                            :href="route('profile.edit')"
+                            class="flex w-full items-center px-4 py-3 text-base text-gray-700 hover:bg-gray-50 hover:text-emerald-600"
+                        >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                class="h-5 w-5"
+                                class="mr-3 h-5 w-5 text-gray-400"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -356,29 +445,29 @@ const logout = () => {
                                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                                 />
                             </svg>
-                        </template>
-                        Profile
-                    </MobileSidebarLink>
-                    <button
-                        @click="logout"
-                        class="flex w-full items-center rounded-md border-l-4 border-transparent px-3 py-2.5 text-left text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-emerald-600"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="mr-3 h-5 w-5 text-gray-500"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
+                            Profile
+                        </Link>
+                        <button
+                            @click="logout"
+                            class="flex w-full items-center px-4 py-3 text-base text-gray-700 hover:bg-gray-50 hover:text-emerald-600"
                         >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                            />
-                        </svg>
-                        Log Out
-                    </button>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="mr-3 h-5 w-5 text-gray-400"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                                />
+                            </svg>
+                            Log Out
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
