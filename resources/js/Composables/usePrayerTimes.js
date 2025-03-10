@@ -62,6 +62,8 @@ export function usePrayerTimes() {
     );
     const refreshInterval = ref(null);
     const midnightRefreshTimeout = ref(null);
+    const countdownInterval = ref(null);
+    const countdownDisplay = ref(''); // Use a separate ref for the display text
 
     // Format the date to display in a user-friendly way
     const formatDate = (date) => {
@@ -144,6 +146,11 @@ export function usePrayerTimes() {
         } finally {
             loading.value = false;
         }
+
+        // After fetching prayer times, update the countdown
+        if (!loading.value) {
+            updateCountdown();
+        }
     };
 
     // Change the selected zone and fetch new prayer times
@@ -156,6 +163,82 @@ export function usePrayerTimes() {
         selectedZone.value = zoneCode;
         localStorage.setItem('selectedZone', zoneCode);
         await fetchPrayerTimes();
+    };
+
+    // Calculate the next prayer time
+    const nextPrayer = computed(() => {
+        if (!prayerTimes.value) return null;
+
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        const currentTime24 = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`;
+
+        const prayers = [
+            { name: 'Subuh', time: prayerTimes.value.times.subuh },
+            { name: 'Syuruk', time: prayerTimes.value.times.syuruk },
+            { name: 'Zohor', time: prayerTimes.value.times.zohor },
+            { name: 'Asar', time: prayerTimes.value.times.asar },
+            { name: 'Maghrib', time: prayerTimes.value.times.maghrib },
+            { name: 'Isyak', time: prayerTimes.value.times.isyak },
+        ];
+
+        // Find the next prayer
+        for (const prayer of prayers) {
+            if (prayer.time > currentTime24) {
+                return prayer;
+            }
+        }
+
+        // If all prayers for today have passed, return the first prayer for tomorrow
+        return {
+            name: 'Subuh (tomorrow)',
+            time: prayerTimes.value.times.subuh,
+        };
+    });
+
+    // Update countdown display without affecting other components
+    const updateCountdown = () => {
+        if (!nextPrayer.value) {
+            countdownDisplay.value = '';
+            return;
+        }
+
+        const now = new Date();
+        const [nextHour, nextMinute] = nextPrayer.value.time
+            .split(':')
+            .map(Number);
+
+        const nextPrayerTime = new Date(now);
+        nextPrayerTime.setHours(nextHour, nextMinute, 0);
+
+        // If it's for tomorrow, add a day
+        if (nextPrayer.value.name.includes('tomorrow')) {
+            nextPrayerTime.setDate(nextPrayerTime.getDate() + 1);
+        }
+
+        const diffMs = nextPrayerTime - now;
+        const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        const diffSecs = Math.floor((diffMs % (1000 * 60)) / 1000);
+
+        countdownDisplay.value = `${diffHrs}h ${diffMins}m ${diffSecs}s`;
+    };
+
+    // Start the countdown timer that updates only the countdown display
+    const startCountdownTimer = () => {
+        // Clear any existing interval
+        if (countdownInterval.value) {
+            clearInterval(countdownInterval.value);
+        }
+
+        // Initial update
+        updateCountdown();
+
+        // Update the countdown display every second
+        countdownInterval.value = setInterval(() => {
+            updateCountdown();
+        }, 1000);
     };
 
     // Set up auto-refresh for prayer times
@@ -188,6 +271,9 @@ export function usePrayerTimes() {
         };
 
         setupMidnightRefresh();
+
+        // Start the countdown timer
+        startCountdownTimer();
     };
 
     // Cleanup function to clear intervals and timeouts
@@ -201,63 +287,12 @@ export function usePrayerTimes() {
             clearTimeout(midnightRefreshTimeout.value);
             midnightRefreshTimeout.value = null;
         }
+
+        if (countdownInterval.value) {
+            clearInterval(countdownInterval.value);
+            countdownInterval.value = null;
+        }
     };
-
-    // Calculate the next prayer time
-    const nextPrayer = computed(() => {
-        if (!prayerTimes.value) return null;
-
-        const now = new Date();
-        const currentHour = now.getHours();
-        const currentMinute = now.getMinutes();
-        const currentTime = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`;
-
-        const prayers = [
-            { name: 'Subuh', time: prayerTimes.value.times.subuh },
-            { name: 'Syuruk', time: prayerTimes.value.times.syuruk },
-            { name: 'Zohor', time: prayerTimes.value.times.zohor },
-            { name: 'Asar', time: prayerTimes.value.times.asar },
-            { name: 'Maghrib', time: prayerTimes.value.times.maghrib },
-            { name: 'Isyak', time: prayerTimes.value.times.isyak },
-        ];
-
-        // Find the next prayer
-        for (const prayer of prayers) {
-            if (prayer.time > currentTime) {
-                return prayer;
-            }
-        }
-
-        // If all prayers for today have passed, return the first prayer for tomorrow
-        return {
-            name: 'Subuh (tomorrow)',
-            time: prayerTimes.value.times.subuh,
-        };
-    });
-
-    // Calculate time remaining until next prayer
-    const timeUntilNextPrayer = computed(() => {
-        if (!nextPrayer.value) return '';
-
-        const now = new Date();
-        const [nextHour, nextMinute] = nextPrayer.value.time
-            .split(':')
-            .map(Number);
-
-        const nextPrayerTime = new Date(now);
-        nextPrayerTime.setHours(nextHour, nextMinute, 0);
-
-        // If it's for tomorrow, add a day
-        if (nextPrayer.value.name.includes('tomorrow')) {
-            nextPrayerTime.setDate(nextPrayerTime.getDate() + 1);
-        }
-
-        const diffMs = nextPrayerTime - now;
-        const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-        const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-
-        return `${diffHrs}h ${diffMins}m`;
-    });
 
     return {
         zones,
@@ -271,6 +306,6 @@ export function usePrayerTimes() {
         setupAutoRefresh,
         cleanup,
         nextPrayer,
-        timeUntilNextPrayer,
+        countdownDisplay, // Return the countdown display instead of computed property
     };
 }

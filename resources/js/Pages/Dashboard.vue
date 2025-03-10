@@ -139,7 +139,7 @@ const {
     setupAutoRefresh,
     cleanup,
     nextPrayer,
-    timeUntilNextPrayer,
+    countdownDisplay,
 } = usePrayerTimes();
 
 // Helper function to get unique states from zones
@@ -173,12 +173,6 @@ onBeforeUnmount(() => {
     <Head title="Dashboard" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                Dashboard
-            </h2>
-        </template>
-
         <div class="py-6">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <!-- Welcome Banner -->
@@ -234,7 +228,7 @@ onBeforeUnmount(() => {
                             </div>
                             <div class="ml-4">
                                 <h3 class="text-sm font-medium text-gray-500">
-                                    Ahli Masjid
+                                    Ahli Khariah
                                 </h3>
                                 <p class="text-2xl font-semibold text-gray-900">
                                     {{ masjidStats.totalMembers }}
@@ -475,12 +469,19 @@ onBeforeUnmount(() => {
                                         <p
                                             class="text-sm font-medium text-gray-500"
                                         >
-                                            {{ timeUntilNextPrayer }}
+                                            {{ countdownDisplay }}
                                         </p>
                                     </div>
                                 </div>
-                                <div class="grid grid-cols-6 gap-4">
+                                <div
+                                    class="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-6"
+                                >
                                     <div class="text-center">
+                                        <img
+                                            src="/images/fajr.png"
+                                            alt="Sunrise"
+                                            class="mx-auto mb-2 h-10 w-10"
+                                        />
                                         <p
                                             class="text-sm font-medium text-gray-500"
                                         >
@@ -493,6 +494,11 @@ onBeforeUnmount(() => {
                                         </p>
                                     </div>
                                     <div class="text-center">
+                                        <img
+                                            src="/images/syuruk.png"
+                                            alt="Syuruk"
+                                            class="mx-auto mb-2 h-10 w-10"
+                                        />
                                         <p
                                             class="text-sm font-medium text-gray-500"
                                         >
@@ -505,6 +511,11 @@ onBeforeUnmount(() => {
                                         </p>
                                     </div>
                                     <div class="text-center">
+                                        <img
+                                            src="/images/dhuhr.png"
+                                            alt="Zohor"
+                                            class="mx-auto mb-2 h-10 w-10"
+                                        />
                                         <p
                                             class="text-sm font-medium text-gray-500"
                                         >
@@ -517,6 +528,11 @@ onBeforeUnmount(() => {
                                         </p>
                                     </div>
                                     <div class="text-center">
+                                        <img
+                                            src="/images/asr.png"
+                                            alt="Asar"
+                                            class="mx-auto mb-2 h-10 w-10"
+                                        />
                                         <p
                                             class="text-sm font-medium text-gray-500"
                                         >
@@ -529,6 +545,11 @@ onBeforeUnmount(() => {
                                         </p>
                                     </div>
                                     <div class="text-center">
+                                        <img
+                                            src="/images/maghrib.png"
+                                            alt="Maghrib"
+                                            class="mx-auto mb-2 h-10 w-10"
+                                        />
                                         <p
                                             class="text-sm font-medium text-gray-500"
                                         >
@@ -541,6 +562,11 @@ onBeforeUnmount(() => {
                                         </p>
                                     </div>
                                     <div class="text-center">
+                                        <img
+                                            src="/images/isha.png"
+                                            alt="Isha"
+                                            class="mx-auto mb-2 h-10 w-10"
+                                        />
                                         <p
                                             class="text-sm font-medium text-gray-500"
                                         >

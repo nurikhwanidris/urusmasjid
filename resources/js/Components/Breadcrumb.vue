@@ -29,7 +29,7 @@ const breadcrumbItems = computed(() => {
                     :href="route('dashboard')"
                     class="text-sm font-medium text-gray-500 hover:text-emerald-600"
                 >
-                    <span class="hidden md:inline">Home / </span>
+                    <span class="hidden md:inline">Home</span>
                 </Link>
             </li>
 

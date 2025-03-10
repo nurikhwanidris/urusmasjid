@@ -1,5 +1,5 @@
 <script setup>
-import { Link, router } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 
 defineProps({
     href: {
@@ -14,25 +14,34 @@ defineProps({
         type: String,
         default: 'a',
     },
+    className: {
+        type: String,
+        default: '',
+    },
 });
 </script>
 
 <template>
     <div>
         <Link
-            v-if="as === 'a'"
+            v-if="as === 'link'"
             :href="href"
-            :method="method"
-            class="block w-full px-4 py-2.5 text-start text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+            :class="[
+                'flex w-full items-center px-4 py-2.5 text-left text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 focus:outline-none',
+                className,
+            ]"
         >
             <slot />
         </Link>
 
         <button
-            v-else-if="as === 'button'"
-            type="button"
-            class="block w-full px-4 py-2.5 text-start text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-            @click="router.post(href, {}, { preserveScroll: true })"
+            v-else
+            type="submit"
+            :class="[
+                'flex w-full items-center px-4 py-2.5 text-left text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 focus:outline-none',
+                className,
+            ]"
+            @click="$inertia.post(href, {}, { method })"
         >
             <slot />
         </button>
