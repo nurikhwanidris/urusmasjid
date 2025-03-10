@@ -10,8 +10,15 @@ class Mosque extends Model
 {
     protected $fillable = [
         'name',
-        'address',
+        'street_address',
+        'address_line_2',
+        'city',
+        'district',
+        'state',
+        'postal_code',
         'location',
+        'latitude',
+        'longitude',
         'jakim_zone',
         'contact_number',
         'email',
@@ -112,5 +119,28 @@ class Mosque extends Model
     public function isRejected(): bool
     {
         return $this->verification_status === 'rejected';
+    }
+
+    /**
+     * Get the full address as a formatted string.
+     *
+     * @return string
+     */
+    public function getFullAddressAttribute(): string
+    {
+        $parts = [
+            $this->street_address,
+            $this->address_line_2,
+            $this->city,
+            $this->district,
+            $this->postal_code . ' ' . $this->state,
+        ];
+
+        // Filter out empty parts
+        $parts = array_filter($parts, function ($part) {
+            return !empty($part);
+        });
+
+        return implode(', ', $parts);
     }
 }

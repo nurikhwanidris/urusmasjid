@@ -9,6 +9,8 @@ import SelectInput from '@/Components/SelectInput.vue';
 import Textarea from '@/Components/Textarea.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { zones } from '@/Utils/zones';
+import { states } from '@/Utils/states';
 
 // Form steps
 const steps = [
@@ -28,8 +30,15 @@ const form = useForm({
     registration_number: '',
 
     // Location Details
-    address: '',
+    street_address: '',
+    address_line_2: '',
+    city: '',
+    district: '',
+    state: '',
+    postal_code: '',
     location: '',
+    latitude: '',
+    longitude: '',
     jakim_zone: '',
 
     // Contact Information
@@ -48,16 +57,14 @@ const mosqueTypes = [
     { value: 'surau', label: 'Surau' },
 ];
 
-// JAKIM zones (simplified for example)
-const jakimZones = [
-    { value: 'SGR01', label: 'Selangor - Petaling' },
-    { value: 'SGR02', label: 'Selangor - Klang' },
-    { value: 'SGR03', label: 'Selangor - Hulu Langat' },
-    { value: 'KUL01', label: 'Kuala Lumpur' },
-    { value: 'JHR01', label: 'Johor - Johor Bahru' },
-    { value: 'JHR02', label: 'Johor - Batu Pahat' },
-    { value: 'PNG01', label: 'Pulau Pinang' },
-];
+// Convert zones array to options format for SelectInput
+const jakimZones = zones.map((zone) => ({
+    value: zone.jakimCode,
+    label: `${zone.jakimCode} - ${zone.negeri} (${zone.daerah})`,
+}));
+
+// States for dropdown
+const stateOptions = states;
 
 // Computed properties for step validation
 const isStep1Valid = computed(() => {
@@ -65,7 +72,7 @@ const isStep1Valid = computed(() => {
 });
 
 const isStep2Valid = computed(() => {
-    return form.address && form.location && form.jakim_zone;
+    return form.street_address && form.location && form.jakim_zone;
 });
 
 const isStep3Valid = computed(() => {
@@ -245,19 +252,131 @@ const submit = () => {
 
                             <div>
                                 <InputLabel
-                                    for="address"
+                                    for="street_address"
                                     value="Alamat"
                                     class="required"
                                 />
                                 <Textarea
-                                    id="address"
-                                    v-model="form.address"
+                                    id="street_address"
+                                    v-model="form.street_address"
                                     class="mt-1 block w-full"
                                     rows="3"
                                     required
                                 />
                                 <InputError
-                                    :message="form.errors.address"
+                                    :message="form.errors.street_address"
+                                    class="mt-2"
+                                />
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="address_line_2"
+                                    value="Alamat (Baris Kedua)"
+                                />
+                                <Textarea
+                                    id="address_line_2"
+                                    v-model="form.address_line_2"
+                                    class="mt-1 block w-full"
+                                    rows="3"
+                                />
+                                <InputError
+                                    :message="form.errors.address_line_2"
+                                    class="mt-2"
+                                />
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="city"
+                                    value="Bandar"
+                                    class="required"
+                                />
+                                <TextInput
+                                    id="city"
+                                    v-model="form.city"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    required
+                                />
+                                <InputError
+                                    :message="form.errors.city"
+                                    class="mt-2"
+                                />
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="district"
+                                    value="Daerah"
+                                    class="required"
+                                />
+                                <TextInput
+                                    id="district"
+                                    v-model="form.district"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    required
+                                />
+                                <InputError
+                                    :message="form.errors.district"
+                                    class="mt-2"
+                                />
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="state"
+                                    value="Negeri"
+                                    class="required"
+                                />
+                                <SelectInput
+                                    id="state"
+                                    v-model="form.state"
+                                    :options="stateOptions"
+                                    class="mt-1 block w-full"
+                                    required
+                                />
+                                <InputError
+                                    :message="form.errors.state"
+                                    class="mt-2"
+                                />
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="postal_code"
+                                    value="Poskod"
+                                    class="required"
+                                />
+                                <TextInput
+                                    id="postal_code"
+                                    v-model="form.postal_code"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    required
+                                />
+                                <InputError
+                                    :message="form.errors.postal_code"
+                                    class="mt-2"
+                                />
+                            </div>
+
+                            <div>
+                                <InputLabel
+                                    for="jakim_zone"
+                                    value="Zon JAKIM"
+                                    class="required"
+                                />
+                                <SelectInput
+                                    id="jakim_zone"
+                                    v-model="form.jakim_zone"
+                                    :options="jakimZones"
+                                    class="mt-1 block w-full"
+                                    required
+                                />
+                                <InputError
+                                    :message="form.errors.jakim_zone"
                                     class="mt-2"
                                 />
                             </div>
@@ -278,25 +397,6 @@ const submit = () => {
                                 />
                                 <InputError
                                     :message="form.errors.location"
-                                    class="mt-2"
-                                />
-                            </div>
-
-                            <div>
-                                <InputLabel
-                                    for="jakim_zone"
-                                    value="Zon JAKIM"
-                                    class="required"
-                                />
-                                <SelectInput
-                                    id="jakim_zone"
-                                    v-model="form.jakim_zone"
-                                    :options="jakimZones"
-                                    class="mt-1 block w-full"
-                                    required
-                                />
-                                <InputError
-                                    :message="form.errors.jakim_zone"
                                     class="mt-2"
                                 />
                             </div>
@@ -484,7 +584,57 @@ const submit = () => {
                                             Alamat
                                         </dt>
                                         <dd class="text-gray-900">
-                                            {{ form.address }}
+                                            {{ form.street_address }}
+                                        </dd>
+                                    </div>
+                                    <div
+                                        class="flex justify-between py-2 text-sm"
+                                    >
+                                        <dt class="font-medium text-gray-500">
+                                            Alamat (Baris Kedua)
+                                        </dt>
+                                        <dd class="text-gray-900">
+                                            {{ form.address_line_2 }}
+                                        </dd>
+                                    </div>
+                                    <div
+                                        class="flex justify-between py-2 text-sm"
+                                    >
+                                        <dt class="font-medium text-gray-500">
+                                            Bandar
+                                        </dt>
+                                        <dd class="text-gray-900">
+                                            {{ form.city }}
+                                        </dd>
+                                    </div>
+                                    <div
+                                        class="flex justify-between py-2 text-sm"
+                                    >
+                                        <dt class="font-medium text-gray-500">
+                                            Daerah
+                                        </dt>
+                                        <dd class="text-gray-900">
+                                            {{ form.district }}
+                                        </dd>
+                                    </div>
+                                    <div
+                                        class="flex justify-between py-2 text-sm"
+                                    >
+                                        <dt class="font-medium text-gray-500">
+                                            Negeri
+                                        </dt>
+                                        <dd class="text-gray-900">
+                                            {{ form.state }}
+                                        </dd>
+                                    </div>
+                                    <div
+                                        class="flex justify-between py-2 text-sm"
+                                    >
+                                        <dt class="font-medium text-gray-500">
+                                            Poskod
+                                        </dt>
+                                        <dd class="text-gray-900">
+                                            {{ form.postal_code }}
                                         </dd>
                                     </div>
                                     <div

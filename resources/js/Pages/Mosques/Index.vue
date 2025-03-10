@@ -35,6 +35,14 @@ const formatDate = (dateString) => {
         day: 'numeric',
     });
 };
+
+const stateOptions = [
+    { label: 'Semua', value: 'all' },
+    { label: 'Selangor', value: 'selangor' },
+    { label: 'Kuala Lumpur', value: 'kuala_lumpur' },
+    { label: 'Selangor', value: 'selangor' },
+    { label: 'Selangor', value: 'selangor' },
+];
 </script>
 
 <template>
@@ -43,9 +51,6 @@ const formatDate = (dateString) => {
     <AuthenticatedLayout>
         <template #header>
             <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Senarai Masjid
-                </h2>
                 <Link :href="route('masjid.create')">
                     <PrimaryButton>Daftar Masjid</PrimaryButton>
                 </Link>
@@ -116,7 +121,7 @@ const formatDate = (dateString) => {
                                                 scope="col"
                                                 class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                                             >
-                                                Lokasi
+                                                Zon JAKIM
                                             </th>
                                             <th
                                                 scope="col"

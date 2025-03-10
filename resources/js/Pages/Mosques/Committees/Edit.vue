@@ -302,7 +302,7 @@ const submit = () => {
                                     <span v-if="form.processing"
                                         >Memproses...</span
                                     >
-                                    <span v-else>Simpan Perubahan</span>
+                                    <span v-else>Simpan</span>
                                 </PrimaryButton>
                             </div>
                         </form>

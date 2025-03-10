@@ -4,9 +4,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Badge from '@/Components/Badge.vue';
+import { zones } from '@/Utils/zones';
 
 defineProps({
     mosque: Object,
+    committees: Array,
 });
 
 // Helper function to get status badge color
@@ -32,6 +34,29 @@ const formatDate = (dateString) => {
         month: 'short',
         day: 'numeric',
     });
+};
+
+// Helper function to get zone details from zone code
+const getZoneDetails = (zoneCode) => {
+    const zone = zones.find((z) => z.jakimCode === zoneCode);
+    if (zone) {
+        return `${zone.jakimCode} - ${zone.negeri} (${zone.daerah})`;
+    }
+    return zoneCode;
+};
+
+// Helper function to get committee status badge color
+const getCommitteeStatusColor = (status) => {
+    switch (status) {
+        case 'active':
+            return 'success';
+        case 'pending':
+            return 'warning';
+        case 'inactive':
+            return 'secondary';
+        default:
+            return 'secondary';
+    }
 };
 </script>
 
@@ -100,7 +125,7 @@ const formatDate = (dateString) => {
                                         mosque.id,
                                     )
                                 "
-                                class="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-4 text-center shadow-sm hover:bg-gray-50"
+                                class="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-4 text-center shadow-sm hover:bg-emerald-50"
                             >
                                 <div>
                                     <div class="mb-2 flex justify-center">
@@ -130,8 +155,40 @@ const formatDate = (dateString) => {
                                 </div>
                             </Link>
 
+                            <Link
+                                :href="route('masjid.kariah.index', mosque.id)"
+                                class="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-4 text-center shadow-sm hover:bg-emerald-50"
+                            >
+                                <div>
+                                    <div class="mb-2 flex justify-center">
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            class="h-6 w-6 text-emerald-500"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                stroke-width="2"
+                                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <h3
+                                        class="text-sm font-medium text-gray-900"
+                                    >
+                                        Ahli Kariah
+                                    </h3>
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        Urus ahli kariah
+                                    </p>
+                                </div>
+                            </Link>
+
                             <div
-                                class="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-4 text-center shadow-sm hover:bg-gray-50"
+                                class="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-4 text-center shadow-sm hover:bg-emerald-50"
                             >
                                 <div>
                                     <div class="mb-2 flex justify-center">
@@ -162,7 +219,7 @@ const formatDate = (dateString) => {
                             </div>
 
                             <div
-                                class="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-4 text-center shadow-sm hover:bg-gray-50"
+                                class="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-4 text-center shadow-sm hover:bg-emerald-50"
                             >
                                 <div>
                                     <div class="mb-2 flex justify-center">
@@ -193,7 +250,7 @@ const formatDate = (dateString) => {
                             </div>
 
                             <div
-                                class="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-4 text-center shadow-sm hover:bg-gray-50"
+                                class="flex items-center justify-center rounded-lg border border-gray-200 bg-white p-4 text-center shadow-sm hover:bg-emerald-50"
                             >
                                 <div>
                                     <div class="mb-2 flex justify-center">
@@ -247,7 +304,7 @@ const formatDate = (dateString) => {
                                                 Alamat
                                             </dt>
                                             <dd class="text-gray-900">
-                                                {{ mosque.address }}
+                                                {{ mosque.full_address }}
                                             </dd>
                                         </div>
                                         <div class="flex justify-between py-2">
@@ -257,7 +314,11 @@ const formatDate = (dateString) => {
                                                 Zon JAKIM
                                             </dt>
                                             <dd class="text-gray-900">
-                                                {{ mosque.jakim_zone }}
+                                                {{
+                                                    getZoneDetails(
+                                                        mosque.jakim_zone,
+                                                    )
+                                                }}
                                             </dd>
                                         </div>
                                         <div
@@ -387,11 +448,6 @@ const formatDate = (dateString) => {
                                         >
                                             Pengurus
                                         </h4>
-                                        <button
-                                            class="text-sm font-medium text-emerald-600 hover:text-emerald-500"
-                                        >
-                                            Tambah Pengurus
-                                        </button>
                                     </div>
                                     <ul class="mt-2 divide-y divide-gray-200">
                                         <li
@@ -469,12 +525,157 @@ const formatDate = (dateString) => {
                                         </Link>
                                     </div>
                                     <div class="mt-2">
-                                        <p
+                                        <div
+                                            v-if="
+                                                !committees ||
+                                                committees.length === 0
+                                            "
                                             class="py-2 text-center text-gray-500"
                                         >
-                                            Klik "Urus AJK" untuk melihat dan
-                                            mengurus ahli jawatankuasa masjid.
-                                        </p>
+                                            Tiada ahli jawatankuasa ditemui.
+                                            <div class="mt-2">
+                                                <Link
+                                                    :href="
+                                                        route(
+                                                            'masjid.jawatankuasa.create',
+                                                            mosque.id,
+                                                        )
+                                                    "
+                                                    class="text-sm font-medium text-emerald-600 hover:text-emerald-500"
+                                                >
+                                                    Tambah AJK
+                                                </Link>
+                                            </div>
+                                        </div>
+                                        <div
+                                            v-else
+                                            class="mt-2 overflow-hidden rounded-md border border-gray-200"
+                                        >
+                                            <table
+                                                class="min-w-full divide-y divide-gray-200"
+                                            >
+                                                <thead class="bg-gray-50">
+                                                    <tr>
+                                                        <th
+                                                            scope="col"
+                                                            class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                                        >
+                                                            Jawatan
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                                        >
+                                                            Nama
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                                        >
+                                                            Status
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            class="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+                                                        >
+                                                            Tindakan
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody
+                                                    class="divide-y divide-gray-200 bg-white"
+                                                >
+                                                    <tr
+                                                        v-for="committee in committees"
+                                                        :key="committee.id"
+                                                    >
+                                                        <td
+                                                            class="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900"
+                                                        >
+                                                            {{
+                                                                committee.position
+                                                            }}
+                                                        </td>
+                                                        <td
+                                                            class="whitespace-nowrap px-4 py-2"
+                                                        >
+                                                            <div
+                                                                class="text-sm font-medium text-gray-900"
+                                                            >
+                                                                {{
+                                                                    committee.name
+                                                                }}
+                                                            </div>
+                                                            <div
+                                                                v-if="
+                                                                    committee.phone_number
+                                                                "
+                                                                class="text-xs text-gray-500"
+                                                            >
+                                                                {{
+                                                                    committee.phone_number
+                                                                }}
+                                                            </div>
+                                                        </td>
+                                                        <td
+                                                            class="whitespace-nowrap px-4 py-2 text-sm"
+                                                        >
+                                                            <Badge
+                                                                :color="
+                                                                    getCommitteeStatusColor(
+                                                                        committee.status,
+                                                                    )
+                                                                "
+                                                            >
+                                                                {{
+                                                                    committee.status ===
+                                                                    'active'
+                                                                        ? 'Aktif'
+                                                                        : committee.status ===
+                                                                            'pending'
+                                                                          ? 'Menunggu'
+                                                                          : 'Tidak Aktif'
+                                                                }}
+                                                            </Badge>
+                                                        </td>
+                                                        <td
+                                                            class="whitespace-nowrap px-4 py-2 text-right text-sm font-medium"
+                                                        >
+                                                            <Link
+                                                                :href="
+                                                                    route(
+                                                                        'masjid.jawatankuasa.show',
+                                                                        [
+                                                                            mosque.id,
+                                                                            committee.id,
+                                                                        ],
+                                                                    )
+                                                                "
+                                                                class="text-emerald-600 hover:text-emerald-900"
+                                                            >
+                                                                Lihat
+                                                            </Link>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div
+                                                v-if="committees.length > 5"
+                                                class="bg-gray-50 px-4 py-2 text-center text-sm"
+                                            >
+                                                <Link
+                                                    :href="
+                                                        route(
+                                                            'masjid.jawatankuasa.index',
+                                                            mosque.id,
+                                                        )
+                                                    "
+                                                    class="font-medium text-emerald-600 hover:text-emerald-500"
+                                                >
+                                                    Lihat Semua AJK
+                                                </Link>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -487,14 +688,20 @@ const formatDate = (dateString) => {
                                         >
                                             Ahli Kariah
                                         </h4>
-                                        <button
+                                        <Link
+                                            :href="
+                                                route(
+                                                    'masjid.kariah.index',
+                                                    mosque.id,
+                                                )
+                                            "
                                             class="text-sm font-medium text-emerald-600 hover:text-emerald-500"
                                         >
-                                            Tambah Ahli Kariah
-                                        </button>
+                                            Urus Ahli Kariah
+                                        </Link>
                                     </div>
                                     <div class="mt-2">
-                                        <p
+                                        <div
                                             v-if="
                                                 !mosque.community_members ||
                                                 mosque.community_members
@@ -503,64 +710,161 @@ const formatDate = (dateString) => {
                                             class="py-2 text-center text-gray-500"
                                         >
                                             Tiada ahli kariah ditemui.
-                                        </p>
+                                            <div class="mt-2">
+                                                <Link
+                                                    :href="
+                                                        route(
+                                                            'masjid.kariah.create',
+                                                            mosque.id,
+                                                        )
+                                                    "
+                                                    class="text-sm font-medium text-emerald-600 hover:text-emerald-500"
+                                                >
+                                                    Tambah Ahli Kariah
+                                                </Link>
+                                            </div>
+                                        </div>
                                         <div
                                             v-else
-                                            class="rounded-md border border-gray-200"
+                                            class="mt-2 overflow-hidden rounded-md border border-gray-200"
                                         >
-                                            <div
-                                                class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-500"
+                                            <table
+                                                class="min-w-full divide-y divide-gray-200"
                                             >
-                                                <div>Nama</div>
-                                                <div>Status</div>
-                                            </div>
-                                            <ul
-                                                class="divide-y divide-gray-200"
-                                            >
-                                                <li
-                                                    v-for="member in mosque.community_members"
-                                                    :key="member.id"
-                                                    class="flex items-center justify-between px-4 py-2"
+                                                <thead class="bg-gray-50">
+                                                    <tr>
+                                                        <th
+                                                            scope="col"
+                                                            class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                                        >
+                                                            Nama
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                                        >
+                                                            Maklumat
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                                        >
+                                                            Status
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            class="px-4 py-2 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+                                                        >
+                                                            Tindakan
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody
+                                                    class="divide-y divide-gray-200 bg-white"
                                                 >
-                                                    <div>
-                                                        <p
-                                                            class="font-medium text-gray-900"
+                                                    <tr
+                                                        v-for="member in mosque.community_members.slice(
+                                                            0,
+                                                            5,
+                                                        )"
+                                                        :key="member.id"
+                                                    >
+                                                        <td
+                                                            class="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900"
                                                         >
                                                             {{
                                                                 member.full_name
                                                             }}
-                                                        </p>
-                                                        <p
-                                                            class="text-xs text-gray-500"
+                                                        </td>
+                                                        <td
+                                                            class="whitespace-nowrap px-4 py-2"
                                                         >
-                                                            {{
-                                                                member.email ||
-                                                                'Tiada emel'
-                                                            }}
-                                                        </p>
-                                                    </div>
-                                                    <Badge
-                                                        :color="
-                                                            member.membership_status ===
-                                                            'active'
-                                                                ? 'success'
-                                                                : member.membership_status ===
-                                                                    'pending'
-                                                                  ? 'warning'
-                                                                  : 'secondary'
-                                                        "
-                                                    >
-                                                        {{
-                                                            member.membership_status
-                                                                .charAt(0)
-                                                                .toUpperCase() +
-                                                            member.membership_status.slice(
-                                                                1,
-                                                            )
-                                                        }}
-                                                    </Badge>
-                                                </li>
-                                            </ul>
+                                                            <div
+                                                                v-if="
+                                                                    member.email
+                                                                "
+                                                                class="text-xs text-gray-500"
+                                                            >
+                                                                {{
+                                                                    member.email
+                                                                }}
+                                                            </div>
+                                                            <div
+                                                                v-if="
+                                                                    member.phone_number
+                                                                "
+                                                                class="text-xs text-gray-500"
+                                                            >
+                                                                {{
+                                                                    member.phone_number
+                                                                }}
+                                                            </div>
+                                                        </td>
+                                                        <td
+                                                            class="whitespace-nowrap px-4 py-2 text-sm"
+                                                        >
+                                                            <Badge
+                                                                :color="
+                                                                    member.membership_status ===
+                                                                    'active'
+                                                                        ? 'success'
+                                                                        : member.membership_status ===
+                                                                            'pending'
+                                                                          ? 'warning'
+                                                                          : 'secondary'
+                                                                "
+                                                            >
+                                                                {{
+                                                                    member.membership_status ===
+                                                                    'active'
+                                                                        ? 'Aktif'
+                                                                        : member.membership_status ===
+                                                                            'pending'
+                                                                          ? 'Menunggu'
+                                                                          : 'Tidak Aktif'
+                                                                }}
+                                                            </Badge>
+                                                        </td>
+                                                        <td
+                                                            class="whitespace-nowrap px-4 py-2 text-right text-sm font-medium"
+                                                        >
+                                                            <Link
+                                                                :href="
+                                                                    route(
+                                                                        'masjid.kariah.show',
+                                                                        [
+                                                                            mosque.id,
+                                                                            member.id,
+                                                                        ],
+                                                                    )
+                                                                "
+                                                                class="text-emerald-600 hover:text-emerald-900"
+                                                            >
+                                                                Lihat
+                                                            </Link>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div
+                                                v-if="
+                                                    mosque.community_members
+                                                        .length > 5
+                                                "
+                                                class="bg-gray-50 px-4 py-2 text-center text-sm"
+                                            >
+                                                <Link
+                                                    :href="
+                                                        route(
+                                                            'masjid.kariah.index',
+                                                            mosque.id,
+                                                        )
+                                                    "
+                                                    class="font-medium text-emerald-600 hover:text-emerald-500"
+                                                >
+                                                    Lihat Semua Ahli Kariah
+                                                </Link>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

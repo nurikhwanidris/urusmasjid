@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MosqueCommitteeController;
+use App\Http\Controllers\MosqueCommunityMemberController;
 use App\Http\Controllers\MosqueController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -44,6 +45,17 @@ Route::middleware('auth')->group(function () {
         'edit' => 'masjid.jawatankuasa.edit',
         'update' => 'masjid.jawatankuasa.update',
         'destroy' => 'masjid.jawatankuasa.destroy',
+    ]);
+
+    // Masjid Community Member (Ahli Kariah) routes
+    Route::resource('masjid.kariah', MosqueCommunityMemberController::class, ['parameters' => ['masjid' => 'mosque', 'kariah' => 'kariah']])->names([
+        'index' => 'masjid.kariah.index',
+        'create' => 'masjid.kariah.create',
+        'store' => 'masjid.kariah.store',
+        'show' => 'masjid.kariah.show',
+        'edit' => 'masjid.kariah.edit',
+        'update' => 'masjid.kariah.update',
+        'destroy' => 'masjid.kariah.destroy',
     ]);
 });
 

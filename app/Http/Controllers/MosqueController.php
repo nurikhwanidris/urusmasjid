@@ -64,16 +64,29 @@ class MosqueController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
+            'type' => 'required|in:masjid,surau',
+            'registration_number' => 'nullable|string|max:50',
+
+            // Address fields
+            'street_address' => 'required|string|max:255',
+            'address_line_2' => 'nullable|string|max:255',
+            'city' => 'required|string|max:100',
+            'district' => 'required|string|max:100',
+            'state' => 'required|string|max:100',
+            'postal_code' => 'required|string|max:10',
             'location' => 'required|string|max:255',
-            'jakim_zone' => 'required|string|max:10',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'jakim_zone' => 'required|string|max:50',
+
+            // Contact fields
             'contact_number' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'website' => 'nullable|url|max:255',
-            'type' => 'required|in:masjid,surau',
-            'registration_number' => 'nullable|string|max:50',
-            'ic_number' => 'nullable|string|max:20',
-            'phone_number' => 'nullable|string|max:20',
+
+            // Admin fields
+            'ic_number' => 'required|string|max:20',
+            'phone_number' => 'required|string|max:20',
         ]);
 
         try {
@@ -82,8 +95,15 @@ class MosqueController extends Controller
             // Create the mosque
             $mosque = Mosque::create([
                 'name' => $validated['name'],
-                'address' => $validated['address'],
+                'street_address' => $validated['street_address'],
+                'address_line_2' => $validated['address_line_2'] ?? null,
+                'city' => $validated['city'],
+                'district' => $validated['district'],
+                'state' => $validated['state'],
+                'postal_code' => $validated['postal_code'],
                 'location' => $validated['location'],
+                'latitude' => $validated['latitude'] ?? null,
+                'longitude' => $validated['longitude'] ?? null,
                 'jakim_zone' => $validated['jakim_zone'],
                 'contact_number' => $validated['contact_number'],
                 'email' => $validated['email'],
@@ -134,8 +154,15 @@ class MosqueController extends Controller
 
         $mosque->load(['user', 'admins.user', 'communityMembers']);
 
+        // Load committee members
+        $committees = $mosque->committeeMembers()
+            ->orderBy('position')
+            ->limit(5) // Limit to 5 for preview
+            ->get();
+
         return Inertia::render('Mosques/Show', [
             'mosque' => $mosque,
+            'committees' => $committees,
         ]);
     }
 
@@ -157,11 +184,7 @@ class MosqueController extends Controller
     }
 
     /**
-     * Update the specified mosque in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Mosque  $mosque
-     * @return \Illuminate\Http\RedirectResponse
+     * Update the specified resource in storage.
      */
     public function update(Request $request, Mosque $mosque)
     {
@@ -171,18 +194,28 @@ class MosqueController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
+            'type' => 'required|in:masjid,surau',
+            'registration_number' => 'nullable|string|max:50',
+
+            // Address fields
+            'street_address' => 'required|string|max:255',
+            'address_line_2' => 'nullable|string|max:255',
+            'city' => 'required|string|max:100',
+            'district' => 'required|string|max:100',
+            'state' => 'required|string|max:100',
+            'postal_code' => 'required|string|max:10',
             'location' => 'required|string|max:255',
-            'jakim_zone' => 'required|string|max:10',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'jakim_zone' => 'required|string|max:50',
+
+            // Contact fields
             'contact_number' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'website' => 'nullable|url|max:255',
-            'type' => 'required|in:masjid,surau',
-            'registration_number' => 'nullable|string|max:50',
         ]);
 
-        $mosque->fill($validated);
-        $mosque->save();
+        $mosque->update($validated);
 
         return redirect()->route('masjid.show', $mosque)
             ->with('success', 'Maklumat masjid berjaya dikemaskini!');
