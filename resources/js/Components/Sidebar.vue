@@ -71,6 +71,34 @@ const navigationItems = [
     },
 ];
 
+// Admin navigation items
+const adminNavigationItems = [
+    {
+        name: 'Admin Dashboard',
+        route: 'admin.dashboard',
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>`,
+    },
+    {
+        name: 'Pending Mosques',
+        route: 'admin.mosques.pending',
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>`,
+    },
+    {
+        name: 'All Mosques',
+        route: 'admin.mosques.all',
+        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>`,
+    },
+];
+
+// Check if user is admin
+const isAdmin = computed(() => user.value && user.value.is_admin);
+
 const closeMobileMenu = () => {
     emit('close-mobile-menu');
 };
@@ -164,6 +192,37 @@ const logout = () => {
                             {{ item.name }}
                         </SidebarLink>
                     </template>
+
+                    <!-- Admin Section -->
+                    <template v-if="isAdmin">
+                        <div
+                            class="my-4 border-t border-gray-100 pt-4"
+                            :class="{ 'px-2': !props.collapsed }"
+                        >
+                            <p
+                                v-if="!props.collapsed"
+                                class="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400"
+                            >
+                                Admin
+                            </p>
+                        </div>
+
+                        <template
+                            v-for="item in adminNavigationItems"
+                            :key="item.name"
+                        >
+                            <SidebarLink
+                                :href="route(item.route)"
+                                :active="route().current(item.route)"
+                                :collapsed="props.collapsed"
+                            >
+                                <template #icon>
+                                    <div v-html="item.icon"></div>
+                                </template>
+                                {{ item.name }}
+                            </SidebarLink>
+                        </template>
+                    </template>
                 </div>
             </div>
         </div>
@@ -227,6 +286,32 @@ const logout = () => {
                             </template>
                             {{ item.name }}
                         </MobileSidebarLink>
+                    </template>
+
+                    <!-- Mobile Admin Section -->
+                    <template v-if="isAdmin">
+                        <div class="my-4 border-t border-gray-100 pt-4">
+                            <p
+                                class="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400"
+                            >
+                                Admin
+                            </p>
+                        </div>
+
+                        <template
+                            v-for="item in adminNavigationItems"
+                            :key="item.name"
+                        >
+                            <MobileSidebarLink
+                                :href="route(item.route)"
+                                :active="route().current(item.route)"
+                            >
+                                <template #icon>
+                                    <div v-html="item.icon"></div>
+                                </template>
+                                {{ item.name }}
+                            </MobileSidebarLink>
+                        </template>
                     </template>
                 </div>
             </div>

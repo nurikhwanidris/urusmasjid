@@ -4,6 +4,7 @@ use App\Http\Controllers\MosqueCommitteeController;
 use App\Http\Controllers\MosqueCommunityMemberController;
 use App\Http\Controllers\MosqueController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -57,6 +58,14 @@ Route::middleware('auth')->group(function () {
         'update' => 'masjid.kariah.update',
         'destroy' => 'masjid.kariah.destroy',
     ]);
+
+    // Admin routes
+    Route::prefix('admin')->name('admin.')->middleware('can:admin')->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/mosques/pending', [AdminController::class, 'pendingMosques'])->name('mosques.pending');
+        Route::get('/mosques/all', [AdminController::class, 'allMosques'])->name('mosques.all');
+        Route::get('/mosques/{mosque}/verify', [AdminController::class, 'verifyMosque'])->name('mosques.verify');
+    });
 });
 
 require __DIR__.'/auth.php';
