@@ -145,11 +145,11 @@ export function usePrayerTimes() {
             useFallbackData();
         } finally {
             loading.value = false;
-        }
 
-        // After fetching prayer times, update the countdown
-        if (!loading.value) {
-            updateCountdown();
+            // After fetching prayer times, update the countdown immediately
+            if (countdownInterval.value) {
+                updateCountdown();
+            }
         }
     };
 
@@ -192,7 +192,7 @@ export function usePrayerTimes() {
 
         // If all prayers for today have passed, return the first prayer for tomorrow
         return {
-            name: 'Subuh (tomorrow)',
+            name: 'Subuh',
             time: prayerTimes.value.times.subuh,
         };
     });
@@ -213,11 +213,18 @@ export function usePrayerTimes() {
         nextPrayerTime.setHours(nextHour, nextMinute, 0);
 
         // If it's for tomorrow, add a day
-        if (nextPrayer.value.name.includes('tomorrow')) {
+        if (nextPrayer.value.name.includes('Subuh')) {
             nextPrayerTime.setDate(nextPrayerTime.getDate() + 1);
         }
 
         const diffMs = nextPrayerTime - now;
+
+        // If the countdown has finished or is negative, refresh prayer times to move to the next prayer
+        if (diffMs <= 0) {
+            fetchPrayerTimes();
+            return;
+        }
+
         const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
         const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
         const diffSecs = Math.floor((diffMs % (1000 * 60)) / 1000);
