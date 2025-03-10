@@ -206,7 +206,9 @@ onBeforeUnmount(() => {
                 <!-- Stats Overview -->
                 <div class="mb-6 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     <!-- Members -->
-                    <div class="overflow-hidden rounded-lg bg-white p-6 shadow">
+                    <div
+                        class="overflow-hidden rounded-lg bg-white p-6 shadow hover:bg-emerald-50"
+                    >
                         <div class="flex items-center">
                             <div
                                 class="flex h-12 w-12 items-center justify-center rounded-md bg-emerald-100"
@@ -238,7 +240,9 @@ onBeforeUnmount(() => {
                     </div>
 
                     <!-- Attendance -->
-                    <div class="overflow-hidden rounded-lg bg-white p-6 shadow">
+                    <div
+                        class="overflow-hidden rounded-lg bg-white p-6 shadow hover:bg-emerald-50"
+                    >
                         <div class="flex items-center">
                             <div
                                 class="flex h-12 w-12 items-center justify-center rounded-md bg-emerald-100"
@@ -270,7 +274,9 @@ onBeforeUnmount(() => {
                     </div>
 
                     <!-- Donations -->
-                    <div class="overflow-hidden rounded-lg bg-white p-6 shadow">
+                    <div
+                        class="overflow-hidden rounded-lg bg-white p-6 shadow hover:bg-emerald-50"
+                    >
                         <div class="flex items-center">
                             <div
                                 class="flex h-12 w-12 items-center justify-center rounded-md bg-emerald-100"
@@ -302,7 +308,9 @@ onBeforeUnmount(() => {
                     </div>
 
                     <!-- Events -->
-                    <div class="overflow-hidden rounded-lg bg-white p-6 shadow">
+                    <div
+                        class="overflow-hidden rounded-lg bg-white p-6 shadow hover:bg-emerald-50"
+                    >
                         <div class="flex items-center">
                             <div
                                 class="flex h-12 w-12 items-center justify-center rounded-md bg-emerald-100"

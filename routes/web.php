@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\MosqueCommitteeController;
+use App\Http\Controllers\MosqueController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -21,12 +23,28 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::prefix('masjid')->group(function () {
-        Route::get('/', function () {
-            // return Inertia::render('Masjid/Index');
-            return true;
-        })->name('masjid.index');
-    });
+    // Masjid routes
+    Route::resource('masjid', MosqueController::class, ['parameters' => ['masjid' => 'mosque']])->names([
+        'index' => 'masjid.index',
+        'create' => 'masjid.create',
+        'store' => 'masjid.store',
+        'show' => 'masjid.show',
+        'edit' => 'masjid.edit',
+        'update' => 'masjid.update',
+        'destroy' => 'masjid.destroy',
+    ]);
+    Route::patch('/masjid/{mosque}/verify', [MosqueController::class, 'verify'])->name('masjid.verify');
+
+    // Masjid Committee routes
+    Route::resource('masjid.jawatankuasa', MosqueCommitteeController::class, ['parameters' => ['masjid' => 'mosque', 'jawatankuasa' => 'committee']])->names([
+        'index' => 'masjid.jawatankuasa.index',
+        'create' => 'masjid.jawatankuasa.create',
+        'store' => 'masjid.jawatankuasa.store',
+        'show' => 'masjid.jawatankuasa.show',
+        'edit' => 'masjid.jawatankuasa.edit',
+        'update' => 'masjid.jawatankuasa.update',
+        'destroy' => 'masjid.jawatankuasa.destroy',
+    ]);
 });
 
 require __DIR__.'/auth.php';
