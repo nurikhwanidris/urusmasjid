@@ -306,19 +306,72 @@ const submit = () => {
                                 </p>
                             </div>
 
-                            <div class="rounded-xl bg-gray-50 p-6 shadow-sm">
+                            <!-- Validation errors summary if any -->
+                            <div
+                                v-if="hasBasicInfoErrors"
+                                class="rounded-xl bg-red-50 p-4 shadow-sm"
+                            >
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg
+                                            class="h-5 w-5 text-red-400"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3
+                                            class="text-sm font-medium text-red-800"
+                                        >
+                                            Terdapat ralat yang perlu diperbaiki
+                                        </h3>
+                                        <div class="mt-2 text-sm text-red-700">
+                                            <p>
+                                                Sila perbaiki ralat berikut
+                                                sebelum meneruskan.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="rounded-xl bg-gray-50 p-6 shadow-sm"
+                                :class="{
+                                    'ring-2 ring-red-500': hasBasicInfoErrors,
+                                }"
+                            >
                                 <div class="space-y-6">
-                                    <div>
+                                    <div
+                                        :class="{
+                                            'rounded-lg bg-red-50 p-4':
+                                                form.errors.name,
+                                        }"
+                                    >
                                         <InputLabel
                                             for="name"
                                             value="Nama Masjid"
                                             class="required text-base"
+                                            :class="{
+                                                'text-red-500':
+                                                    form.errors.name,
+                                            }"
                                         />
                                         <TextInput
                                             id="name"
                                             v-model="form.name"
                                             type="text"
                                             class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                            :class="{
+                                                'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                    form.errors.name,
+                                            }"
                                             required
                                             autofocus
                                             placeholder="Contoh: Masjid Al-Hidayah"
@@ -329,17 +382,30 @@ const submit = () => {
                                         />
                                     </div>
 
-                                    <div>
+                                    <div
+                                        :class="{
+                                            'rounded-lg bg-red-50 p-4':
+                                                form.errors.type,
+                                        }"
+                                    >
                                         <InputLabel
                                             for="type"
                                             value="Jenis Masjid"
                                             class="required text-base"
+                                            :class="{
+                                                'text-red-500':
+                                                    form.errors.type,
+                                            }"
                                         />
                                         <SelectInput
                                             id="type"
                                             v-model="form.type"
                                             :options="mosqueTypes"
                                             class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                            :class="{
+                                                'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                    form.errors.type,
+                                            }"
                                             required
                                         />
                                         <InputError
@@ -348,17 +414,32 @@ const submit = () => {
                                         />
                                     </div>
 
-                                    <div>
+                                    <div
+                                        :class="{
+                                            'rounded-lg bg-red-50 p-4':
+                                                form.errors.registration_number,
+                                        }"
+                                    >
                                         <InputLabel
                                             for="registration_number"
                                             value="Nombor Pendaftaran (jika berdaftar)"
                                             class="text-base"
+                                            :class="{
+                                                'text-red-500':
+                                                    form.errors
+                                                        .registration_number,
+                                            }"
                                         />
                                         <TextInput
                                             id="registration_number"
                                             v-model="form.registration_number"
                                             type="text"
                                             class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                            :class="{
+                                                'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                    form.errors
+                                                        .registration_number,
+                                            }"
                                             placeholder="Contoh: MSJ-12345"
                                         />
                                         <InputError
@@ -393,19 +474,74 @@ const submit = () => {
                                 </p>
                             </div>
 
-                            <div class="rounded-xl bg-gray-50 p-6 shadow-sm">
+                            <!-- Validation errors summary if any -->
+                            <div
+                                v-if="hasLocationErrors"
+                                class="rounded-xl bg-red-50 p-4 shadow-sm"
+                            >
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg
+                                            class="h-5 w-5 text-red-400"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3
+                                            class="text-sm font-medium text-red-800"
+                                        >
+                                            Terdapat ralat yang perlu diperbaiki
+                                        </h3>
+                                        <div class="mt-2 text-sm text-red-700">
+                                            <p>
+                                                Sila perbaiki ralat berikut
+                                                sebelum meneruskan.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="rounded-xl bg-gray-50 p-6 shadow-sm"
+                                :class="{
+                                    'ring-2 ring-red-500': hasLocationErrors,
+                                }"
+                            >
                                 <div class="space-y-6">
                                     <div class="grid gap-6 md:grid-cols-2">
-                                        <div>
+                                        <div
+                                            :class="{
+                                                'rounded-lg bg-red-50 p-4':
+                                                    form.errors.street_address,
+                                            }"
+                                        >
                                             <InputLabel
                                                 for="street_address"
                                                 value="Alamat"
                                                 class="required text-base"
+                                                :class="{
+                                                    'text-red-500':
+                                                        form.errors
+                                                            .street_address,
+                                                }"
                                             />
                                             <Textarea
                                                 id="street_address"
                                                 v-model="form.street_address"
                                                 class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                                :class="{
+                                                    'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                        form.errors
+                                                            .street_address,
+                                                }"
                                                 rows="3"
                                                 required
                                                 placeholder="Alamat lengkap masjid"
@@ -418,16 +554,31 @@ const submit = () => {
                                             />
                                         </div>
 
-                                        <div>
+                                        <div
+                                            :class="{
+                                                'rounded-lg bg-red-50 p-4':
+                                                    form.errors.address_line_2,
+                                            }"
+                                        >
                                             <InputLabel
                                                 for="address_line_2"
                                                 value="Alamat (Baris Kedua)"
                                                 class="text-base"
+                                                :class="{
+                                                    'text-red-500':
+                                                        form.errors
+                                                            .address_line_2,
+                                                }"
                                             />
                                             <Textarea
                                                 id="address_line_2"
                                                 v-model="form.address_line_2"
                                                 class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                                :class="{
+                                                    'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                        form.errors
+                                                            .address_line_2,
+                                                }"
                                                 rows="3"
                                                 placeholder="Alamat tambahan (jika ada)"
                                             />
@@ -441,17 +592,30 @@ const submit = () => {
                                     </div>
 
                                     <div class="grid gap-6 md:grid-cols-2">
-                                        <div>
+                                        <div
+                                            :class="{
+                                                'rounded-lg bg-red-50 p-4':
+                                                    form.errors.city,
+                                            }"
+                                        >
                                             <InputLabel
                                                 for="city"
                                                 value="Bandar"
                                                 class="required text-base"
+                                                :class="{
+                                                    'text-red-500':
+                                                        form.errors.city,
+                                                }"
                                             />
                                             <TextInput
                                                 id="city"
                                                 v-model="form.city"
                                                 type="text"
                                                 class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                                :class="{
+                                                    'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                        form.errors.city,
+                                                }"
                                                 required
                                                 placeholder="Contoh: Kuala Lumpur"
                                             />
@@ -461,17 +625,30 @@ const submit = () => {
                                             />
                                         </div>
 
-                                        <div>
+                                        <div
+                                            :class="{
+                                                'rounded-lg bg-red-50 p-4':
+                                                    form.errors.district,
+                                            }"
+                                        >
                                             <InputLabel
                                                 for="district"
                                                 value="Daerah"
                                                 class="required text-base"
+                                                :class="{
+                                                    'text-red-500':
+                                                        form.errors.district,
+                                                }"
                                             />
                                             <TextInput
                                                 id="district"
                                                 v-model="form.district"
                                                 type="text"
                                                 class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                                :class="{
+                                                    'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                        form.errors.district,
+                                                }"
                                                 required
                                                 placeholder="Contoh: Petaling"
                                             />
@@ -483,17 +660,30 @@ const submit = () => {
                                     </div>
 
                                     <div class="grid gap-6 md:grid-cols-2">
-                                        <div>
+                                        <div
+                                            :class="{
+                                                'rounded-lg bg-red-50 p-4':
+                                                    form.errors.state,
+                                            }"
+                                        >
                                             <InputLabel
                                                 for="state"
                                                 value="Negeri"
                                                 class="required text-base"
+                                                :class="{
+                                                    'text-red-500':
+                                                        form.errors.state,
+                                                }"
                                             />
                                             <SelectInput
                                                 id="state"
                                                 v-model="form.state"
                                                 :options="stateOptions"
                                                 class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                                :class="{
+                                                    'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                        form.errors.state,
+                                                }"
                                                 required
                                             />
                                             <InputError
@@ -502,17 +692,30 @@ const submit = () => {
                                             />
                                         </div>
 
-                                        <div>
+                                        <div
+                                            :class="{
+                                                'rounded-lg bg-red-50 p-4':
+                                                    form.errors.postal_code,
+                                            }"
+                                        >
                                             <InputLabel
                                                 for="postal_code"
                                                 value="Poskod"
                                                 class="required text-base"
+                                                :class="{
+                                                    'text-red-500':
+                                                        form.errors.postal_code,
+                                                }"
                                             />
                                             <TextInput
                                                 id="postal_code"
                                                 v-model="form.postal_code"
                                                 type="text"
                                                 class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                                :class="{
+                                                    'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                        form.errors.postal_code,
+                                                }"
                                                 required
                                                 placeholder="Contoh: 50000"
                                             />
@@ -525,17 +728,30 @@ const submit = () => {
                                         </div>
                                     </div>
 
-                                    <div>
+                                    <div
+                                        :class="{
+                                            'rounded-lg bg-red-50 p-4':
+                                                form.errors.jakim_zone,
+                                        }"
+                                    >
                                         <InputLabel
                                             for="jakim_zone"
                                             value="Zon JAKIM"
                                             class="required text-base"
+                                            :class="{
+                                                'text-red-500':
+                                                    form.errors.jakim_zone,
+                                            }"
                                         />
                                         <SelectInput
                                             id="jakim_zone"
                                             v-model="form.jakim_zone"
                                             :options="jakimZones"
                                             class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                            :class="{
+                                                'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                    form.errors.jakim_zone,
+                                            }"
                                             required
                                         />
                                         <InputError
@@ -544,17 +760,30 @@ const submit = () => {
                                         />
                                     </div>
 
-                                    <div>
+                                    <div
+                                        :class="{
+                                            'rounded-lg bg-red-50 p-4':
+                                                form.errors.location,
+                                        }"
+                                    >
                                         <InputLabel
                                             for="location"
                                             value="Lokasi Google Maps"
                                             class="required text-base"
+                                            :class="{
+                                                'text-red-500':
+                                                    form.errors.location,
+                                            }"
                                         />
                                         <TextInput
                                             id="location"
                                             v-model="form.location"
                                             type="text"
                                             class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                            :class="{
+                                                'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                    form.errors.location,
+                                            }"
                                             placeholder="Paste pautan Google Maps atau koordinat"
                                             required
                                         />
@@ -565,17 +794,32 @@ const submit = () => {
                                     </div>
 
                                     <div class="grid gap-6 md:grid-cols-3">
-                                        <div>
+                                        <div
+                                            :class="{
+                                                'rounded-lg bg-red-50 p-4':
+                                                    form.errors.contact_number,
+                                            }"
+                                        >
                                             <InputLabel
                                                 for="contact_number"
                                                 value="Nombor Telefon"
                                                 class="text-base"
+                                                :class="{
+                                                    'text-red-500':
+                                                        form.errors
+                                                            .contact_number,
+                                                }"
                                             />
                                             <TextInput
                                                 id="contact_number"
                                                 v-model="form.contact_number"
                                                 type="text"
                                                 class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                                :class="{
+                                                    'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                        form.errors
+                                                            .contact_number,
+                                                }"
                                                 placeholder="Contoh: 03-12345678"
                                             />
                                             <InputError
@@ -586,17 +830,30 @@ const submit = () => {
                                             />
                                         </div>
 
-                                        <div>
+                                        <div
+                                            :class="{
+                                                'rounded-lg bg-red-50 p-4':
+                                                    form.errors.email,
+                                            }"
+                                        >
                                             <InputLabel
                                                 for="email"
                                                 value="Emel"
                                                 class="text-base"
+                                                :class="{
+                                                    'text-red-500':
+                                                        form.errors.email,
+                                                }"
                                             />
                                             <TextInput
                                                 id="email"
                                                 v-model="form.email"
                                                 type="email"
                                                 class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                                :class="{
+                                                    'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                        form.errors.email,
+                                                }"
                                                 placeholder="Contoh: info@masjid.com"
                                             />
                                             <InputError
@@ -605,17 +862,30 @@ const submit = () => {
                                             />
                                         </div>
 
-                                        <div>
+                                        <div
+                                            :class="{
+                                                'rounded-lg bg-red-50 p-4':
+                                                    form.errors.website,
+                                            }"
+                                        >
                                             <InputLabel
                                                 for="website"
                                                 value="Laman Web"
                                                 class="text-base"
+                                                :class="{
+                                                    'text-red-500':
+                                                        form.errors.website,
+                                                }"
                                             />
                                             <TextInput
                                                 id="website"
                                                 v-model="form.website"
                                                 type="url"
                                                 class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                                :class="{
+                                                    'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                        form.errors.website,
+                                                }"
                                                 placeholder="Contoh: https://masjid.com"
                                             />
                                             <InputError
@@ -656,20 +926,73 @@ const submit = () => {
                                 </p>
                             </div>
 
-                            <div class="rounded-xl bg-gray-50 p-6 shadow-sm">
+                            <!-- Validation errors summary if any -->
+                            <div
+                                v-if="hasAdminErrors"
+                                class="rounded-xl bg-red-50 p-4 shadow-sm"
+                            >
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg
+                                            class="h-5 w-5 text-red-400"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                        >
+                                            <path
+                                                fill-rule="evenodd"
+                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                                clip-rule="evenodd"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3
+                                            class="text-sm font-medium text-red-800"
+                                        >
+                                            Terdapat ralat yang perlu diperbaiki
+                                        </h3>
+                                        <div class="mt-2 text-sm text-red-700">
+                                            <p>
+                                                Sila perbaiki ralat berikut
+                                                sebelum meneruskan.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="rounded-xl bg-gray-50 p-6 shadow-sm"
+                                :class="{
+                                    'ring-2 ring-red-500': hasAdminErrors,
+                                }"
+                            >
                                 <div class="space-y-6">
                                     <div class="grid gap-6 md:grid-cols-2">
-                                        <div>
+                                        <div
+                                            :class="{
+                                                'rounded-lg bg-red-50 p-4':
+                                                    form.errors.ic_number,
+                                            }"
+                                        >
                                             <InputLabel
                                                 for="ic_number"
                                                 value="Nombor IC (Tidak Wajib)"
                                                 class="text-base"
+                                                :class="{
+                                                    'text-red-500':
+                                                        form.errors.ic_number,
+                                                }"
                                             />
                                             <TextInput
                                                 id="ic_number"
                                                 v-model="form.ic_number"
                                                 type="text"
                                                 class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                                :class="{
+                                                    'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                        form.errors.ic_number,
+                                                }"
                                                 placeholder="Contoh: 880101-01-1234"
                                             />
                                             <InputError
@@ -678,17 +1001,32 @@ const submit = () => {
                                             />
                                         </div>
 
-                                        <div>
+                                        <div
+                                            :class="{
+                                                'rounded-lg bg-red-50 p-4':
+                                                    form.errors.phone_number,
+                                            }"
+                                        >
                                             <InputLabel
                                                 for="phone_number"
                                                 value="Nombor Telefon (Tidak Wajib)"
                                                 class="text-base"
+                                                :class="{
+                                                    'text-red-500':
+                                                        form.errors
+                                                            .phone_number,
+                                                }"
                                             />
                                             <TextInput
                                                 id="phone_number"
                                                 v-model="form.phone_number"
                                                 type="text"
                                                 class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
+                                                :class="{
+                                                    'border-red-300 focus:border-red-500 focus:ring-red-500':
+                                                        form.errors
+                                                            .phone_number,
+                                                }"
                                                 placeholder="Contoh: 012-3456789"
                                             />
                                             <InputError
