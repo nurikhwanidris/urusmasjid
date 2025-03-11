@@ -172,7 +172,17 @@ const getZoneDetails = (zoneCode) => {
                                                 <div
                                                     class="font-medium text-gray-900"
                                                 >
-                                                    {{ mosque.name }}
+                                                    <Link
+                                                        :href="
+                                                            route(
+                                                                'masjid.show',
+                                                                mosque.id,
+                                                            )
+                                                        "
+                                                        class="text-emerald-600 hover:text-emerald-900"
+                                                    >
+                                                        {{ mosque.name }}
+                                                    </Link>
                                                 </div>
                                                 <div
                                                     v-if="

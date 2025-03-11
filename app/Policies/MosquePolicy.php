@@ -5,9 +5,12 @@ namespace App\Policies;
 use App\Models\Mosque;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class MosquePolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Perform pre-authorization checks.
      */
@@ -25,7 +28,7 @@ class MosquePolicy
      */
     public function viewAny(User $user): bool
     {
-        return true; // All authenticated users can view the list of mosques
+        return true;
     }
 
     /**
@@ -33,8 +36,7 @@ class MosquePolicy
      */
     public function view(User $user, Mosque $mosque): bool
     {
-        // Allow all authenticated users to view any mosque
-        return true;
+        return true; // All authenticated users can view mosques
     }
 
     /**
@@ -42,8 +44,7 @@ class MosquePolicy
      */
     public function create(User $user): bool
     {
-        // Any authenticated user can create a mosque
-        return true;
+        return true; // All authenticated users can create mosques
     }
 
     /**
@@ -51,8 +52,10 @@ class MosquePolicy
      */
     public function update(User $user, Mosque $mosque): bool
     {
-        // Allow all authenticated users to update any mosque
-        return true;
+        // User can update if they created the mosque or are an admin of the mosque
+        return $user->id === $mosque->created_by ||
+               $mosque->admins()->where('user_id', $user->id)->exists() ||
+               $user->hasRole('admin');
     }
 
     /**
@@ -60,8 +63,8 @@ class MosquePolicy
      */
     public function delete(User $user, Mosque $mosque): bool
     {
-        // Allow all authenticated users to delete any mosque
-        return true;
+        // Only the creator or system admin can delete a mosque
+        return $user->id === $mosque->created_by || $user->hasRole('admin');
     }
 
     /**
@@ -87,7 +90,7 @@ class MosquePolicy
      */
     public function verify(User $user, Mosque $mosque): bool
     {
-        // Allow all authenticated users to verify any mosque
-        return true;
+        // Only system admins can verify mosques
+        return $user->hasRole('admin');
     }
 }

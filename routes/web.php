@@ -5,6 +5,8 @@ use App\Http\Controllers\MosqueCommunityMemberController;
 use App\Http\Controllers\MosqueController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventRegistrationController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -58,6 +60,29 @@ Route::middleware('auth')->group(function () {
         'update' => 'masjid.kariah.update',
         'destroy' => 'masjid.kariah.destroy',
     ]);
+
+    // Masjid Event routes
+    Route::resource('masjid.acara', EventController::class, ['parameters' => ['masjid' => 'mosque', 'acara' => 'acara']])->names([
+        'index' => 'masjid.acara.index',
+        'create' => 'masjid.acara.create',
+        'store' => 'masjid.acara.store',
+        'show' => 'masjid.acara.show',
+        'edit' => 'masjid.acara.edit',
+        'update' => 'masjid.acara.update',
+        'destroy' => 'masjid.acara.destroy',
+    ]);
+
+    // Masjid Event Registration routes
+    Route::resource('masjid.acara.pendaftaran', EventRegistrationController::class, ['parameters' => ['masjid' => 'mosque', 'acara' => 'acara', 'pendaftaran' => 'pendaftaran']])->names([
+        'index' => 'masjid.acara.pendaftaran.index',
+        'create' => 'masjid.acara.pendaftaran.create',
+        'store' => 'masjid.acara.pendaftaran.store',
+        'show' => 'masjid.acara.pendaftaran.show',
+        'edit' => 'masjid.acara.pendaftaran.edit',
+        'update' => 'masjid.acara.pendaftaran.update',
+        'destroy' => 'masjid.acara.pendaftaran.destroy',
+    ]);
+    Route::patch('/masjid/{mosque}/acara/{acara}/pendaftaran/{pendaftaran}/attendance', [EventRegistrationController::class, 'markAttendance'])->name('masjid.acara.pendaftaran.attendance');
 
     // Admin routes
     Route::prefix('admin')->name('admin.')->middleware('can:admin')->group(function () {

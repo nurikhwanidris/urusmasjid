@@ -168,4 +168,15 @@ class User extends Authenticatable
             ->where('status', 'active')
             ->exists();
     }
+
+    /**
+     * Check if the user has the given role.
+     *
+     * @param string $role
+     * @return bool
+     */
+    public function hasRole(string $role): bool
+    {
+        return $this->role === $role;
+    }
 }

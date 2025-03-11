@@ -27,6 +27,10 @@ const showUserMenu = ref(false);
 const userMenuRef = ref(null);
 const userButtonRef = ref(null);
 
+// Get current page props
+const currentPage = usePage();
+const currentMosque = computed(() => currentPage.props.mosque);
+
 // Dashboard navigation item
 const dashboardItem = {
     name: 'Utama',
@@ -57,16 +61,37 @@ const eventsIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>`;
 
-const eventsItems = [
-    {
-        name: 'Senarai Acara',
-        route: 'masjid.index', // Update with actual route
-    },
-    {
-        name: 'Cipta Acara',
-        route: 'masjid.index', // Update with actual route
-    },
-];
+const eventsItems = computed(() => {
+    // If we have a current mosque, use its ID for the routes
+    if (currentMosque.value) {
+        return [
+            {
+                name: 'Senarai Acara',
+                route: 'masjid.acara.index',
+                params: [currentMosque.value.id],
+            },
+            {
+                name: 'Cipta Acara',
+                route: 'masjid.acara.create',
+                params: [currentMosque.value.id],
+            },
+        ];
+    }
+
+    // Otherwise, just link to the mosque list
+    return [
+        {
+            name: 'Senarai Acara',
+            route: 'masjid.index',
+            params: [],
+        },
+        {
+            name: 'Cipta Acara',
+            route: 'masjid.index',
+            params: [],
+        },
+    ];
+});
 
 // Donations menu
 const donationsIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -217,7 +242,9 @@ const logout = () => {
                         title="Pengurusan Masjid"
                         :icon="mosqueManagementIcon"
                         :collapsed="props.collapsed"
-                        :routes="mosqueManagementItems.map(item => item.route)"
+                        :routes="
+                            mosqueManagementItems.map((item) => item.route)
+                        "
                     >
                         <SidebarSubmenuItem
                             v-for="item in mosqueManagementItems"
@@ -234,13 +261,20 @@ const logout = () => {
                         title="Acara"
                         :icon="eventsIcon"
                         :collapsed="props.collapsed"
-                        :routes="eventsItems.map(item => item.route)"
+                        :routes="eventsItems.map((item) => item.route)"
                     >
                         <SidebarSubmenuItem
                             v-for="item in eventsItems"
                             :key="item.name"
-                            :href="route(item.route)"
-                            :active="route().current(item.route)"
+                            :href="route(item.route, item.params)"
+                            :active="
+                                route().current(
+                                    item.route,
+                                    item.params && item.params.length > 0
+                                        ? { mosque: item.params[0] }
+                                        : {},
+                                )
+                            "
                         >
                             {{ item.name }}
                         </SidebarSubmenuItem>
@@ -251,7 +285,7 @@ const logout = () => {
                         title="Derma"
                         :icon="donationsIcon"
                         :collapsed="props.collapsed"
-                        :routes="donationsItems.map(item => item.route)"
+                        :routes="donationsItems.map((item) => item.route)"
                     >
                         <SidebarSubmenuItem
                             v-for="item in donationsItems"
@@ -294,7 +328,7 @@ const logout = () => {
                             title="Admin"
                             :icon="adminDashboardIcon"
                             :collapsed="props.collapsed"
-                            :routes="adminItems.map(item => item.route)"
+                            :routes="adminItems.map((item) => item.route)"
                         >
                             <SidebarSubmenuItem
                                 v-for="item in adminItems"
@@ -374,7 +408,9 @@ const logout = () => {
                     <MobileSidebarMenu
                         title="Pengurusan Masjid"
                         :icon="mosqueManagementIcon"
-                        :routes="mosqueManagementItems.map(item => item.route)"
+                        :routes="
+                            mosqueManagementItems.map((item) => item.route)
+                        "
                     >
                         <MobileSidebarLink
                             v-for="item in mosqueManagementItems"
@@ -390,13 +426,20 @@ const logout = () => {
                     <MobileSidebarMenu
                         title="Acara"
                         :icon="eventsIcon"
-                        :routes="eventsItems.map(item => item.route)"
+                        :routes="eventsItems.map((item) => item.route)"
                     >
                         <MobileSidebarLink
                             v-for="item in eventsItems"
                             :key="item.name"
-                            :href="route(item.route)"
-                            :active="route().current(item.route)"
+                            :href="route(item.route, item.params)"
+                            :active="
+                                route().current(
+                                    item.route,
+                                    item.params && item.params.length > 0
+                                        ? { mosque: item.params[0] }
+                                        : {},
+                                )
+                            "
                         >
                             {{ item.name }}
                         </MobileSidebarLink>
@@ -406,7 +449,7 @@ const logout = () => {
                     <MobileSidebarMenu
                         title="Derma"
                         :icon="donationsIcon"
-                        :routes="donationsItems.map(item => item.route)"
+                        :routes="donationsItems.map((item) => item.route)"
                     >
                         <MobileSidebarLink
                             v-for="item in donationsItems"
@@ -443,7 +486,7 @@ const logout = () => {
                         <MobileSidebarMenu
                             title="Admin"
                             :icon="adminDashboardIcon"
-                            :routes="adminItems.map(item => item.route)"
+                            :routes="adminItems.map((item) => item.route)"
                         >
                             <MobileSidebarLink
                                 v-for="item in adminItems"

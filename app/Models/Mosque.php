@@ -92,6 +92,16 @@ class Mosque extends Model
     }
 
     /**
+     * Get the events of this mosque.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function events(): HasMany
+    {
+        return $this->hasMany(Event::class);
+    }
+
+    /**
      * Check if the mosque is verified.
      *
      * @return bool
