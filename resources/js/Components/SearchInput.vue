@@ -31,7 +31,7 @@ watch(input, (value) => {
         <input
             type="text"
             v-model="input"
-            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-12 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
+            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500"
             :placeholder="placeholder"
         />
     </div>
