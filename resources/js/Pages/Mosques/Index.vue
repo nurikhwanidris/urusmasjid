@@ -3,13 +3,28 @@ import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Badge from '@/Components/Badge.vue';
-import TextInput from '@/Components/TextInput.vue';
 import SelectInput from '@/Components/SelectInput.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { states } from '@/Utils/states';
 import { zones } from '@/Utils/zones';
-defineProps({
+import SearchInput from '@/Components/SearchInput.vue';
+import { ref, computed } from 'vue';
+
+const props = defineProps({
     mosques: Object,
+});
+
+const search = ref('');
+const filterState = ref('all');
+
+const filteredMosques = computed(() => {
+    const searchTerm = search.value.toLowerCase();
+    return props.mosques.data.filter((mosque) => {
+        const matchesSearch =
+            !searchTerm || mosque.name.toLowerCase().includes(searchTerm);
+        const matchesState =
+            filterState.value === 'all' || mosque.state === filterState.value;
+        return matchesSearch && matchesState;
+    });
 });
 
 // Helper function to get status badge color
@@ -73,7 +88,7 @@ const getZoneDetails = (zoneCode) => {
                         <!-- Search and filter -->
                         <div class="mb-6 flex items-center justify-between">
                             <div class="flex items-center space-x-2">
-                                <TextInput
+                                <SearchInput
                                     v-model="search"
                                     placeholder="Cari masjid..."
                                     class="w-64"
@@ -148,7 +163,7 @@ const getZoneDetails = (zoneCode) => {
                                         class="divide-y divide-gray-200 bg-white"
                                     >
                                         <tr
-                                            v-for="mosque in mosques.data"
+                                            v-for="mosque in filteredMosques"
                                             :key="mosque.id"
                                         >
                                             <td
@@ -320,7 +335,8 @@ const getZoneDetails = (zoneCode) => {
                                                         ? 'rounded-r-md'
                                                         : '',
                                                 ]"
-                                            ></Link>
+                                            >
+                                            </Link>
                                         </nav>
                                     </div>
                                 </div>
