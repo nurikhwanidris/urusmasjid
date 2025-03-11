@@ -1,0 +1,93 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+1️⃣ User Registration & Login
+New User Registration
+
+    User selects role → (Admin / Community Member / Volunteer / Khatib)
+    Enter details → (Name, Phone, Email, Password)
+    Verify email/phone (Optional: OTP verification)
+    If Admin → Proceed to Mosque Registration
+    If Community Member → Join an existing mosque OR request access
+
+Login
+
+    Users log in using email/password or Google Sign-In.
+    Upon login, users are directed to their role-specific dashboard.
+
+2️⃣ Mosque Registration & Approval (For Admins)
+
+    Admin fills in mosque details (Name, Address, Contact, Type, Location)
+
+    Uploads verification documents (if needed)
+
+    Approval Process:
+        Auto-approval for quick access (optional for MVP)
+        Manual verification by the system admin
+        Community-based verification (5+ members confirm)
+
+    Once approved:
+        Admin gets full access to mosque settings
+        Can add more admins & members
+
+3️⃣ Community (Kariah) Management
+For Admins
+
+    Add/remove members manually
+    Approve join requests
+    Assign roles (Volunteer, Khatib, Imam)
+    View member details (status, contributions, emergency contacts)
+
+For Members
+
+    Request to join a mosque
+    Update personal information (name, family ties, contact details)
+
+4️⃣ Khutbah (Friday Sermon) Management
+For Admins & Khatibs
+
+    Schedule khutbah topics (Choose from template or AI-generated)
+    Assign Khatib
+    Notify community via WhatsApp, Telegram, or email
+    Track khutbah history
+    Collect feedback on khutbah
+
+5️⃣ Event & Activity Management
+
+    Create event (Islamic classes, lectures, Ramadan programs)
+    Assign speaker & volunteers
+    Set RSVP & attendance tracking
+    Notify members (WhatsApp, Email)
+
+6️⃣ Financial & Donation Management
+
+    Admins set up donation campaigns (Zakat, Sadaqah, Waqaf)
+    Users donate via FPX, e-wallet, QR Code
+    Auto-generate receipts
+    View donation & expense reports (for transparency)
+
+7️⃣ Maintenance & Facility Management
+
+    Report maintenance issues (broken speakers, air conditioners, etc.)
+    Assign volunteers or contractors for repairs
+    Track maintenance history & costs
+    Send reminders for scheduled maintenance
+
+8️⃣ User Dashboard & Notifications
+
+For Admins
+
+    View mosque activity (donations, events, khutbahs, maintenance)
+    Manage kariah members & volunteers
+
+For Members
+
+    View khutbah schedule
+    RSVP to events
+    Donate & track contributions
+
+Notifications
+
+    WhatsApp, Telegram, or Email for Khutbahs, Events, Maintenance & Donations
