@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('ic_number')->nullable()->after('email');
-            $table->string('phone_number')->nullable()->after('ic_number');
-            $table->enum('role', ['admin', 'mosque_admin', 'community_member', 'volunteer', 'khatib'])->default('community_member')->after('phone_number');
+            $table->boolean('phone_verified')->default(false)->after('phone_number');
+            $table->timestamp('phone_verified_at')->nullable()->after('phone_verified');
+            $table->string('verification_code')->nullable()->after('phone_verified_at');
         });
     }
 
@@ -24,7 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['ic_number', 'phone_number', 'role']);
+            $table->dropColumn(['phone_verified', 'phone_verified_at', 'verification_code']);
         });
     }
 };

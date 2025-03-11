@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\VerificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -56,4 +57,15 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    // Phone verification routes
+    Route::get('verify-phone', [VerificationController::class, 'showPhoneVerificationForm'])
+        ->name('verification.phone');
+
+    Route::post('verify-phone', [VerificationController::class, 'verifyPhone'])
+        ->name('verification.verify-phone');
+
+    Route::post('phone/verification-code', [VerificationController::class, 'sendVerificationCode'])
+        ->middleware('throttle:6,1')
+        ->name('verification.send-code');
 });

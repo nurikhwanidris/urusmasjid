@@ -24,7 +24,10 @@ class User extends Authenticatable
         'password',
         'ic_number',
         'phone_number',
-        'role', // 'admin', 'mosque_admin', 'community_member'
+        'phone_verified',
+        'phone_verified_at',
+        'verification_code',
+        'role', // 'admin', 'mosque_admin', 'community_member', 'volunteer', 'khatib'
     ];
 
     /**
@@ -55,6 +58,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'phone_verified_at' => 'datetime',
+            'phone_verified' => 'boolean',
             'password' => 'hashed',
         ];
     }
@@ -178,5 +183,45 @@ class User extends Authenticatable
     public function hasRole(string $role): bool
     {
         return $this->role === $role;
+    }
+
+    /**
+     * Check if the user's phone is verified.
+     *
+     * @return bool
+     */
+    public function isPhoneVerified(): bool
+    {
+        return $this->phone_verified;
+    }
+
+    /**
+     * Mark the user's phone as verified.
+     *
+     * @return bool
+     */
+    public function markPhoneAsVerified(): bool
+    {
+        return $this->forceFill([
+            'phone_verified' => true,
+            'phone_verified_at' => $this->freshTimestamp(),
+            'verification_code' => null,
+        ])->save();
+    }
+
+    /**
+     * Generate a verification code for the user.
+     *
+     * @return string
+     */
+    public function generateVerificationCode(): string
+    {
+        $code = sprintf('%06d', mt_rand(100000, 999999));
+
+        $this->forceFill([
+            'verification_code' => $code,
+        ])->save();
+
+        return $code;
     }
 }

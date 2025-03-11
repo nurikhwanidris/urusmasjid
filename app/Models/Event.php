@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Event extends Model
 {
@@ -35,6 +36,9 @@ class Event extends Model
         'status',
         'featured_image',
         'created_by',
+        'speaker',
+        'speaker_image',
+        'speaker_bio',
     ];
 
     /**
@@ -79,6 +83,18 @@ class Event extends Model
     public function registrations(): HasMany
     {
         return $this->hasMany(EventRegistration::class);
+    }
+
+    /**
+     * Get the volunteers for the event.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function volunteers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'event_volunteers', 'event_id', 'user_id')
+            ->withPivot('role')
+            ->withTimestamps();
     }
 
     /**

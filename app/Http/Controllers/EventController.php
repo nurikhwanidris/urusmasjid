@@ -77,6 +77,12 @@ class EventController extends Controller
             'contact_phone' => 'nullable|string|max:20',
             'contact_email' => 'nullable|email|max:255',
             'featured_image' => 'nullable|image|max:2048',
+            'speaker' => 'nullable|string|max:255',
+            'speaker_bio' => 'nullable|string',
+            'speaker_image' => 'nullable|image|max:2048',
+            'volunteers' => 'nullable|array',
+            'volunteers.*.id' => 'nullable|exists:users,id',
+            'volunteers.*.role' => 'nullable|string|max:100',
         ]);
 
         // Handle featured image upload
@@ -85,11 +91,28 @@ class EventController extends Controller
             $validated['featured_image'] = $path;
         }
 
+        // Handle speaker image upload
+        if ($request->hasFile('speaker_image')) {
+            $path = $request->file('speaker_image')->store('speakers', 'public');
+            $validated['speaker_image'] = $path;
+        }
+
         $validated['mosque_id'] = $mosque->id;
         $validated['created_by'] = Auth::id();
         $validated['status'] = 'active';
 
         $event = Event::create($validated);
+
+        // Attach volunteers if provided
+        if (isset($validated['volunteers']) && is_array($validated['volunteers'])) {
+            $volunteers = [];
+            foreach ($validated['volunteers'] as $volunteer) {
+                if (isset($volunteer['id'])) {
+                    $volunteers[$volunteer['id']] = ['role' => $volunteer['role'] ?? 'Volunteer'];
+                }
+            }
+            $event->volunteers()->attach($volunteers);
+        }
 
         return redirect()->route('masjid.acara.show', [$mosque->id, $event->id])
             ->with('success', 'Acara telah berjaya dicipta.');
@@ -106,7 +129,7 @@ class EventController extends Controller
     {
         $this->authorize('view', $mosque);
 
-        $event = $acara->load('creator:id,name');
+        $event = $acara->load('creator:id,name', 'volunteers:id,name');
 
         // Get registration count
         $registrationCount = $event->registrations()->count();
@@ -178,6 +201,12 @@ class EventController extends Controller
             'contact_email' => 'nullable|email|max:255',
             'featured_image' => 'nullable|image|max:2048',
             'status' => 'required|in:active,cancelled,completed',
+            'speaker' => 'nullable|string|max:255',
+            'speaker_bio' => 'nullable|string',
+            'speaker_image' => 'nullable|image|max:2048',
+            'volunteers' => 'nullable|array',
+            'volunteers.*.id' => 'nullable|exists:users,id',
+            'volunteers.*.role' => 'nullable|string|max:100',
         ]);
 
         // Handle featured image upload
@@ -191,7 +220,29 @@ class EventController extends Controller
             $validated['featured_image'] = $path;
         }
 
+        // Handle speaker image upload
+        if ($request->hasFile('speaker_image')) {
+            // Delete old image if exists
+            if ($acara->speaker_image) {
+                Storage::disk('public')->delete($acara->speaker_image);
+            }
+
+            $path = $request->file('speaker_image')->store('speakers', 'public');
+            $validated['speaker_image'] = $path;
+        }
+
         $acara->update($validated);
+
+        // Update volunteers if provided
+        if (isset($validated['volunteers']) && is_array($validated['volunteers'])) {
+            $volunteers = [];
+            foreach ($validated['volunteers'] as $volunteer) {
+                if (isset($volunteer['id'])) {
+                    $volunteers[$volunteer['id']] = ['role' => $volunteer['role'] ?? 'Volunteer'];
+                }
+            }
+            $acara->volunteers()->sync($volunteers);
+        }
 
         return redirect()->route('masjid.acara.show', [$mosque->id, $acara->id])
             ->with('success', 'Acara telah berjaya dikemaskini.');
