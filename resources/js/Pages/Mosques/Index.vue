@@ -6,7 +6,8 @@ import Badge from '@/Components/Badge.vue';
 import TextInput from '@/Components/TextInput.vue';
 import SelectInput from '@/Components/SelectInput.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-
+import { states } from '@/Utils/states';
+import { zones } from '@/Utils/zones';
 defineProps({
     mosques: Object,
 });
@@ -38,11 +39,19 @@ const formatDate = (dateString) => {
 
 const stateOptions = [
     { label: 'Semua', value: 'all' },
-    { label: 'Selangor', value: 'selangor' },
-    { label: 'Kuala Lumpur', value: 'kuala_lumpur' },
-    { label: 'Selangor', value: 'selangor' },
-    { label: 'Selangor', value: 'selangor' },
+    ...states.map((state) => ({
+        label: state.label,
+        value: state.value,
+    })),
 ];
+
+const getZoneDetails = (zoneCode) => {
+    const zone = zones.find((z) => z.jakimCode === zoneCode);
+    if (zone) {
+        return `${zone.jakimCode} - ${zone.negeri.length > 20 ? zone.negeri.slice(0, 20) + '...' : zone.negeri} (${zone.daerah.length > 20 ? zone.daerah.slice(0, 20) + '...' : zone.daerah})`;
+    }
+    return zoneCode;
+};
 </script>
 
 <template>
@@ -75,14 +84,6 @@ const stateOptions = [
                                     class="w-48"
                                 />
                             </div>
-                            <Link
-                                :href="route('masjid.create')"
-                                class="hidden sm:block"
-                            >
-                                <SecondaryButton>
-                                    Daftar Masjid Baru
-                                </SecondaryButton>
-                            </Link>
                         </div>
 
                         <div
@@ -182,10 +183,13 @@ const stateOptions = [
                                             <td
                                                 class="whitespace-nowrap px-6 py-4 text-sm text-gray-500"
                                             >
-                                                <div>{{ mosque.address }}</div>
                                                 <div class="text-xs">
-                                                    Zone:
-                                                    {{ mosque.jakim_zone }}
+                                                    Zon:
+                                                    {{
+                                                        getZoneDetails(
+                                                            mosque.jakim_zone,
+                                                        )
+                                                    }}
                                                 </div>
                                             </td>
                                             <td

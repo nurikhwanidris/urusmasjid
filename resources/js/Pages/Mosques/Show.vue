@@ -5,8 +5,9 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import Badge from '@/Components/Badge.vue';
 import { zones } from '@/Utils/zones';
+import { computed } from 'vue';
 
-defineProps({
+const props = defineProps({
     mosque: Object,
     committees: Array,
 });
@@ -58,6 +59,10 @@ const getCommitteeStatusColor = (status) => {
             return 'secondary';
     }
 };
+
+const address = computed(() => {
+    return `${props.mosque.street_address}, ${props.mosque.address_line_2 ?? ''}, ${props.mosque.city}, ${props.mosque.district}, ${props.mosque.state}, ${props.mosque.postal_code}`;
+});
 </script>
 
 <template>
@@ -304,7 +309,7 @@ const getCommitteeStatusColor = (status) => {
                                                 Alamat
                                             </dt>
                                             <dd class="text-gray-900">
-                                                {{ mosque.full_address }}
+                                                {{ address }}
                                             </dd>
                                         </div>
                                         <div class="flex justify-between py-2">

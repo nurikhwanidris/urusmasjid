@@ -3,7 +3,10 @@ import { computed, ref, onMounted, onBeforeUnmount } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import SidebarLink from '@/Components/SidebarLink.vue';
+import SidebarMenu from '@/Components/SidebarMenu.vue';
+import SidebarSubmenuItem from '@/Components/SidebarSubmenuItem.vue';
 import MobileSidebarLink from '@/Components/MobileSidebarLink.vue';
+import MobileSidebarMenu from '@/Components/MobileSidebarMenu.vue';
 
 const props = defineProps({
     collapsed: {
@@ -24,80 +27,97 @@ const showUserMenu = ref(false);
 const userMenuRef = ref(null);
 const userButtonRef = ref(null);
 
-// Navigation items
-const navigationItems = [
+// Dashboard navigation item
+const dashboardItem = {
+    name: 'Utama',
+    route: 'dashboard',
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>`,
+};
+
+// Mosque management menu
+const mosqueManagementIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                              </svg>`;
+
+const mosqueManagementItems = [
     {
-        name: 'Utama',
-        route: 'dashboard',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-              </svg>`,
-    },
-    {
-        name: 'Masjid',
+        name: 'Senarai Masjid',
         route: 'masjid.index',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>`,
     },
     {
         name: 'Daftar Masjid',
         route: 'masjid.create',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-              </svg>`,
-    },
-    {
-        name: 'Acara',
-        route: 'masjid.index',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>`,
-    },
-    {
-        name: 'Derma',
-        route: 'masjid.index',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>`,
-    },
-    {
-        name: 'Tetapan',
-        route: 'masjid.index',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              </svg>`,
     },
 ];
 
-// Admin navigation items
-const adminNavigationItems = [
+// Events menu
+const eventsIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>`;
+
+const eventsItems = [
+    {
+        name: 'Senarai Acara',
+        route: 'masjid.index', // Update with actual route
+    },
+    {
+        name: 'Cipta Acara',
+        route: 'masjid.index', // Update with actual route
+    },
+];
+
+// Donations menu
+const donationsIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                       </svg>`;
+
+const donationsItems = [
+    {
+        name: 'Senarai Derma',
+        route: 'masjid.index', // Update with actual route
+    },
+    {
+        name: 'Cipta Derma',
+        route: 'masjid.index', // Update with actual route
+    },
+];
+
+// Settings item
+const settingsItem = {
+    name: 'Tetapan',
+    route: 'masjid.index', // Update with actual route
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>`,
+};
+
+// Admin menu
+const adminDashboardIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>`;
+
+const adminItems = [
     {
         name: 'Admin Dashboard',
         route: 'admin.dashboard',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>`,
     },
     {
         name: 'Pending Mosques',
         route: 'admin.mosques.pending',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>`,
     },
     {
         name: 'All Mosques',
         route: 'admin.mosques.all',
-        icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>`,
     },
 ];
 
 // Check if user is admin
-const isAdmin = computed(() => user.value && user.value.is_admin);
+const isAdmin = computed(() => {
+    return user.value && user.value.role === 'admin';
+});
 
 const closeMobileMenu = () => {
     emit('close-mobile-menu');
@@ -180,18 +200,80 @@ const logout = () => {
             <!-- Navigation Links -->
             <div class="flex-1 overflow-y-auto py-6">
                 <div class="space-y-2 px-2">
-                    <template v-for="item in navigationItems" :key="item.name">
-                        <SidebarLink
+                    <!-- Dashboard -->
+                    <SidebarLink
+                        :href="route(dashboardItem.route)"
+                        :active="route().current(dashboardItem.route)"
+                        :collapsed="props.collapsed"
+                    >
+                        <template #icon>
+                            <div v-html="dashboardItem.icon"></div>
+                        </template>
+                        {{ dashboardItem.name }}
+                    </SidebarLink>
+
+                    <!-- Mosque Management Menu -->
+                    <SidebarMenu
+                        title="Pengurusan Masjid"
+                        :icon="mosqueManagementIcon"
+                        :collapsed="props.collapsed"
+                        :routes="mosqueManagementItems.map(item => item.route)"
+                    >
+                        <SidebarSubmenuItem
+                            v-for="item in mosqueManagementItems"
+                            :key="item.name"
                             :href="route(item.route)"
                             :active="route().current(item.route)"
-                            :collapsed="props.collapsed"
                         >
-                            <template #icon>
-                                <div v-html="item.icon"></div>
-                            </template>
                             {{ item.name }}
-                        </SidebarLink>
-                    </template>
+                        </SidebarSubmenuItem>
+                    </SidebarMenu>
+
+                    <!-- Events Menu -->
+                    <SidebarMenu
+                        title="Acara"
+                        :icon="eventsIcon"
+                        :collapsed="props.collapsed"
+                        :routes="eventsItems.map(item => item.route)"
+                    >
+                        <SidebarSubmenuItem
+                            v-for="item in eventsItems"
+                            :key="item.name"
+                            :href="route(item.route)"
+                            :active="route().current(item.route)"
+                        >
+                            {{ item.name }}
+                        </SidebarSubmenuItem>
+                    </SidebarMenu>
+
+                    <!-- Donations Menu -->
+                    <SidebarMenu
+                        title="Derma"
+                        :icon="donationsIcon"
+                        :collapsed="props.collapsed"
+                        :routes="donationsItems.map(item => item.route)"
+                    >
+                        <SidebarSubmenuItem
+                            v-for="item in donationsItems"
+                            :key="item.name"
+                            :href="route(item.route)"
+                            :active="route().current(item.route)"
+                        >
+                            {{ item.name }}
+                        </SidebarSubmenuItem>
+                    </SidebarMenu>
+
+                    <!-- Settings -->
+                    <SidebarLink
+                        :href="route(settingsItem.route)"
+                        :active="route().current(settingsItem.route)"
+                        :collapsed="props.collapsed"
+                    >
+                        <template #icon>
+                            <div v-html="settingsItem.icon"></div>
+                        </template>
+                        {{ settingsItem.name }}
+                    </SidebarLink>
 
                     <!-- Admin Section -->
                     <template v-if="isAdmin">
@@ -207,21 +289,22 @@ const logout = () => {
                             </p>
                         </div>
 
-                        <template
-                            v-for="item in adminNavigationItems"
-                            :key="item.name"
+                        <!-- Admin Menu -->
+                        <SidebarMenu
+                            title="Admin"
+                            :icon="adminDashboardIcon"
+                            :collapsed="props.collapsed"
+                            :routes="adminItems.map(item => item.route)"
                         >
-                            <SidebarLink
+                            <SidebarSubmenuItem
+                                v-for="item in adminItems"
+                                :key="item.name"
                                 :href="route(item.route)"
                                 :active="route().current(item.route)"
-                                :collapsed="props.collapsed"
                             >
-                                <template #icon>
-                                    <div v-html="item.icon"></div>
-                                </template>
                                 {{ item.name }}
-                            </SidebarLink>
-                        </template>
+                            </SidebarSubmenuItem>
+                        </SidebarMenu>
                     </template>
                 </div>
             </div>
@@ -276,19 +359,77 @@ const logout = () => {
             <!-- Mobile Navigation -->
             <div class="flex-1 overflow-y-auto py-6">
                 <div class="w-full space-y-2 px-3">
-                    <template v-for="item in navigationItems" :key="item.name">
+                    <!-- Dashboard -->
+                    <MobileSidebarLink
+                        :href="route(dashboardItem.route)"
+                        :active="route().current(dashboardItem.route)"
+                    >
+                        <template #icon>
+                            <div v-html="dashboardItem.icon"></div>
+                        </template>
+                        {{ dashboardItem.name }}
+                    </MobileSidebarLink>
+
+                    <!-- Mosque Management Menu -->
+                    <MobileSidebarMenu
+                        title="Pengurusan Masjid"
+                        :icon="mosqueManagementIcon"
+                        :routes="mosqueManagementItems.map(item => item.route)"
+                    >
                         <MobileSidebarLink
+                            v-for="item in mosqueManagementItems"
+                            :key="item.name"
                             :href="route(item.route)"
                             :active="route().current(item.route)"
                         >
-                            <template #icon>
-                                <div v-html="item.icon"></div>
-                            </template>
                             {{ item.name }}
                         </MobileSidebarLink>
-                    </template>
+                    </MobileSidebarMenu>
 
-                    <!-- Mobile Admin Section -->
+                    <!-- Events Menu -->
+                    <MobileSidebarMenu
+                        title="Acara"
+                        :icon="eventsIcon"
+                        :routes="eventsItems.map(item => item.route)"
+                    >
+                        <MobileSidebarLink
+                            v-for="item in eventsItems"
+                            :key="item.name"
+                            :href="route(item.route)"
+                            :active="route().current(item.route)"
+                        >
+                            {{ item.name }}
+                        </MobileSidebarLink>
+                    </MobileSidebarMenu>
+
+                    <!-- Donations Menu -->
+                    <MobileSidebarMenu
+                        title="Derma"
+                        :icon="donationsIcon"
+                        :routes="donationsItems.map(item => item.route)"
+                    >
+                        <MobileSidebarLink
+                            v-for="item in donationsItems"
+                            :key="item.name"
+                            :href="route(item.route)"
+                            :active="route().current(item.route)"
+                        >
+                            {{ item.name }}
+                        </MobileSidebarLink>
+                    </MobileSidebarMenu>
+
+                    <!-- Settings -->
+                    <MobileSidebarLink
+                        :href="route(settingsItem.route)"
+                        :active="route().current(settingsItem.route)"
+                    >
+                        <template #icon>
+                            <div v-html="settingsItem.icon"></div>
+                        </template>
+                        {{ settingsItem.name }}
+                    </MobileSidebarLink>
+
+                    <!-- Admin Section -->
                     <template v-if="isAdmin">
                         <div class="my-4 border-t border-gray-100 pt-4">
                             <p
@@ -298,20 +439,21 @@ const logout = () => {
                             </p>
                         </div>
 
-                        <template
-                            v-for="item in adminNavigationItems"
-                            :key="item.name"
+                        <!-- Admin Menu -->
+                        <MobileSidebarMenu
+                            title="Admin"
+                            :icon="adminDashboardIcon"
+                            :routes="adminItems.map(item => item.route)"
                         >
                             <MobileSidebarLink
+                                v-for="item in adminItems"
+                                :key="item.name"
                                 :href="route(item.route)"
                                 :active="route().current(item.route)"
                             >
-                                <template #icon>
-                                    <div v-html="item.icon"></div>
-                                </template>
                                 {{ item.name }}
                             </MobileSidebarLink>
-                        </template>
+                        </MobileSidebarMenu>
                     </template>
                 </div>
             </div>

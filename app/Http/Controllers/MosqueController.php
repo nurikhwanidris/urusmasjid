@@ -87,6 +87,21 @@ class MosqueController extends Controller
             // Admin fields
             'ic_number' => 'required|string|max:20',
             'phone_number' => 'required|string|max:20',
+        ], [
+            'name.required' => 'Nama masjid wajib diisi.',
+            'type.required' => 'Jenis masjid wajib diisi.',
+            'street_address.required' => 'Alamat jalan wajib diisi.',
+            'city.required' => 'Bandar wajib diisi.',
+            'district.required' => 'Daerah wajib diisi.',
+            'state.required' => 'Negeri wajib diisi.',
+            'postal_code.required' => 'Kod pos wajib diisi.',
+            'location.required' => 'Lokasi wajib diisi.',
+            'jakim_zone.required' => 'Zon JAKIM wajib diisi.',
+            'ic_number.required' => 'Nombor IC wajib diisi.',
+            'phone_number.required' => 'Nombor telefon wajib diisi.',
+            'postal_code.max' => 'Poskod maksimum 10 digit.',
+            'ic_number.max' => 'Nombor IC maksimum 20 digit.',
+            'phone_number.max' => 'Nombor telefon maksimum 20 digit.',
         ]);
 
         try {
