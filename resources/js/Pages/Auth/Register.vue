@@ -133,8 +133,8 @@ const submit = () => {
                         tertentu.
                     </p>
                     <p v-else-if="form.role === 'community_member'">
-                        Sebagai Ahli Komuniti, anda boleh bergabung dengan
-                        masjid or request access.
+                        Sebagai Ahli Khariah, anda adalah ahli komuniti dengan
+                        masjid atau surau khariah anda.
                     </p>
                     <p v-else-if="form.role === 'volunteer'">
                         Sebagai Sukarelawan, anda boleh membantu dengan aktiviti
