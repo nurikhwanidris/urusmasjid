@@ -13,16 +13,20 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        if($user->role == 'admin') {
+        if($user->hasRole('admin')) {
             return redirect()->route('admin.dashboard');
         }
 
         $userMosque = MosqueUser::where('user_id', $user->id)->first();
-        $events = $userMosque->mosque->events;
+        $upComingEvents = $userMosque->mosque->upcomingEvents;
+        $khariah = $userMosque->mosque->communityMembers;
+        $ajk = $userMosque->mosque->committeeMembers;
 
         return Inertia::render('Dashboard', [
-            'mosque' => $userMosque,
-            'events' => $events,
+            'mosque' => $userMosque->mosque,
+            'upComingEvents' => $upComingEvents,
+            'khariah' => $khariah,
+            'ajk' => $ajk,
         ]);
     }
 }

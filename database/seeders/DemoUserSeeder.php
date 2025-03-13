@@ -6,7 +6,6 @@ use App\Models\Mosque;
 use App\Models\User;
 use App\Models\Event;
 use App\Models\MosqueUser;
-use App\Models\CommunityMember;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -252,26 +251,41 @@ class DemoUserSeeder extends Seeder
             'status' => 'active',
         ]);
 
-        // Create Community Members relationship
-        CommunityMember::create([
+        // Create Mosque Users (Community Members)
+        MosqueUser::create([
             'mosque_id' => $mosque1->id,
             'user_id' => $communityMember1->id,
-            'full_name' => $communityMember1->name,
-            'membership_status' => 'active',
+            'type' => 'community',
+            'name' => $communityMember1->name,
+            'ic_number' => $communityMember1->ic_number,
+            'phone_number' => $communityMember1->phone_number,
+            'email' => $communityMember1->email,
+            'status' => 'active',
+            'joined_at' => now(),
         ]);
 
-        CommunityMember::create([
+        MosqueUser::create([
             'mosque_id' => $mosque1->id,
             'user_id' => $communityMember2->id,
-            'full_name' => $communityMember2->name,
-            'membership_status' => 'active',
+            'type' => 'community',
+            'name' => $communityMember2->name,
+            'ic_number' => $communityMember2->ic_number,
+            'phone_number' => $communityMember2->phone_number,
+            'email' => $communityMember2->email,
+            'status' => 'active',
+            'joined_at' => now(),
         ]);
 
-        CommunityMember::create([
+        MosqueUser::create([
             'mosque_id' => $mosque2->id,
             'user_id' => $communityMember1->id,
-            'full_name' => $communityMember1->name,
-            'membership_status' => 'active',
+            'type' => 'community',
+            'name' => $communityMember1->name,
+            'ic_number' => $communityMember1->ic_number,
+            'phone_number' => $communityMember1->phone_number,
+            'email' => $communityMember1->email,
+            'status' => 'active',
+            'joined_at' => now(),
         ]);
 
         // Create Events

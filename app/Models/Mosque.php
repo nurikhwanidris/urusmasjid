@@ -98,7 +98,7 @@ class Mosque extends Model
      */
     public function communityMembers(): HasMany
     {
-        return $this->hasMany(CommunityMember::class);
+        return $this->mosqueUsers()->where('type', 'community');
     }
 
     /**
@@ -109,6 +109,36 @@ class Mosque extends Model
     public function events(): HasMany
     {
         return $this->hasMany(Event::class);
+    }
+
+    /**
+     * Get the upcoming events of this mosque.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function upcomingEvents(): HasMany
+    {
+        return $this->events()->upcoming();
+    }
+
+    /**
+     * Get the ongoing events of this mosque.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function ongoingEvents(): HasMany
+    {
+        return $this->events()->ongoing();
+    }
+
+    /**
+     * Get the past events of this mosque.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function pastEvents(): HasMany
+    {
+        return $this->events()->past();
     }
 
     /**

@@ -17,18 +17,19 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Mosque::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(User::class)->nullable()->constrained()->nullOnDelete();
-            $table->enum('type', ['admin', 'committee']); // Type of mosque user
-            $table->string('role'); // Admin role or committee position
+            $table->enum('type', ['admin', 'committee', 'community']); // Type of mosque user
+            $table->string('role')->nullable(); // Admin role, committee position, or null for community members
             $table->boolean('is_primary')->default(false); // For admins only
-            $table->string('name')->nullable(); // For committee members
+            $table->string('name')->nullable(); // For committee members and community members
             $table->string('ic_number')->nullable();
             $table->string('phone_number')->nullable();
-            $table->string('email')->nullable(); // For committee members
-            $table->text('address')->nullable(); // For committee members
+            $table->string('email')->nullable(); // For committee members and community members
+            $table->text('address')->nullable(); // For committee members and community members
             $table->date('start_date')->nullable(); // For committee members
             $table->date('end_date')->nullable(); // For committee members
-            $table->enum('status', ['active', 'inactive', 'pending'])->default('active'); // For committee members
-            $table->text('notes')->nullable(); // For committee members
+            $table->enum('status', ['active', 'inactive', 'pending'])->default('active'); // For committee members and community members
+            $table->text('notes')->nullable(); // For committee members and community members
+            $table->timestamp('joined_at')->nullable(); // For community members
             $table->timestamps();
 
             // Ensure a user can only be an admin of a mosque once

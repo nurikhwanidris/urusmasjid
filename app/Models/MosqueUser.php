@@ -15,18 +15,19 @@ class MosqueUser extends Model
     protected $fillable = [
         'mosque_id',
         'user_id',
-        'type', // 'admin' or 'committee'
+        'type', // 'admin', 'committee', or 'community'
         'role', // For admins: 'admin', 'manager', etc. For committee: specific position
         'is_primary', // For admins only
-        'name', // For committee members
+        'name', // For committee members and community members
         'ic_number',
         'phone_number',
-        'email', // For committee members
-        'address', // For committee members
+        'email', // For committee members and community members
+        'address', // For committee members and community members
         'start_date', // For committee members
         'end_date', // For committee members
-        'status', // For committee members: 'active', 'inactive', 'pending'
-        'notes', // For committee members
+        'status', // For committee members and community members: 'active', 'inactive', 'pending'
+        'notes', // For committee members and community members
+        'joined_at', // For community members
     ];
 
     /**
@@ -38,6 +39,7 @@ class MosqueUser extends Model
         'is_primary' => 'boolean',
         'start_date' => 'date',
         'end_date' => 'date',
+        'joined_at' => 'datetime',
     ];
 
     /**
@@ -81,14 +83,24 @@ class MosqueUser extends Model
     }
 
     /**
-     * Check if the committee member is active.
+     * Check if this is a community member.
+     *
+     * @return bool
+     */
+    public function isCommunity(): bool
+    {
+        return $this->type === 'community';
+    }
+
+    /**
+     * Check if the user is active.
      *
      * @return bool
      */
     public function isActive(): bool
     {
-        if ($this->type !== 'committee') {
-            return false;
+        if ($this->type === 'admin') {
+            return true;
         }
 
         return $this->status === 'active';
@@ -114,5 +126,56 @@ class MosqueUser extends Model
     public function scopeCommittee($query)
     {
         return $query->where('type', 'committee');
+    }
+
+    /**
+     * Scope a query to only include community members.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCommunity($query)
+    {
+        return $query->where('type', 'community');
+    }
+
+    /**
+     * Get the events of the mosque this user belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function events()
+    {
+        return $this->mosque->events();
+    }
+
+    /**
+     * Get the upcoming events of the mosque this user belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function upcomingEvents()
+    {
+        return $this->mosque->upcomingEvents;
+    }
+
+    /**
+     * Get the ongoing events of the mosque this user belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function ongoingEvents()
+    {
+        return $this->mosque->ongoingEvents;
+    }
+
+    /**
+     * Get the past events of the mosque this user belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function pastEvents()
+    {
+        return $this->mosque->pastEvents;
     }
 }

@@ -4,6 +4,13 @@ import { Head } from '@inertiajs/vue3';
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { usePrayerTimes } from '@/Composables/usePrayerTimes';
 
+const props = defineProps({
+    mosque: Object,
+    upComingEvents: Array,
+    khariah: Array,
+    ajk: Array,
+});
+
 // Dummy data for dashboard
 const upcomingEvents = ref([
     {
@@ -167,6 +174,10 @@ onMounted(() => {
 onBeforeUnmount(() => {
     cleanup();
 });
+
+const address = computed(() => {
+    return `${props.mosque.street_address}, ${props.mosque.address_line_2}, ${props.mosque.city}, ${props.mosque.state}, ${props.mosque.postal_code}`;
+});
 </script>
 
 <template>
@@ -186,11 +197,13 @@ onBeforeUnmount(() => {
                             <h1
                                 class="text-2xl font-bold text-white md:text-3xl"
                             >
-                                Selamat Datang ke Urus Masjid
+                                {{
+                                    mosque.name ??
+                                    'Selamat Datang ke Urus Masjid'
+                                }}
                             </h1>
                             <p class="mt-2 text-emerald-100">
-                                Sistem pengurusan masjid dan surau yang
-                                komprehensif
+                                {{ address }}
                             </p>
                         </div>
                         <div class="mt-4 flex justify-center md:mt-0">
@@ -233,7 +246,7 @@ onBeforeUnmount(() => {
                                     Ahli Khariah
                                 </h3>
                                 <p class="text-2xl font-semibold text-gray-900">
-                                    {{ masjidStats.totalMembers }}
+                                    {{ khariah.length }}
                                 </p>
                             </div>
                         </div>
@@ -335,7 +348,7 @@ onBeforeUnmount(() => {
                                     Acara Akan Datang
                                 </h3>
                                 <p class="text-2xl font-semibold text-gray-900">
-                                    {{ masjidStats.upcomingEvents }}
+                                    {{ upComingEvents.length }}
                                 </p>
                             </div>
                         </div>

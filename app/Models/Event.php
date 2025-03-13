@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
 {
@@ -54,8 +54,6 @@ class Event extends Model
 
     /**
      * Get the mosque that owns the event.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function mosque(): BelongsTo
     {
@@ -64,8 +62,6 @@ class Event extends Model
 
     /**
      * Get the user who created the event.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function creator(): BelongsTo
     {
@@ -74,8 +70,6 @@ class Event extends Model
 
     /**
      * Get the registrations for the event.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function registrations(): HasMany
     {
@@ -84,8 +78,6 @@ class Event extends Model
 
     /**
      * Get the volunteers for the event.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function volunteers(): BelongsToMany
     {
@@ -96,8 +88,6 @@ class Event extends Model
 
     /**
      * Check if the event is upcoming.
-     *
-     * @return bool
      */
     public function isUpcoming(): bool
     {
@@ -106,8 +96,6 @@ class Event extends Model
 
     /**
      * Check if the event is ongoing.
-     *
-     * @return bool
      */
     public function isOngoing(): bool
     {
@@ -116,8 +104,6 @@ class Event extends Model
 
     /**
      * Check if the event is past.
-     *
-     * @return bool
      */
     public function isPast(): bool
     {
@@ -126,12 +112,10 @@ class Event extends Model
 
     /**
      * Check if registration is open.
-     *
-     * @return bool
      */
     public function isRegistrationOpen(): bool
     {
-        if (!$this->registration_required) {
+        if (! $this->registration_required) {
             return false;
         }
 
@@ -144,12 +128,10 @@ class Event extends Model
 
     /**
      * Check if the event is full.
-     *
-     * @return bool
      */
     public function isFull(): bool
     {
-        if (!$this->max_participants) {
+        if (! $this->max_participants) {
             return false;
         }
 
@@ -158,16 +140,49 @@ class Event extends Model
 
     /**
      * Get the remaining slots for the event.
-     *
-     * @return int|null
      */
     public function getRemainingSlots(): ?int
     {
-        if (!$this->max_participants) {
+        if (! $this->max_participants) {
             return null;
         }
 
         $registered = $this->registrations()->count();
+
         return max(0, $this->max_participants - $registered);
+    }
+
+    /**
+     * Scope a query to only include upcoming events.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUpcoming($query)
+    {
+        return $query->where('start_date', '>', now());
+    }
+
+    /**
+     * Scope a query to only include ongoing events.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOngoing($query)
+    {
+        return $query->where('start_date', '<=', now())
+            ->where('end_date', '>=', now());
+    }
+
+    /**
+     * Scope a query to only include past events.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePast($query)
+    {
+        return $query->where('end_date', '<', now());
     }
 }
