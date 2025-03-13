@@ -124,7 +124,9 @@ class EventController extends Controller
     {
         $this->authorize('view', $mosque);
 
-        $event = $acara->load('creator:id,name', 'volunteers:id,name');
+        $mosque = $mosque->load('user');
+
+        $event = $acara->load('creator:id,name', 'volunteers:id,name',);
 
         // Get registration count
         $registrationCount = $event->registrations()->count();

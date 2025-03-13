@@ -132,7 +132,7 @@ const formatDate = (dateString) => {
                                             <td
                                                 class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900"
                                             >
-                                                {{ committee.position }}
+                                                {{ committee.role }}
                                             </td>
                                             <td
                                                 class="whitespace-nowrap px-6 py-4"

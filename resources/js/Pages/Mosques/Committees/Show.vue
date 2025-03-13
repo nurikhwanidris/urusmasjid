@@ -67,9 +67,7 @@ const deleteCommittee = () => {
 </script>
 
 <template>
-    <Head
-        :title="`${mosque.name} - ${committee.position}: ${committee.name}`"
-    />
+    <Head :title="`${mosque.name} - ${committee.role}: ${committee.name}`" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -106,7 +104,7 @@ const deleteCommittee = () => {
                                     {{ committee.name }}
                                 </h3>
                                 <p class="text-sm text-gray-500">
-                                    {{ committee.position }}
+                                    {{ committee.role }}
                                     <Badge
                                         :color="
                                             getStatusColor(committee.status)
@@ -142,7 +140,7 @@ const deleteCommittee = () => {
                                                 Jawatan
                                             </dt>
                                             <dd class="text-gray-900">
-                                                {{ committee.position }}
+                                                {{ committee.role }}
                                             </dd>
                                         </div>
                                         <div class="flex justify-between py-2">

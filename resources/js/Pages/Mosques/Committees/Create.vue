@@ -16,7 +16,7 @@ const props = defineProps({
 
 // Form data
 const form = useForm({
-    position: '',
+    role: '',
     name: '',
     ic_number: '',
     phone_number: '',
@@ -76,13 +76,13 @@ const submit = () => {
 
                                     <div>
                                         <InputLabel
-                                            for="position"
+                                            for="role"
                                             value="Jawatan"
                                             class="required"
                                         />
                                         <SelectInput
-                                            id="position"
-                                            v-model="form.position"
+                                            id="role"
+                                            v-model="form.role"
                                             :options="
                                                 Object.entries(positions).map(
                                                     ([value, label]) => ({
@@ -95,7 +95,7 @@ const submit = () => {
                                             required
                                         />
                                         <InputError
-                                            :message="form.errors.position"
+                                            :message="form.errors.role"
                                             class="mt-2"
                                         />
                                     </div>
@@ -269,6 +269,17 @@ const submit = () => {
                             </div>
 
                             <div class="flex justify-end">
+                                <Link
+                                    :href="
+                                        route(
+                                            'masjid.jawatankuasa.index',
+                                            mosque.id,
+                                        )
+                                    "
+                                    class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-25"
+                                >
+                                    Batal
+                                </Link>
                                 <PrimaryButton
                                     :disabled="form.processing"
                                     class="ml-4"

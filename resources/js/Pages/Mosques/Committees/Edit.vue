@@ -17,7 +17,7 @@ const props = defineProps({
 
 // Form data
 const form = useForm({
-    position: props.committee.position,
+    role: props.committee.role,
     name: props.committee.name,
     ic_number: props.committee.ic_number || '',
     phone_number: props.committee.phone_number || '',
@@ -92,13 +92,13 @@ const submit = () => {
 
                                     <div>
                                         <InputLabel
-                                            for="position"
+                                            for="role"
                                             value="Jawatan"
                                             class="required"
                                         />
                                         <SelectInput
-                                            id="position"
-                                            v-model="form.position"
+                                            id="role"
+                                            v-model="form.role"
                                             :options="
                                                 Object.entries(positions).map(
                                                     ([value, label]) => ({
@@ -111,7 +111,7 @@ const submit = () => {
                                             required
                                         />
                                         <InputError
-                                            :message="form.errors.position"
+                                            :message="form.errors.role"
                                             class="mt-2"
                                         />
                                     </div>

@@ -94,7 +94,7 @@ class User extends Authenticatable
      */
     public function mosqueAdminRoles(): HasMany
     {
-        return $this->hasMany(MosqueAdmin::class);
+        return $this->hasMany(MosqueUser::class)->where('type', 'admin');
     }
 
     /**
@@ -106,11 +106,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the committee positions of this user.
+     * Get the committee positions for the user.
      */
     public function committeePositions(): HasMany
     {
-        return $this->hasMany(MosqueCommittee::class);
+        return $this->hasMany(MosqueUser::class)->where('type', 'committee');
     }
 
     /**

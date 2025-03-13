@@ -25,7 +25,7 @@ class StoreMosqueCommitteeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'position' => 'required|string|max:255',
+            'role' => 'required|string|max:255',
             'name' => 'required|string|max:255',
             'ic_number' => 'nullable|string|max:20',
             'phone_number' => 'nullable|string|max:20',

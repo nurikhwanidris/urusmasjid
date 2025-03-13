@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMosqueCommitteeRequest;
 use App\Http\Requests\UpdateMosqueCommitteeRequest;
 use App\Models\Mosque;
-use App\Models\MosqueCommittee;
+use App\Models\MosqueUser;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -24,9 +24,10 @@ class MosqueCommitteeController extends Controller
             abort(403);
         }
 
-        $committees = MosqueCommittee::with('user')
+        $committees = MosqueUser::with('user')
             ->where('mosque_id', $mosque->id)
-            ->orderBy('position')
+            ->where('type', 'committee')
+            ->orderBy('role')
             ->get();
 
         return Inertia::render('Mosques/Committees/Index', [
@@ -93,10 +94,11 @@ class MosqueCommitteeController extends Controller
             }
 
             // Create the committee member
-            $committee = MosqueCommittee::create([
+            $committee = MosqueUser::create([
                 'mosque_id' => $mosque->id,
                 'user_id' => $validated['user_id'] ?? null,
-                'position' => $validated['position'],
+                'type' => 'committee',
+                'role' => $validated['role'],
                 'name' => $validated['name'],
                 'ic_number' => $validated['ic_number'],
                 'phone_number' => $validated['phone_number'],
@@ -124,15 +126,16 @@ class MosqueCommitteeController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function show(Mosque $mosque, MosqueCommittee $committee)
+    public function show(Mosque $mosque, $id)
     {
         if (Gate::denies('view', $mosque)) {
             abort(403);
         }
 
-        if ($committee->mosque_id !== $mosque->id) {
-            abort(404);
-        }
+        $committee = MosqueUser::where('mosque_id', $mosque->id)
+            ->where('type', 'committee')
+            ->where('id', $id)
+            ->firstOrFail();
 
         $committee->load('user');
 
@@ -147,15 +150,16 @@ class MosqueCommitteeController extends Controller
      *
      * @return \Inertia\Response
      */
-    public function edit(Mosque $mosque, MosqueCommittee $committee)
+    public function edit(Mosque $mosque, $id)
     {
         if (Gate::denies('update', $mosque)) {
             abort(403);
         }
 
-        if ($committee->mosque_id !== $mosque->id) {
-            abort(404);
-        }
+        $committee = MosqueUser::where('mosque_id', $mosque->id)
+            ->where('type', 'committee')
+            ->where('id', $id)
+            ->firstOrFail();
 
         // Get common committee positions for dropdown
         $positions = [
@@ -184,15 +188,16 @@ class MosqueCommitteeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdateMosqueCommitteeRequest $request, Mosque $mosque, MosqueCommittee $committee)
+    public function update(UpdateMosqueCommitteeRequest $request, Mosque $mosque, $id)
     {
         if (Gate::denies('update', $mosque)) {
             abort(403);
         }
 
-        if ($committee->mosque_id !== $mosque->id) {
-            abort(404);
-        }
+        $committee = MosqueUser::where('mosque_id', $mosque->id)
+            ->where('type', 'committee')
+            ->where('id', $id)
+            ->firstOrFail();
 
         $validated = $request->validated();
 
@@ -211,7 +216,7 @@ class MosqueCommitteeController extends Controller
             // Update the committee member
             $committee->fill([
                 'user_id' => $validated['user_id'] ?? null,
-                'position' => $validated['position'],
+                'role' => $validated['role'],
                 'name' => $validated['name'],
                 'ic_number' => $validated['ic_number'],
                 'phone_number' => $validated['phone_number'],
@@ -240,19 +245,24 @@ class MosqueCommitteeController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Mosque $mosque, MosqueCommittee $committee)
+    public function destroy(Mosque $mosque, $id)
     {
         if (Gate::denies('update', $mosque)) {
             abort(403);
         }
 
-        if ($committee->mosque_id !== $mosque->id) {
-            abort(404);
+        $committee = MosqueUser::where('mosque_id', $mosque->id)
+            ->where('type', 'committee')
+            ->where('id', $id)
+            ->firstOrFail();
+
+        try {
+            $committee->delete();
+
+            return redirect()->route('masjid.jawatankuasa.index', $mosque)
+                ->with('success', 'Ahli jawatankuasa berjaya dipadam!');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => 'Failed to delete committee member. '.$e->getMessage()]);
         }
-
-        $committee->delete();
-
-        return redirect()->route('masjid.jawatankuasa.index', $mosque)
-            ->with('success', 'Ahli jawatankuasa berjaya dipadam!');
     }
 }

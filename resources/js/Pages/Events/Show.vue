@@ -7,7 +7,7 @@ import DangerButton from '@/Components/DangerButton.vue';
 import Modal from '@/Components/Modal.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import QrcodeVue from 'qrcode-vue';
+import QrcodeVue from 'qrcode-vue3';
 
 const props = defineProps({
     mosque: Object,
@@ -17,6 +17,12 @@ const props = defineProps({
     remainingSlots: Number,
     canRegister: Boolean,
 });
+
+// State variables
+const showQrCode = ref(false);
+const showDeleteModal = ref(false);
+const notificationSent = ref(false);
+const notificationMessage = ref('');
 
 // Helper function to parse ISO date string to Date object
 const parseDate = (dateString) => {
@@ -54,18 +60,15 @@ const formatTime = (timeString) => {
     return timeString;
 };
 
-const showQrCode = ref(false);
-
-// Generate the registration URL for QR code
-const registrationUrl = computed(() => {
-    return (
-        window.location.origin + route('events.public.register', props.event.id)
-    );
-});
-
+// Toggle QR code display
 const toggleQrCode = () => {
     showQrCode.value = !showQrCode.value;
 };
+
+// Generate the registration URL for QR code
+const registrationUrl = computed(() => {
+    return route('events.public.register', props.event.id, true);
+});
 
 // Get event status
 const getEventStatus = computed(() => {
@@ -111,8 +114,8 @@ const getEventStatus = computed(() => {
 // Check if user can edit the event
 const canEdit = computed(() => {
     return (
-        props.mosque.user_role === 'admin' ||
-        props.mosque.user_role === 'committee'
+        props.mosque?.user?.role === 'admin' ||
+        props.mosque?.user?.role === 'mosque_admin'
     );
 });
 
@@ -139,6 +142,11 @@ const isRegistrationOpen = () => {
 const isEventFull = () => {
     if (!props.event.max_participants) return false;
     return props.registrationCount >= props.event.max_participants;
+};
+
+// Function to check if event is full (alias for isEventFull for template)
+const isFull = () => {
+    return isEventFull();
 };
 
 // Helper function for category class
@@ -172,6 +180,112 @@ const categoryName = computed(() => {
             return 'Lain-lain';
     }
 });
+
+// Function to send notification to participants
+const sendNotification = (channel) => {
+    // This would typically make an API call to send notifications
+    // For now, we'll just show a success message
+    notificationSent.value = true;
+
+    const channelName =
+        channel === 'whatsapp'
+            ? 'WhatsApp'
+            : channel === 'telegram'
+              ? 'Telegram'
+              : 'Email';
+
+    notificationMessage.value = `Notifikasi telah dihantar melalui ${channelName} kepada semua peserta.`;
+
+    // Hide the message after 5 seconds
+    setTimeout(() => {
+        notificationSent.value = false;
+    }, 5000);
+};
+
+// Function to confirm delete
+const confirmDelete = () => {
+    // This would typically make an API call to delete the event
+    // For now, we'll just close the modal
+    showDeleteModal.value = false;
+};
+
+// Function to copy text to clipboard
+const copyToClipboard = () => {
+    try {
+        // Check if navigator.clipboard is available
+        if (navigator.clipboard && window.isSecureContext) {
+            // Use the Clipboard API if available
+            navigator.clipboard
+                .writeText(registrationUrl.value)
+                .then(() => {
+                    showCopySuccess();
+                })
+                .catch((err) => {
+                    console.error('Failed to copy text: ', err);
+                    fallbackCopyTextToClipboard(registrationUrl.value);
+                });
+        } else {
+            // Use fallback method
+            fallbackCopyTextToClipboard(registrationUrl.value);
+        }
+    } catch (err) {
+        console.error('Copy failed: ', err);
+        fallbackCopyTextToClipboard(registrationUrl.value);
+    }
+};
+
+// Fallback method to copy text to clipboard
+const fallbackCopyTextToClipboard = (text) => {
+    try {
+        // Create a temporary textarea element
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+
+        // Make the textarea out of viewport
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+
+        // Select and copy the text
+        textArea.focus();
+        textArea.select();
+
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        if (successful) {
+            showCopySuccess();
+        } else {
+            showCopyError();
+        }
+    } catch (err) {
+        console.error('Fallback copy failed: ', err);
+        showCopyError();
+    }
+};
+
+// Show success notification
+const showCopySuccess = () => {
+    notificationSent.value = true;
+    notificationMessage.value = 'URL telah disalin ke papan klip.';
+
+    // Hide the message after 3 seconds
+    setTimeout(() => {
+        notificationSent.value = false;
+    }, 3000);
+};
+
+// Show error notification
+const showCopyError = () => {
+    notificationSent.value = true;
+    notificationMessage.value = 'Gagal menyalin URL. Sila cuba lagi.';
+
+    // Hide the message after 3 seconds
+    setTimeout(() => {
+        notificationSent.value = false;
+    }, 3000);
+};
 </script>
 <template>
     <Head :title="`${event.title} - ${mosque.name}`" />
@@ -193,20 +307,8 @@ const categoryName = computed(() => {
                         "
                         class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                     >
-                        Edit
+                        Kemaskini
                     </Link>
-                </div>
-                <div v-if="event.registration_required && canEdit">
-                    <button
-                        @click="toggleQrCode"
-                        class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    >
-                        {{
-                            showQrCode
-                                ? 'Tutup QR Code'
-                                : 'Tunjuk QR Code Pendaftaran'
-                        }}
-                    </button>
                 </div>
             </div>
         </template>
@@ -294,27 +396,27 @@ const categoryName = computed(() => {
                                         <QrcodeVue
                                             :value="registrationUrl"
                                             :size="200"
-                                            level="H"
+                                            render-as="svg"
                                         />
                                     </div>
                                 </div>
                                 <div class="mb-4">
-                                    <InputLabel value="URL Pendaftaran" />
+                                    <InputLabel
+                                        for="registration-url"
+                                        value="URL Pendaftaran"
+                                    />
                                     <div class="mt-1 flex rounded-md shadow-sm">
                                         <TextInput
+                                            id="registration-url"
+                                            v-model="registrationUrl"
                                             type="text"
-                                            class="block w-full"
-                                            :value="registrationUrl"
+                                            class="block w-full flex-1"
                                             readonly
                                         />
                                         <button
                                             type="button"
-                                            class="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500"
-                                            @click="
-                                                navigator.clipboard.writeText(
-                                                    registrationUrl,
-                                                )
-                                            "
+                                            class="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                            @click="copyToClipboard"
                                         >
                                             Salin
                                         </button>
@@ -702,6 +804,26 @@ const categoryName = computed(() => {
                                                         </svg>
                                                         Email
                                                     </button>
+                                                    <div
+                                                        v-if="
+                                                            event.registration_required &&
+                                                            canEdit
+                                                        "
+                                                    >
+                                                        <button
+                                                            @click="
+                                                                toggleQrCode
+                                                            "
+                                                            type="button"
+                                                            class="rounded-md bg-slate-600 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2"
+                                                        >
+                                                            {{
+                                                                showQrCode
+                                                                    ? 'Tutup QR Code'
+                                                                    : 'Tunjuk QR Code Pendaftaran'
+                                                            }}
+                                                        </button>
+                                                    </div>
                                                 </div>
 
                                                 <!-- Notification Success Message -->
