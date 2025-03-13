@@ -11,7 +11,7 @@ import Textarea from '@/Components/Textarea.vue';
 import Checkbox from '@/Components/Checkbox.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import Modal from '@/Components/Modal.vue';
-import QrcodeVue from 'qrcode-vue';
+import QrcodeVue from 'qrcode-vue3';
 
 const props = defineProps({
     mosque: Object,
