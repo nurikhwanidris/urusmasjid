@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventRegistrationController;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Middleware\EnsurePhoneIsVerified;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -89,6 +90,17 @@ Route::middleware(['auth', 'verified', EnsurePhoneIsVerified::class])->group(fun
         'destroy' => 'masjid.acara.pendaftaran.destroy',
     ]);
     Route::patch('/masjid/{mosque}/acara/{acara}/pendaftaran/{pendaftaran}/attendance', [EventRegistrationController::class, 'markAttendance'])->name('masjid.acara.pendaftaran.attendance');
+
+    // Masjid Announcement routes
+    Route::resource('masjid.pengumuman', AnnouncementController::class, ['parameters' => ['masjid' => 'mosque', 'pengumuman' => 'announcement']])->names([
+        'index' => 'masjid.pengumuman.index',
+        'create' => 'masjid.pengumuman.create',
+        'store' => 'masjid.pengumuman.store',
+        'show' => 'masjid.pengumuman.show',
+        'edit' => 'masjid.pengumuman.edit',
+        'update' => 'masjid.pengumuman.update',
+        'destroy' => 'masjid.pengumuman.destroy',
+    ]);
 
     // Admin routes
     Route::prefix('admin')->name('admin.')->middleware('can:admin')->group(function () {

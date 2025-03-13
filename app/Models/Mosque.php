@@ -112,6 +112,26 @@ class Mosque extends Model
     }
 
     /**
+     * Get the announcements of this mosque.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function announcements(): HasMany
+    {
+        return $this->hasMany(Announcement::class);
+    }
+
+    /**
+     * Get the published announcements of this mosque.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function publishedAnnouncements(): HasMany
+    {
+        return $this->announcements()->published();
+    }
+
+    /**
      * Get the upcoming events of this mosque.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

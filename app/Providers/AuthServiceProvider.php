@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\User;
 use App\Models\Mosque;
+use App\Models\Announcement;
 use App\Policies\AdminPolicy;
 use App\Policies\MosquePolicy;
+use App\Policies\AnnouncementPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -19,6 +21,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // Register policies
         Mosque::class => MosquePolicy::class,
+        Announcement::class => AnnouncementPolicy::class,
     ];
 
     /**

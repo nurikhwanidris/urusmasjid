@@ -178,4 +178,24 @@ class MosqueUser extends Model
     {
         return $this->mosque->pastEvents;
     }
+
+    /**
+     * Get the announcements of the mosque this user belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function announcements()
+    {
+        return $this->mosque->announcements();
+    }
+
+    /**
+     * Get the published announcements of the mosque this user belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function publishedAnnouncements()
+    {
+        return $this->mosque->publishedAnnouncements;
+    }
 }

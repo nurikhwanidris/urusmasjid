@@ -61,6 +61,43 @@ const eventsIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>`;
 
+// Announcements menu
+const announcementsIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                          </svg>`;
+
+const announcementsItems = computed(() => {
+    // If we have a current mosque, use its ID for the routes
+    if (currentMosque.value) {
+        return [
+            {
+                name: 'Senarai Pengumuman',
+                route: 'masjid.pengumuman.index',
+                params: [currentMosque.value.id],
+            },
+            {
+                name: 'Cipta Pengumuman',
+                route: 'masjid.pengumuman.create',
+                params: [currentMosque.value.id],
+            },
+        ];
+    }
+
+    // Otherwise, just link to the mosque list
+    return [
+        {
+            name: 'Senarai Pengumuman',
+            route: 'masjid.index',
+            params: [],
+        },
+        {
+            name: 'Cipta Pengumuman',
+            route: 'masjid.index',
+            params: [],
+        },
+    ];
+});
+
 const eventsItems = computed(() => {
     // If we have a current mosque, use its ID for the routes
     if (currentMosque.value) {
@@ -239,6 +276,7 @@ const logout = () => {
 
                     <!-- Mosque Management Menu -->
                     <SidebarMenu
+                        v-if="isAdmin"
                         title="Pengurusan Masjid"
                         :icon="mosqueManagementIcon"
                         :collapsed="props.collapsed"
@@ -265,6 +303,30 @@ const logout = () => {
                     >
                         <SidebarSubmenuItem
                             v-for="item in eventsItems"
+                            :key="item.name"
+                            :href="route(item.route, item.params)"
+                            :active="
+                                route().current(
+                                    item.route,
+                                    item.params && item.params.length > 0
+                                        ? { mosque: item.params[0] }
+                                        : {},
+                                )
+                            "
+                        >
+                            {{ item.name }}
+                        </SidebarSubmenuItem>
+                    </SidebarMenu>
+
+                    <!-- Announcements Menu -->
+                    <SidebarMenu
+                        title="Pengumuman"
+                        :icon="announcementsIcon"
+                        :collapsed="props.collapsed"
+                        :routes="announcementsItems.map((item) => item.route)"
+                    >
+                        <SidebarSubmenuItem
+                            v-for="item in announcementsItems"
                             :key="item.name"
                             :href="route(item.route, item.params)"
                             :active="
@@ -406,6 +468,7 @@ const logout = () => {
 
                     <!-- Mosque Management Menu -->
                     <MobileSidebarMenu
+                        v-if="isAdmin"
                         title="Pengurusan Masjid"
                         :icon="mosqueManagementIcon"
                         :routes="
@@ -430,6 +493,29 @@ const logout = () => {
                     >
                         <MobileSidebarLink
                             v-for="item in eventsItems"
+                            :key="item.name"
+                            :href="route(item.route, item.params)"
+                            :active="
+                                route().current(
+                                    item.route,
+                                    item.params && item.params.length > 0
+                                        ? { mosque: item.params[0] }
+                                        : {},
+                                )
+                            "
+                        >
+                            {{ item.name }}
+                        </MobileSidebarLink>
+                    </MobileSidebarMenu>
+
+                    <!-- Announcements Menu -->
+                    <MobileSidebarMenu
+                        title="Pengumuman"
+                        :icon="announcementsIcon"
+                        :routes="announcementsItems.map((item) => item.route)"
+                    >
+                        <MobileSidebarLink
+                            v-for="item in announcementsItems"
                             :key="item.name"
                             :href="route(item.route, item.params)"
                             :active="

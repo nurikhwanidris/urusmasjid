@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { usePrayerTimes } from '@/Composables/usePrayerTimes';
 
@@ -10,37 +10,6 @@ const props = defineProps({
     khariah: Array,
     ajk: Array,
 });
-
-// Dummy data for dashboard
-const upcomingEvents = ref([
-    {
-        id: 1,
-        title: 'Solat Jumaat',
-        date: '2023-06-09',
-        time: '12:30 PM',
-        location: 'Masjid Utama',
-        description: 'Solat Jumaat',
-        attendees: 120,
-    },
-    {
-        id: 2,
-        title: 'Kelas Quran',
-        date: '2023-06-10',
-        time: '8:00 PM',
-        location: 'Kelas 2',
-        description: 'Kelas Quran mingguan dan pembicaraan',
-        attendees: 25,
-    },
-    {
-        id: 3,
-        title: 'Gotong Royong',
-        date: '2023-06-11',
-        time: '7:15 PM',
-        location: 'Persekitaran Masjid',
-        description: 'Gotong royong bersama ahli khariah masjid',
-        attendees: 85,
-    },
-]);
 
 const recentDonations = ref([
     {
@@ -611,15 +580,17 @@ const address = computed(() => {
                                 <h3 class="text-lg font-medium text-gray-900">
                                     Acara Akan Datang
                                 </h3>
-                                <a
-                                    href="#"
+                                <Link
+                                    :href="
+                                        route('masjid.acara.index', mosque.id)
+                                    "
                                     class="text-sm font-medium text-emerald-600 hover:text-emerald-500"
-                                    >Lihat Semua</a
+                                    >Lihat Semua</Link
                                 >
                             </div>
                             <div class="divide-y divide-gray-200">
                                 <div
-                                    v-for="event in upcomingEvents"
+                                    v-for="event in upComingEvents"
                                     :key="event.id"
                                     class="px-6 py-4"
                                 >
@@ -631,7 +602,7 @@ const address = computed(() => {
                                                 class="block text-sm font-semibold text-emerald-800"
                                                 >{{
                                                     new Date(
-                                                        event.date,
+                                                        event.start_date,
                                                     ).toLocaleDateString(
                                                         'en-US',
                                                         {
@@ -644,7 +615,7 @@ const address = computed(() => {
                                                 class="block text-xs text-emerald-600"
                                                 >{{
                                                     new Date(
-                                                        event.date,
+                                                        event.start_date,
                                                     ).toLocaleDateString(
                                                         'en-US',
                                                         {
@@ -656,14 +627,25 @@ const address = computed(() => {
                                         </div>
                                         <div class="ml-4 flex-1">
                                             <h4
-                                                class="text-base font-medium text-gray-900"
+                                                class="text-base font-medium text-gray-900 hover:text-emerald-600"
                                             >
-                                                {{ event.title }}
+                                                <Link
+                                                    :href="
+                                                        route(
+                                                            'masjid.acara.show',
+                                                            {
+                                                                mosque: mosque.id,
+                                                                acara: event.id,
+                                                            },
+                                                        )
+                                                    "
+                                                    >{{ event.title }}</Link
+                                                >
                                             </h4>
                                             <p
                                                 class="mt-1 text-sm text-gray-500"
                                             >
-                                                {{ event.time }} •
+                                                {{ event.start_time }} •
                                                 {{ event.location }}
                                             </p>
                                             <p
@@ -689,7 +671,7 @@ const address = computed(() => {
                                                 <span
                                                     class="ml-1 text-xs text-gray-500"
                                                     >{{
-                                                        event.attendees
+                                                        event.attendees ?? 0
                                                     }}
                                                     peserta</span
                                                 >
