@@ -13,13 +13,22 @@ class AnnouncementController extends Controller
 {
     /**
      * Display a listing of the announcements.
+     *
+     * @return \Inertia\Response
      */
     public function index(Request $request, Mosque $mosque)
     {
         $this->authorize('viewAny', [Announcement::class, $mosque]);
 
+        // Get filter parameters with defaults
         $status = $request->input('status', 'published');
+        $type = $request->input('type');
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 10);
+        $sortField = $request->input('sort_field', 'published_at');
+        $sortDirection = $request->input('sort_direction', 'desc');
 
+        // Start building the query
         $query = $mosque->announcements();
 
         // Filter by status
@@ -36,32 +45,63 @@ class AnnouncementController extends Controller
             case 'expired':
                 $query->expired();
                 break;
+            case 'all':
+                // No filter, show all
+                break;
             default:
                 $query->published();
         }
 
         // Filter by type if provided
-        if ($request->has('type')) {
-            $query->where('type', $request->input('type'));
+        if ($type) {
+            $query->where('type', $type);
         }
 
         // Search by title or content
-        if ($request->has('search')) {
-            $search = $request->input('search');
+        if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('content', 'like', "%{$search}%");
+                    ->orWhere('content', 'like', "%{$search}%");
             });
         }
 
-        $announcements = $query->orderBy('published_at', 'desc')
-                              ->paginate(10)
-                              ->withQueryString();
+        // Apply sorting
+        $query->orderBy($sortField, $sortDirection);
+
+        // Get paginated results
+        $announcements = $query->with('creator')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        // Get announcement types for filter dropdown
+        $types = [
+            ['value' => 'general', 'label' => 'Umum'],
+            ['value' => 'important', 'label' => 'Penting'],
+            ['value' => 'emergency', 'label' => 'Kecemasan'],
+        ];
+
+        // Get status options for filter dropdown
+        $statuses = [
+            ['value' => 'all', 'label' => 'Semua'],
+            ['value' => 'published', 'label' => 'Terbit'],
+            ['value' => 'draft', 'label' => 'Draf'],
+            ['value' => 'archived', 'label' => 'Arkib'],
+            ['value' => 'expired', 'label' => 'Tamat'],
+        ];
 
         return Inertia::render('Announcements/Index', [
             'mosque' => $mosque,
             'announcements' => $announcements,
-            'filters' => $request->only(['status', 'type', 'search']),
+            'filters' => [
+                'status' => $status,
+                'type' => $type,
+                'search' => $search,
+                'per_page' => $perPage,
+                'sort_field' => $sortField,
+                'sort_direction' => $sortDirection,
+            ],
+            'types' => $types,
+            'statuses' => $statuses,
         ]);
     }
 
@@ -112,7 +152,7 @@ class AnnouncementController extends Controller
         ]);
 
         return redirect()->route('mosques.announcements.show', [$mosque, $announcement])
-                         ->with('success', 'Announcement created successfully.');
+            ->with('success', 'Announcement created successfully.');
     }
 
     /**
@@ -180,7 +220,7 @@ class AnnouncementController extends Controller
         $announcement->update($validated);
 
         return redirect()->route('mosques.announcements.show', [$mosque, $announcement])
-                         ->with('success', 'Announcement updated successfully.');
+            ->with('success', 'Announcement updated successfully.');
     }
 
     /**
@@ -198,6 +238,6 @@ class AnnouncementController extends Controller
         $announcement->delete();
 
         return redirect()->route('mosques.announcements.index', $mosque)
-                         ->with('success', 'Announcement deleted successfully.');
+            ->with('success', 'Announcement deleted successfully.');
     }
 }

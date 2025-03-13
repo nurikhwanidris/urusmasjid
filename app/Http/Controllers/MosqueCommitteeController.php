@@ -2,23 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreMosqueCommitteeRequest;
+use App\Http\Requests\UpdateMosqueCommitteeRequest;
 use App\Models\Mosque;
 use App\Models\MosqueCommittee;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
-use App\Http\Requests\StoreMosqueCommitteeRequest;
-use App\Http\Requests\UpdateMosqueCommitteeRequest;
 
 class MosqueCommitteeController extends Controller
 {
     /**
      * Display a listing of the committee members for a mosque.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @return \Inertia\Response
      */
     public function index(Mosque $mosque)
@@ -41,7 +38,6 @@ class MosqueCommitteeController extends Controller
     /**
      * Show the form for creating a new committee member.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @return \Inertia\Response
      */
     public function create(Mosque $mosque)
@@ -74,7 +70,6 @@ class MosqueCommitteeController extends Controller
      * Store a newly created committee member in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Mosque  $mosque
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(StoreMosqueCommitteeRequest $request, Mosque $mosque)
@@ -89,7 +84,7 @@ class MosqueCommitteeController extends Controller
             DB::beginTransaction();
 
             // Check if a user with the provided email exists
-            if (!empty($validated['email']) && empty($validated['user_id'])) {
+            if (! empty($validated['email']) && empty($validated['user_id'])) {
                 $user = User::where('email', $validated['email'])->first();
 
                 if ($user) {
@@ -119,15 +114,14 @@ class MosqueCommitteeController extends Controller
                 ->with('success', 'Ahli jawatankuasa berjaya ditambah!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'Failed to add committee member. ' . $e->getMessage()]);
+
+            return back()->withErrors(['error' => 'Failed to add committee member. '.$e->getMessage()]);
         }
     }
 
     /**
      * Display the specified committee member.
      *
-     * @param  \App\Models\Mosque  $mosque
-     * @param  \App\Models\MosqueCommittee  $committee
      * @return \Inertia\Response
      */
     public function show(Mosque $mosque, MosqueCommittee $committee)
@@ -151,8 +145,6 @@ class MosqueCommitteeController extends Controller
     /**
      * Show the form for editing the specified committee member.
      *
-     * @param  \App\Models\Mosque  $mosque
-     * @param  \App\Models\MosqueCommittee  $committee
      * @return \Inertia\Response
      */
     public function edit(Mosque $mosque, MosqueCommittee $committee)
@@ -190,8 +182,6 @@ class MosqueCommitteeController extends Controller
      * Update the specified committee member in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Mosque  $mosque
-     * @param  \App\Models\MosqueCommittee  $committee
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdateMosqueCommitteeRequest $request, Mosque $mosque, MosqueCommittee $committee)
@@ -210,7 +200,7 @@ class MosqueCommitteeController extends Controller
             DB::beginTransaction();
 
             // Check if a user with the provided email exists
-            if (!empty($validated['email']) && empty($validated['user_id'])) {
+            if (! empty($validated['email']) && empty($validated['user_id'])) {
                 $user = User::where('email', $validated['email'])->first();
 
                 if ($user) {
@@ -240,15 +230,14 @@ class MosqueCommitteeController extends Controller
                 ->with('success', 'Maklumat ahli jawatankuasa berjaya dikemaskini!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'Failed to update committee member. ' . $e->getMessage()]);
+
+            return back()->withErrors(['error' => 'Failed to update committee member. '.$e->getMessage()]);
         }
     }
 
     /**
      * Remove the specified committee member from storage.
      *
-     * @param  \App\Models\Mosque  $mosque
-     * @param  \App\Models\MosqueCommittee  $committee
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Mosque $mosque, MosqueCommittee $committee)

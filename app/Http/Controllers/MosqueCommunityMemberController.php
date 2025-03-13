@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mosque;
-use App\Models\CommunityMember;
+use App\Models\MosqueUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -16,29 +16,73 @@ class MosqueCommunityMemberController extends Controller
     /**
      * Display a listing of the community members.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @return \Inertia\Response
      */
-    public function index(Mosque $mosque)
+    public function index(Request $request, Mosque $mosque)
     {
         if (Gate::denies('view', $mosque)) {
             abort(403);
         }
 
-        $members = $mosque->communityMembers()
-            ->orderBy('full_name')
-            ->paginate(10);
+        // Get filter parameters with defaults
+        $status = $request->input('status', 'active');
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 10);
+        $sortField = $request->input('sort_field', 'name');
+        $sortDirection = $request->input('sort_direction', 'asc');
+
+        // Start building the query
+        $query = MosqueUser::with('user')
+            ->where('mosque_id', $mosque->id)
+            ->where('type', 'community');
+
+        // Filter by status if provided
+        if ($status && $status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        // Search by name, ic_number, phone_number, or email
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('ic_number', 'like', "%{$search}%")
+                    ->orWhere('phone_number', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        // Apply sorting
+        $query->orderBy($sortField, $sortDirection);
+
+        // Get paginated results
+        $members = $query->paginate($perPage)
+            ->withQueryString();
+
+        // Get status options for filter dropdown
+        $statuses = [
+            ['value' => 'all', 'label' => 'Semua'],
+            ['value' => 'active', 'label' => 'Aktif'],
+            ['value' => 'pending', 'label' => 'Menunggu'],
+            ['value' => 'inactive', 'label' => 'Tidak Aktif'],
+        ];
 
         return Inertia::render('Mosques/CommunityMembers/Index', [
             'mosque' => $mosque,
             'members' => $members,
+            'filters' => [
+                'status' => $status,
+                'search' => $search,
+                'per_page' => $perPage,
+                'sort_field' => $sortField,
+                'sort_direction' => $sortDirection,
+            ],
+            'statuses' => $statuses,
         ]);
     }
 
     /**
      * Show the form for creating a new community member.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @return \Inertia\Response
      */
     public function create(Mosque $mosque)
@@ -55,8 +99,6 @@ class MosqueCommunityMemberController extends Controller
     /**
      * Store a newly created community member in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Mosque  $mosque
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, Mosque $mosque)
@@ -66,18 +108,27 @@ class MosqueCommunityMemberController extends Controller
         }
 
         $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'ic_number' => 'nullable|string|max:20',
             'phone_number' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'address' => 'nullable|string|max:500',
-            'date_of_birth' => 'nullable|date',
-            'gender' => 'nullable|in:male,female',
-            'membership_status' => 'required|in:active,pending,inactive',
+            'status' => 'required|in:active,pending,inactive',
             'notes' => 'nullable|string|max:1000',
         ]);
 
-        $member = $mosque->communityMembers()->create($validated);
+        $member = MosqueUser::create([
+            'mosque_id' => $mosque->id,
+            'type' => 'community',
+            'name' => $validated['name'],
+            'ic_number' => $validated['ic_number'],
+            'phone_number' => $validated['phone_number'],
+            'email' => $validated['email'],
+            'address' => $validated['address'],
+            'status' => $validated['status'],
+            'notes' => $validated['notes'],
+            'joined_at' => now(),
+        ]);
 
         return redirect()->route('masjid.kariah.show', [$mosque->id, $member->id])
             ->with('success', 'Ahli kariah berjaya ditambah.');
@@ -86,103 +137,100 @@ class MosqueCommunityMemberController extends Controller
     /**
      * Display the specified community member.
      *
-     * @param  \App\Models\Mosque  $mosque
-     * @param  \App\Models\CommunityMember  $kariah
+     * @param  int  $id
      * @return \Inertia\Response
      */
-    public function show(Mosque $mosque, CommunityMember $kariah)
+    public function show(Mosque $mosque, $id)
     {
         if (Gate::denies('view', $mosque)) {
             abort(403);
         }
 
-        if ($kariah->mosque_id !== $mosque->id) {
-            abort(404);
-        }
+        $member = MosqueUser::where('mosque_id', $mosque->id)
+            ->where('type', 'community')
+            ->where('id', $id)
+            ->firstOrFail();
 
         return Inertia::render('Mosques/CommunityMembers/Show', [
             'mosque' => $mosque,
-            'member' => $kariah,
+            'member' => $member,
         ]);
     }
 
     /**
      * Show the form for editing the specified community member.
      *
-     * @param  \App\Models\Mosque  $mosque
-     * @param  \App\Models\CommunityMember  $kariah
+     * @param  int  $id
      * @return \Inertia\Response
      */
-    public function edit(Mosque $mosque, CommunityMember $kariah)
+    public function edit(Mosque $mosque, $id)
     {
         if (Gate::denies('update', $mosque)) {
             abort(403);
         }
 
-        if ($kariah->mosque_id !== $mosque->id) {
-            abort(404);
-        }
+        $member = MosqueUser::where('mosque_id', $mosque->id)
+            ->where('type', 'community')
+            ->where('id', $id)
+            ->firstOrFail();
 
         return Inertia::render('Mosques/CommunityMembers/Edit', [
             'mosque' => $mosque,
-            'member' => $kariah,
+            'member' => $member,
         ]);
     }
 
     /**
      * Update the specified community member in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Mosque  $mosque
-     * @param  \App\Models\CommunityMember  $kariah
+     * @param  int  $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Mosque $mosque, CommunityMember $kariah)
+    public function update(Request $request, Mosque $mosque, $id)
     {
         if (Gate::denies('update', $mosque)) {
             abort(403);
         }
 
-        if ($kariah->mosque_id !== $mosque->id) {
-            abort(404);
-        }
+        $member = MosqueUser::where('mosque_id', $mosque->id)
+            ->where('type', 'community')
+            ->where('id', $id)
+            ->firstOrFail();
 
         $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'ic_number' => 'nullable|string|max:20',
             'phone_number' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'address' => 'nullable|string|max:500',
-            'date_of_birth' => 'nullable|date',
-            'gender' => 'nullable|in:male,female',
-            'membership_status' => 'required|in:active,pending,inactive',
+            'status' => 'required|in:active,pending,inactive',
             'notes' => 'nullable|string|max:1000',
         ]);
 
-        $kariah->update($validated);
+        $member->update($validated);
 
-        return redirect()->route('masjid.kariah.show', [$mosque->id, $kariah->id])
+        return redirect()->route('masjid.kariah.show', [$mosque->id, $member->id])
             ->with('success', 'Maklumat ahli kariah berjaya dikemaskini.');
     }
 
     /**
      * Remove the specified community member from storage.
      *
-     * @param  \App\Models\Mosque  $mosque
-     * @param  \App\Models\CommunityMember  $kariah
+     * @param  int  $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Mosque $mosque, CommunityMember $kariah)
+    public function destroy(Mosque $mosque, $id)
     {
         if (Gate::denies('update', $mosque)) {
             abort(403);
         }
 
-        if ($kariah->mosque_id !== $mosque->id) {
-            abort(404);
-        }
+        $member = MosqueUser::where('mosque_id', $mosque->id)
+            ->where('type', 'community')
+            ->where('id', $id)
+            ->firstOrFail();
 
-        $kariah->delete();
+        $member->delete();
 
         return redirect()->route('masjid.kariah.index', $mosque->id)
             ->with('success', 'Ahli kariah berjaya dipadam.');

@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Mosque;
-use App\Models\User;
 use App\Models\Event;
+use App\Models\Mosque;
 use App\Models\MosqueUser;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -355,7 +354,7 @@ class DemoUserSeeder extends Seeder
             'name' => $communityMember1->name,
             'email' => $communityMember1->email,
             'phone' => $communityMember1->phone_number,
-            'registration_number' => 'REG-' . Str::random(8),
+            'registration_number' => 'REG-'.Str::random(8),
             'status' => 'confirmed',
             'attendance_status' => 'pending',
         ]);
@@ -365,7 +364,7 @@ class DemoUserSeeder extends Seeder
             'name' => $communityMember2->name,
             'email' => $communityMember2->email,
             'phone' => $communityMember2->phone_number,
-            'registration_number' => 'REG-' . Str::random(8),
+            'registration_number' => 'REG-'.Str::random(8),
             'status' => 'confirmed',
             'attendance_status' => 'pending',
         ]);
@@ -375,7 +374,7 @@ class DemoUserSeeder extends Seeder
             'name' => $communityMember1->name,
             'email' => $communityMember1->email,
             'phone' => $communityMember1->phone_number,
-            'registration_number' => 'REG-' . Str::random(8),
+            'registration_number' => 'REG-'.Str::random(8),
             'status' => 'confirmed',
             'attendance_status' => 'attended',
         ]);
@@ -385,7 +384,7 @@ class DemoUserSeeder extends Seeder
             'name' => $communityMember2->name,
             'email' => $communityMember2->email,
             'phone' => $communityMember2->phone_number,
-            'registration_number' => 'REG-' . Str::random(8),
+            'registration_number' => 'REG-'.Str::random(8),
             'status' => 'confirmed',
             'attendance_status' => 'pending',
             'notes' => 'Akan membawa peralatan sendiri',

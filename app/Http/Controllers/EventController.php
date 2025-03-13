@@ -14,7 +14,6 @@ class EventController extends Controller
     /**
      * Display a listing of the events for a mosque.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @return \Inertia\Response
      */
     public function index(Mosque $mosque)
@@ -35,7 +34,6 @@ class EventController extends Controller
     /**
      * Show the form for creating a new event.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @return \Inertia\Response
      */
     public function create(Mosque $mosque)
@@ -50,8 +48,6 @@ class EventController extends Controller
     /**
      * Store a newly created event in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Mosque  $mosque
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, Mosque $mosque)
@@ -121,7 +117,6 @@ class EventController extends Controller
     /**
      * Display the specified event.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @param  \App\Models\Event  $event
      * @return \Inertia\Response
      */
@@ -148,14 +143,13 @@ class EventController extends Controller
             'registrationCount' => $registrationCount,
             'userRegistered' => $userRegistered,
             'remainingSlots' => $event->getRemainingSlots(),
-            'canRegister' => $event->isRegistrationOpen() && !$event->isFull(),
+            'canRegister' => $event->isRegistrationOpen() && ! $event->isFull(),
         ]);
     }
 
     /**
      * Show the form for editing the specified event.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @param  \App\Models\Event  $event
      * @return \Inertia\Response
      */
@@ -172,8 +166,6 @@ class EventController extends Controller
     /**
      * Update the specified event in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Mosque  $mosque
      * @param  \App\Models\Event  $event
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -251,7 +243,6 @@ class EventController extends Controller
     /**
      * Remove the specified event from storage.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @param  \App\Models\Event  $event
      * @return \Illuminate\Http\RedirectResponse
      */

@@ -597,9 +597,7 @@ const address = computed(() => {
                                                         <td
                                                             class="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900"
                                                         >
-                                                            {{
-                                                                committee.position
-                                                            }}
+                                                            {{ committee.role }}
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap px-4 py-2"
@@ -777,9 +775,7 @@ const address = computed(() => {
                                                         <td
                                                             class="whitespace-nowrap px-4 py-2 text-sm font-medium text-gray-900"
                                                         >
-                                                            {{
-                                                                member.full_name
-                                                            }}
+                                                            {{ member.name }}
                                                         </td>
                                                         <td
                                                             class="whitespace-nowrap px-4 py-2"

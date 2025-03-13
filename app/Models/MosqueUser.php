@@ -44,8 +44,6 @@ class MosqueUser extends Model
 
     /**
      * Get the mosque that this user belongs to.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function mosque(): BelongsTo
     {
@@ -54,8 +52,6 @@ class MosqueUser extends Model
 
     /**
      * Get the user associated with this mosque user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -64,8 +60,6 @@ class MosqueUser extends Model
 
     /**
      * Check if this is an admin user.
-     *
-     * @return bool
      */
     public function isAdmin(): bool
     {
@@ -74,8 +68,6 @@ class MosqueUser extends Model
 
     /**
      * Check if this is a committee member.
-     *
-     * @return bool
      */
     public function isCommittee(): bool
     {
@@ -84,8 +76,6 @@ class MosqueUser extends Model
 
     /**
      * Check if this is a community member.
-     *
-     * @return bool
      */
     public function isCommunity(): bool
     {
@@ -94,8 +84,6 @@ class MosqueUser extends Model
 
     /**
      * Check if the user is active.
-     *
-     * @return bool
      */
     public function isActive(): bool
     {

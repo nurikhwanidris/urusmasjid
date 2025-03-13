@@ -26,7 +26,11 @@ const closeOnEscape = (e) => {
 };
 
 const closeOnClickOutside = (e) => {
-    if (open.value && dropdownRef.value && !dropdownRef.value.contains(e.target)) {
+    if (
+        open.value &&
+        dropdownRef.value &&
+        !dropdownRef.value.contains(e.target)
+    ) {
         open.value = false;
     }
 };

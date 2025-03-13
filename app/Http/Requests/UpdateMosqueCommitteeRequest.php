@@ -6,8 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Update Mosque Committee Request
- *
- * @package App\Http\Requests
  */
 class UpdateMosqueCommitteeRequest extends FormRequest
 {

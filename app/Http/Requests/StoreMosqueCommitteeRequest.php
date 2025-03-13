@@ -6,8 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Store Mosque Committee Request
- *
- * @package App\Http\Requests
  */
 class StoreMosqueCommitteeRequest extends FormRequest
 {

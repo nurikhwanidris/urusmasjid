@@ -59,7 +59,7 @@ const cancelDelete = () => {
 </script>
 
 <template>
-    <Head :title="member.full_name" />
+    <Head :title="member.name" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -88,7 +88,7 @@ const cancelDelete = () => {
                         >
                             <div>
                                 <h3 class="text-2xl font-bold text-gray-900">
-                                    {{ member.full_name }}
+                                    {{ member.name }}
                                 </h3>
                                 <p class="text-sm text-gray-500">
                                     <span v-if="member.ic_number">
@@ -96,15 +96,11 @@ const cancelDelete = () => {
                                     </span>
                                 </p>
                             </div>
-                            <Badge
-                                :color="
-                                    getStatusColor(member.membership_status)
-                                "
-                            >
+                            <Badge :color="getStatusColor(member.status)">
                                 {{
-                                    member.membership_status === 'active'
+                                    member.status === 'active'
                                         ? 'Aktif'
-                                        : member.membership_status === 'pending'
+                                        : member.status === 'pending'
                                           ? 'Menunggu'
                                           : 'Tidak Aktif'
                                 }}
@@ -121,40 +117,6 @@ const cancelDelete = () => {
                                         Maklumat Peribadi
                                     </h4>
                                     <dl class="mt-2 divide-y divide-gray-200">
-                                        <div
-                                            v-if="member.gender"
-                                            class="flex justify-between py-2"
-                                        >
-                                            <dt
-                                                class="font-medium text-gray-500"
-                                            >
-                                                Jantina
-                                            </dt>
-                                            <dd class="text-gray-900">
-                                                {{
-                                                    member.gender === 'male'
-                                                        ? 'Lelaki'
-                                                        : 'Perempuan'
-                                                }}
-                                            </dd>
-                                        </div>
-                                        <div
-                                            v-if="member.date_of_birth"
-                                            class="flex justify-between py-2"
-                                        >
-                                            <dt
-                                                class="font-medium text-gray-500"
-                                            >
-                                                Tarikh Lahir
-                                            </dt>
-                                            <dd class="text-gray-900">
-                                                {{
-                                                    formatDate(
-                                                        member.date_of_birth,
-                                                    )
-                                                }}
-                                            </dd>
-                                        </div>
                                         <div
                                             v-if="member.address"
                                             class="flex justify-between py-2"

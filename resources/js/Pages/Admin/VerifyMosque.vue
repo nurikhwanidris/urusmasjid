@@ -68,7 +68,9 @@ const submit = () => {
                 </h2>
                 <div class="flex space-x-2">
                     <Link :href="route('admin.mosques.pending')">
-                        <SecondaryButton>Back to Pending Mosques</SecondaryButton>
+                        <SecondaryButton
+                            >Back to Pending Mosques</SecondaryButton
+                        >
                     </Link>
                 </div>
             </div>
@@ -78,20 +80,36 @@ const submit = () => {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <div class="mb-6 flex items-center justify-between border-b border-gray-200 pb-4">
+                        <div
+                            class="mb-6 flex items-center justify-between border-b border-gray-200 pb-4"
+                        >
                             <div>
                                 <h3 class="text-2xl font-bold text-gray-900">
                                     {{ mosque.name }}
                                 </h3>
                                 <p class="text-sm text-gray-500">
-                                    {{ mosque.type === 'masjid' ? 'Masjid' : 'Surau' }}
+                                    {{
+                                        mosque.type === 'masjid'
+                                            ? 'Masjid'
+                                            : 'Surau'
+                                    }}
                                     <span v-if="mosque.registration_number">
-                                        • Registration: {{ mosque.registration_number }}
+                                        • Registration:
+                                        {{ mosque.registration_number }}
                                     </span>
                                 </p>
                             </div>
-                            <Badge :color="getStatusColor(mosque.verification_status)">
-                                {{ mosque.verification_status.charAt(0).toUpperCase() + mosque.verification_status.slice(1) }}
+                            <Badge
+                                :color="
+                                    getStatusColor(mosque.verification_status)
+                                "
+                            >
+                                {{
+                                    mosque.verification_status
+                                        .charAt(0)
+                                        .toUpperCase() +
+                                    mosque.verification_status.slice(1)
+                                }}
                             </Badge>
                         </div>
 
@@ -99,12 +117,16 @@ const submit = () => {
                             <!-- Left Column: Mosque Information -->
                             <div class="space-y-6">
                                 <div>
-                                    <h4 class="text-lg font-medium text-gray-900">
+                                    <h4
+                                        class="text-lg font-medium text-gray-900"
+                                    >
                                         Mosque Information
                                     </h4>
                                     <dl class="mt-2 divide-y divide-gray-200">
                                         <div class="flex justify-between py-2">
-                                            <dt class="font-medium text-gray-500">
+                                            <dt
+                                                class="font-medium text-gray-500"
+                                            >
                                                 Address
                                             </dt>
                                             <dd class="text-gray-900">
@@ -112,35 +134,56 @@ const submit = () => {
                                             </dd>
                                         </div>
                                         <div class="flex justify-between py-2">
-                                            <dt class="font-medium text-gray-500">
+                                            <dt
+                                                class="font-medium text-gray-500"
+                                            >
                                                 Location
                                             </dt>
                                             <dd class="text-gray-900">
                                                 {{ mosque.location }}
                                             </dd>
                                         </div>
-                                        <div v-if="mosque.contact_number" class="flex justify-between py-2">
-                                            <dt class="font-medium text-gray-500">
+                                        <div
+                                            v-if="mosque.contact_number"
+                                            class="flex justify-between py-2"
+                                        >
+                                            <dt
+                                                class="font-medium text-gray-500"
+                                            >
                                                 Contact Number
                                             </dt>
                                             <dd class="text-gray-900">
                                                 {{ mosque.contact_number }}
                                             </dd>
                                         </div>
-                                        <div v-if="mosque.email" class="flex justify-between py-2">
-                                            <dt class="font-medium text-gray-500">
+                                        <div
+                                            v-if="mosque.email"
+                                            class="flex justify-between py-2"
+                                        >
+                                            <dt
+                                                class="font-medium text-gray-500"
+                                            >
                                                 Email
                                             </dt>
                                             <dd class="text-gray-900">
                                                 {{ mosque.email }}
                                             </dd>
                                         </div>
-                                        <div v-if="mosque.website" class="flex justify-between py-2">
-                                            <dt class="font-medium text-gray-500">
+                                        <div
+                                            v-if="mosque.website"
+                                            class="flex justify-between py-2"
+                                        >
+                                            <dt
+                                                class="font-medium text-gray-500"
+                                            >
                                                 Website
                                             </dt>
                                             <dd class="text-gray-900">
-                                                <a :href="mosque.website" target="_blank" class="text-emerald-600 hover:text-emerald-500">
+                                                <a
+                                                    :href="mosque.website"
+                                                    target="_blank"
+                                                    class="text-emerald-600 hover:text-emerald-500"
+                                                >
                                                     {{ mosque.website }}
                                                 </a>
                                             </dd>
@@ -149,32 +192,54 @@ const submit = () => {
                                 </div>
 
                                 <div>
-                                    <h4 class="text-lg font-medium text-gray-900">
+                                    <h4
+                                        class="text-lg font-medium text-gray-900"
+                                    >
                                         Registration Information
                                     </h4>
                                     <dl class="mt-2 divide-y divide-gray-200">
                                         <div class="flex justify-between py-2">
-                                            <dt class="font-medium text-gray-500">
+                                            <dt
+                                                class="font-medium text-gray-500"
+                                            >
                                                 Submitted By
                                             </dt>
                                             <dd class="text-gray-900">
-                                                {{ mosque.user?.name || 'Unknown' }}
+                                                {{
+                                                    mosque.user?.name ||
+                                                    'Unknown'
+                                                }}
                                             </dd>
                                         </div>
                                         <div class="flex justify-between py-2">
-                                            <dt class="font-medium text-gray-500">
+                                            <dt
+                                                class="font-medium text-gray-500"
+                                            >
                                                 Submitted On
                                             </dt>
                                             <dd class="text-gray-900">
-                                                {{ formatDate(mosque.created_at) }}
+                                                {{
+                                                    formatDate(
+                                                        mosque.created_at,
+                                                    )
+                                                }}
                                             </dd>
                                         </div>
-                                        <div v-if="mosque.verified_at" class="flex justify-between py-2">
-                                            <dt class="font-medium text-gray-500">
+                                        <div
+                                            v-if="mosque.verified_at"
+                                            class="flex justify-between py-2"
+                                        >
+                                            <dt
+                                                class="font-medium text-gray-500"
+                                            >
                                                 Verified On
                                             </dt>
                                             <dd class="text-gray-900">
-                                                {{ formatDate(mosque.verified_at) }}
+                                                {{
+                                                    formatDate(
+                                                        mosque.verified_at,
+                                                    )
+                                                }}
                                             </dd>
                                         </div>
                                     </dl>
@@ -184,23 +249,41 @@ const submit = () => {
                             <!-- Right Column: Verification Form -->
                             <div class="space-y-6">
                                 <div>
-                                    <h4 class="text-lg font-medium text-gray-900">
+                                    <h4
+                                        class="text-lg font-medium text-gray-900"
+                                    >
                                         Verification
                                     </h4>
-                                    <form @submit.prevent="submit" class="mt-4 space-y-6">
+                                    <form
+                                        @submit.prevent="submit"
+                                        class="mt-4 space-y-6"
+                                    >
                                         <div>
-                                            <InputLabel for="verification_notes" value="Verification Notes" />
+                                            <InputLabel
+                                                for="verification_notes"
+                                                value="Verification Notes"
+                                            />
                                             <TextareaInput
                                                 id="verification_notes"
-                                                v-model="form.verification_notes"
+                                                v-model="
+                                                    form.verification_notes
+                                                "
                                                 class="mt-1 block w-full"
                                                 rows="4"
                                                 placeholder="Add notes about this verification decision..."
                                             />
-                                            <InputError :message="form.errors.verification_notes" class="mt-2" />
+                                            <InputError
+                                                :message="
+                                                    form.errors
+                                                        .verification_notes
+                                                "
+                                                class="mt-2"
+                                            />
                                         </div>
 
-                                        <div class="flex flex-col space-y-3 sm:flex-row sm:justify-end sm:space-x-3 sm:space-y-0">
+                                        <div
+                                            class="flex flex-col space-y-3 sm:flex-row sm:justify-end sm:space-x-3 sm:space-y-0"
+                                        >
                                             <SecondaryButton
                                                 type="button"
                                                 @click="form.reset()"
@@ -226,25 +309,55 @@ const submit = () => {
                                     </form>
                                 </div>
 
-                                <div v-if="mosque.admins && mosque.admins.length > 0">
-                                    <h4 class="text-lg font-medium text-gray-900">
+                                <div
+                                    v-if="
+                                        mosque.admins &&
+                                        mosque.admins.length > 0
+                                    "
+                                >
+                                    <h4
+                                        class="text-lg font-medium text-gray-900"
+                                    >
                                         Mosque Administrators
                                     </h4>
                                     <ul class="mt-2 divide-y divide-gray-200">
-                                        <li v-for="admin in mosque.admins" :key="admin.id" class="py-2">
-                                            <div class="flex items-center justify-between">
+                                        <li
+                                            v-for="admin in mosque.admins"
+                                            :key="admin.id"
+                                            class="py-2"
+                                        >
+                                            <div
+                                                class="flex items-center justify-between"
+                                            >
                                                 <div>
-                                                    <p class="font-medium text-gray-900">
-                                                        {{ admin.user?.name || 'Unknown' }}
-                                                        <span v-if="admin.is_primary" class="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">
+                                                    <p
+                                                        class="font-medium text-gray-900"
+                                                    >
+                                                        {{
+                                                            admin.user?.name ||
+                                                            'Unknown'
+                                                        }}
+                                                        <span
+                                                            v-if="
+                                                                admin.is_primary
+                                                            "
+                                                            class="ml-2 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800"
+                                                        >
                                                             Primary
                                                         </span>
                                                     </p>
-                                                    <p class="text-sm text-gray-500">
-                                                        {{ admin.user?.email || 'No email' }}
+                                                    <p
+                                                        class="text-sm text-gray-500"
+                                                    >
+                                                        {{
+                                                            admin.user?.email ||
+                                                            'No email'
+                                                        }}
                                                     </p>
                                                 </div>
-                                                <div class="text-sm text-gray-500">
+                                                <div
+                                                    class="text-sm text-gray-500"
+                                                >
                                                     {{ admin.role }}
                                                 </div>
                                             </div>

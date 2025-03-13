@@ -1,9 +1,8 @@
 <?php
 
+use App\Http\Controllers\PrayerTimesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PrayerTimesController;
-use Illuminate\Support\Facades\Http;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +32,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/prayer-test', function () {
     return response()->json([
         'message' => 'Prayer routes are working!',
-        'timestamp' => now()->toDateTimeString()
+        'timestamp' => now()->toDateTimeString(),
     ]);
 })->name('prayer.test');
 

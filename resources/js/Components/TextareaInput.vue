@@ -25,7 +25,7 @@ defineExpose({ focus: () => textarea.value.focus() });
 <template>
     <textarea
         ref="textarea"
-        class="border-gray-300 focus:border-emerald-500 focus:ring-emerald-500 rounded-md shadow-sm"
+        class="rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500"
         :value="modelValue"
         :rows="rows"
         @input="$emit('update:modelValue', $event.target.value)"

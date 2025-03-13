@@ -35,8 +35,6 @@ class EventRegistration extends Model
 
     /**
      * Get the event that owns the registration.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function event(): BelongsTo
     {
@@ -45,8 +43,6 @@ class EventRegistration extends Model
 
     /**
      * Get the user that owns the registration.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -55,8 +51,6 @@ class EventRegistration extends Model
 
     /**
      * Check if the registration is confirmed.
-     *
-     * @return bool
      */
     public function isConfirmed(): bool
     {
@@ -65,8 +59,6 @@ class EventRegistration extends Model
 
     /**
      * Check if the registration is pending.
-     *
-     * @return bool
      */
     public function isPending(): bool
     {
@@ -75,8 +67,6 @@ class EventRegistration extends Model
 
     /**
      * Check if the registration is cancelled.
-     *
-     * @return bool
      */
     public function isCancelled(): bool
     {
@@ -85,8 +75,6 @@ class EventRegistration extends Model
 
     /**
      * Check if the attendee has attended the event.
-     *
-     * @return bool
      */
     public function hasAttended(): bool
     {
@@ -95,11 +83,9 @@ class EventRegistration extends Model
 
     /**
      * Generate a unique registration number.
-     *
-     * @return string
      */
     public static function generateRegistrationNumber(): string
     {
-        return 'REG-' . strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
+        return 'REG-'.strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
     }
 }

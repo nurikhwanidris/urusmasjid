@@ -24,12 +24,11 @@ class VerificationController extends Controller
 
     /**
      * Show the phone verification form.
-     *
-     * @return Response
      */
     public function showPhoneVerificationForm(): Response
     {
         $verificationCode = session('verification_code');
+
         return Inertia::render('Auth/VerifyPhone', [
             'verification_code' => $verificationCode,
             'status' => session('status'),
@@ -38,9 +37,6 @@ class VerificationController extends Controller
 
     /**
      * Send a verification code to the user's phone.
-     *
-     * @param Request $request
-     * @return RedirectResponse
      */
     public function sendVerificationCode(Request $request): RedirectResponse
     {
@@ -59,9 +55,6 @@ class VerificationController extends Controller
 
     /**
      * Verify the user's phone with the provided code.
-     *
-     * @param Request $request
-     * @return RedirectResponse
      */
     public function verifyPhone(Request $request): RedirectResponse
     {

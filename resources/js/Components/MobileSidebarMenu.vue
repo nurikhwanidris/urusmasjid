@@ -20,7 +20,7 @@ const isOpen = ref(false);
 
 // Check if any child route is active
 const isActive = computed(() => {
-    return props.routes.some(routeName => route().current(routeName));
+    return props.routes.some((routeName) => route().current(routeName));
 });
 
 // Toggle submenu
@@ -84,10 +84,7 @@ const iconClasses = computed(() =>
         </button>
 
         <!-- Submenu Items -->
-        <div
-            v-if="isOpen"
-            class="ml-8 space-y-1 border-l border-gray-100 pl-2"
-        >
+        <div v-if="isOpen" class="ml-8 space-y-1 border-l border-gray-100 pl-2">
             <slot></slot>
         </div>
     </div>

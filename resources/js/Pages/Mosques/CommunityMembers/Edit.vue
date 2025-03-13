@@ -15,14 +15,12 @@ const props = defineProps({
 });
 
 const form = useForm({
-    full_name: props.member.full_name,
+    name: props.member.name,
     ic_number: props.member.ic_number || '',
     phone_number: props.member.phone_number || '',
     email: props.member.email || '',
     address: props.member.address || '',
-    date_of_birth: props.member.date_of_birth || '',
-    gender: props.member.gender || '',
-    membership_status: props.member.membership_status,
+    status: props.member.status,
     notes: props.member.notes || '',
 });
 
@@ -30,11 +28,6 @@ const statusOptions = [
     { value: 'active', label: 'Aktif' },
     { value: 'pending', label: 'Menunggu' },
     { value: 'inactive', label: 'Tidak Aktif' },
-];
-
-const genderOptions = [
-    { value: 'male', label: 'Lelaki' },
-    { value: 'female', label: 'Perempuan' },
 ];
 
 const submit = () => {
@@ -73,21 +66,18 @@ const submit = () => {
                             <div class="mb-6 grid gap-6 md:grid-cols-2">
                                 <!-- Full Name -->
                                 <div>
-                                    <InputLabel
-                                        for="full_name"
-                                        value="Nama Penuh"
-                                    />
+                                    <InputLabel for="name" value="Nama Penuh" />
                                     <TextInput
-                                        id="full_name"
+                                        id="name"
                                         type="text"
                                         class="mt-1 block w-full"
-                                        v-model="form.full_name"
+                                        v-model="form.name"
                                         required
                                         autofocus
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="form.errors.full_name"
+                                        :message="form.errors.name"
                                     />
                                 </div>
 
@@ -144,55 +134,22 @@ const submit = () => {
                                     />
                                 </div>
 
-                                <!-- Date of Birth -->
+                                <!-- Status -->
                                 <div>
                                     <InputLabel
-                                        for="date_of_birth"
-                                        value="Tarikh Lahir"
-                                    />
-                                    <TextInput
-                                        id="date_of_birth"
-                                        type="date"
-                                        class="mt-1 block w-full"
-                                        v-model="form.date_of_birth"
-                                    />
-                                    <InputError
-                                        class="mt-2"
-                                        :message="form.errors.date_of_birth"
-                                    />
-                                </div>
-
-                                <!-- Gender -->
-                                <div>
-                                    <InputLabel for="gender" value="Jantina" />
-                                    <SelectInput
-                                        id="gender"
-                                        class="mt-1 block w-full"
-                                        v-model="form.gender"
-                                        :options="genderOptions"
-                                    />
-                                    <InputError
-                                        class="mt-2"
-                                        :message="form.errors.gender"
-                                    />
-                                </div>
-
-                                <!-- Membership Status -->
-                                <div>
-                                    <InputLabel
-                                        for="membership_status"
+                                        for="status"
                                         value="Status Keahlian"
                                     />
                                     <SelectInput
-                                        id="membership_status"
+                                        id="status"
                                         class="mt-1 block w-full"
-                                        v-model="form.membership_status"
+                                        v-model="form.status"
                                         :options="statusOptions"
                                         required
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="form.errors.membership_status"
+                                        :message="form.errors.status"
                                     />
                                 </div>
                             </div>

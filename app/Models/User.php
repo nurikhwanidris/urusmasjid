@@ -67,8 +67,6 @@ class User extends Authenticatable
 
     /**
      * Get the is_admin attribute.
-     *
-     * @return bool
      */
     public function getIsAdminAttribute(): bool
     {
@@ -77,8 +75,6 @@ class User extends Authenticatable
 
     /**
      * Get the mosques created by this user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function createdMosques(): HasMany
     {
@@ -87,8 +83,6 @@ class User extends Authenticatable
 
     /**
      * Get the mosques verified by this user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function verifiedMosques(): HasMany
     {
@@ -97,8 +91,6 @@ class User extends Authenticatable
 
     /**
      * Get the mosque admin roles of this user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function mosqueAdminRoles(): HasMany
     {
@@ -107,8 +99,6 @@ class User extends Authenticatable
 
     /**
      * Get the community memberships of this user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function communityMemberships(): HasMany
     {
@@ -117,8 +107,6 @@ class User extends Authenticatable
 
     /**
      * Get the committee positions of this user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function committeePositions(): HasMany
     {
@@ -127,8 +115,6 @@ class User extends Authenticatable
 
     /**
      * Check if the user is a system admin.
-     *
-     * @return bool
      */
     public function isSystemAdmin(): bool
     {
@@ -138,24 +124,24 @@ class User extends Authenticatable
     /**
      * Check if the user is an admin of the given mosque.
      *
-     * @param Mosque|int $mosque
-     * @return bool
+     * @param  Mosque|int  $mosque
      */
     public function isMosqueAdmin($mosque): bool
     {
         $mosqueId = $mosque instanceof Mosque ? $mosque->id : $mosque;
+
         return $this->mosqueAdminRoles()->where('mosque_id', $mosqueId)->exists();
     }
 
     /**
      * Check if the user is a primary admin of the given mosque.
      *
-     * @param Mosque|int $mosque
-     * @return bool
+     * @param  Mosque|int  $mosque
      */
     public function isPrimaryMosqueAdmin($mosque): bool
     {
         $mosqueId = $mosque instanceof Mosque ? $mosque->id : $mosque;
+
         return $this->mosqueAdminRoles()->where('mosque_id', $mosqueId)
             ->where('is_primary', true)
             ->exists();
@@ -164,12 +150,12 @@ class User extends Authenticatable
     /**
      * Check if the user is a committee member of the given mosque.
      *
-     * @param Mosque|int $mosque
-     * @return bool
+     * @param  Mosque|int  $mosque
      */
     public function isCommitteeMember($mosque): bool
     {
         $mosqueId = $mosque instanceof Mosque ? $mosque->id : $mosque;
+
         return $this->committeePositions()->where('mosque_id', $mosqueId)
             ->where('status', 'active')
             ->exists();
@@ -177,9 +163,6 @@ class User extends Authenticatable
 
     /**
      * Check if the user has the given role.
-     *
-     * @param string $role
-     * @return bool
      */
     public function hasRole(string $role): bool
     {
@@ -188,8 +171,6 @@ class User extends Authenticatable
 
     /**
      * Check if the user's phone is verified.
-     *
-     * @return bool
      */
     public function isPhoneVerified(): bool
     {
@@ -198,8 +179,6 @@ class User extends Authenticatable
 
     /**
      * Mark the user's phone as verified.
-     *
-     * @return bool
      */
     public function markPhoneAsVerified(): bool
     {
@@ -212,8 +191,6 @@ class User extends Authenticatable
 
     /**
      * Generate a verification code for the user.
-     *
-     * @return string
      */
     public function generateVerificationCode(): string
     {
@@ -228,8 +205,6 @@ class User extends Authenticatable
 
     /**
      * Get the mosque associated with the user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function mosque(): HasOne
     {

@@ -35,8 +35,6 @@ class CommunityMember extends Model
 
     /**
      * Get the mosque that this community member belongs to.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function mosque(): BelongsTo
     {
@@ -45,8 +43,6 @@ class CommunityMember extends Model
 
     /**
      * Get the user associated with this community member.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {

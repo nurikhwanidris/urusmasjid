@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mosque;
-use App\Models\MosqueAdmin;
+use App\Models\MosqueUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +27,9 @@ class MosqueController extends Controller
             $mosques = Mosque::with('user')->latest()->paginate(10);
         } else {
             // Show mosques where user is an admin
-            $mosqueIds = MosqueAdmin::where('user_id', $user->id)->pluck('mosque_id');
+            $mosqueIds = MosqueUser::where('user_id', $user->id)
+                ->where('type', 'admin')
+                ->pluck('mosque_id');
             $mosques = Mosque::with('user')->whereIn('id', $mosqueIds)->latest()->paginate(10);
         }
 
@@ -53,7 +55,6 @@ class MosqueController extends Controller
     /**
      * Store a newly created mosque in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
@@ -130,9 +131,10 @@ class MosqueController extends Controller
             ]);
 
             // Create mosque admin record
-            MosqueAdmin::create([
+            MosqueUser::create([
                 'mosque_id' => $mosque->id,
                 'user_id' => Auth::id(),
+                'type' => 'admin',
                 'role' => 'admin',
                 'is_primary' => true,
                 'ic_number' => $validated['ic_number'],
@@ -151,14 +153,14 @@ class MosqueController extends Controller
                 ->with('success', 'Masjid berjaya didaftarkan!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->withErrors(['error' => 'Failed to register mosque. ' . $e->getMessage()]);
+
+            return back()->withErrors(['error' => 'Failed to register mosque. '.$e->getMessage()]);
         }
     }
 
     /**
      * Display the specified mosque.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @return \Inertia\Response
      */
     public function show(Mosque $mosque)
@@ -167,16 +169,32 @@ class MosqueController extends Controller
             abort(403);
         }
 
-        $mosque->load(['user', 'admins.user', 'communityMembers']);
+        $mosque->load(['user']);
+
+        // Load admin users
+        $admins = MosqueUser::with('user')
+            ->where('mosque_id', $mosque->id)
+            ->where('type', 'admin')
+            ->get();
+
+        // Load community members
+        $communityMembers = MosqueUser::with('user')
+            ->where('mosque_id', $mosque->id)
+            ->where('type', 'community')
+            ->get();
 
         // Load committee members
-        $committees = $mosque->committeeMembers()
-            ->orderBy('position')
+        $committees = MosqueUser::with('user')
+            ->where('mosque_id', $mosque->id)
+            ->where('type', 'committee')
+            ->orderBy('role')
             ->limit(5) // Limit to 5 for preview
             ->get();
 
         return Inertia::render('Mosques/Show', [
             'mosque' => $mosque,
+            'admins' => $admins,
+            'communityMembers' => $communityMembers,
             'committees' => $committees,
         ]);
     }
@@ -184,7 +202,6 @@ class MosqueController extends Controller
     /**
      * Show the form for editing the specified mosque.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @return \Inertia\Response
      */
     public function edit(Mosque $mosque)
@@ -254,7 +271,6 @@ class MosqueController extends Controller
     /**
      * Remove the specified mosque from storage.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Mosque $mosque)
@@ -272,8 +288,6 @@ class MosqueController extends Controller
     /**
      * Verify a mosque.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Mosque  $mosque
      * @return \Illuminate\Http\RedirectResponse
      */
     public function verify(Request $request, Mosque $mosque)

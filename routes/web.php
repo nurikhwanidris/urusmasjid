@@ -1,16 +1,16 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\MosqueCommitteeController;
 use App\Http\Controllers\MosqueCommunityMemberController;
 use App\Http\Controllers\MosqueController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\EventRegistrationController;
-use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\PublicEventRegistrationController;
 use App\Http\Middleware\EnsurePhoneIsVerified;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -21,11 +21,14 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+// Public routes for event registration via QR code (no auth required)
+Route::get('/events/{eventId}/register', [PublicEventRegistrationController::class, 'showRegistrationForm'])->name('events.public.register');
+Route::post('/events/{eventId}/register', [PublicEventRegistrationController::class, 'processRegistration'])->name('events.public.register.store');
 
 // Routes that only require authentication
 Route::middleware(['auth'])->group(function () {
     // Mosque creation route - accessible after phone verification
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/masjid/create', [MosqueController::class, 'create'])->name('masjid.create');
     Route::post('/masjid', [MosqueController::class, 'store'])->name('masjid.store');
 });

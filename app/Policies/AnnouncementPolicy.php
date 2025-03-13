@@ -6,7 +6,6 @@ use App\Models\Announcement;
 use App\Models\Mosque;
 use App\Models\MosqueUser;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class AnnouncementPolicy
 {

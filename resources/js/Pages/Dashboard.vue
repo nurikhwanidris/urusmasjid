@@ -9,7 +9,19 @@ const props = defineProps({
     upComingEvents: Array,
     khariah: Array,
     ajk: Array,
+    announcements: Array,
 });
+
+// Format date function for displaying dates in a readable format
+const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ms-MY', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    });
+};
 
 const recentDonations = ref([
     {
@@ -43,33 +55,6 @@ const masjidStats = ref({
     activeCourses: 5,
 });
 
-const announcements = ref([
-    {
-        id: 1,
-        title: 'Jadual Solat Bulan Ramadan',
-        date: '05-03-2025',
-        content:
-            'Jadual solat Ramadan telah diperbarui. Sila semak papan pengumuman untuk maklumat lanjut.',
-        priority: 'high',
-    },
-    {
-        id: 2,
-        title: 'Kerja Pembaikan',
-        date: '04-03-2025',
-        content:
-            'Area parkir akan ditutup untuk pembaikan dari 15-17 Jun. Sila gunakan parkir alternatif.',
-        priority: 'medium',
-    },
-    {
-        id: 3,
-        title: 'Lantikan Imam Baru',
-        date: '02-03-2025',
-        content:
-            'Ustaz Ahmad telah dipilih sebagai imam baru kami. Sila semak papan pengumuman untuk maklumat lanjut.',
-        priority: 'normal',
-    },
-]);
-
 const tasks = ref([
     { id: 1, title: 'Update prayer schedule', completed: true },
     { id: 2, title: 'Organize community iftar', completed: false },
@@ -89,17 +74,6 @@ const toggleTask = (id) => {
     const task = tasks.value.find((task) => task.id === id);
     if (task) {
         task.completed = !task.completed;
-    }
-};
-
-const getPriorityClass = (priority) => {
-    switch (priority) {
-        case 'high':
-            return 'bg-red-100 text-red-800';
-        case 'medium':
-            return 'bg-yellow-100 text-yellow-800';
-        default:
-            return 'bg-blue-100 text-blue-800';
     }
 };
 
@@ -379,7 +353,9 @@ const address = computed(() => {
                                 v-if="loading"
                                 class="flex items-center justify-center px-6 py-8"
                             >
-                                <div class="text-center">
+                                <div
+                                    class="flex flex-col items-center justify-center"
+                                >
                                     <div
                                         class="mb-2 h-8 w-8 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-600"
                                     ></div>
@@ -688,11 +664,30 @@ const address = computed(() => {
                         <!-- Announcements -->
                         <div class="overflow-hidden rounded-lg bg-white shadow">
                             <div class="border-b border-gray-200 px-6 py-4">
-                                <h3 class="text-lg font-medium text-gray-900">
-                                    Pengumuman
-                                </h3>
+                                <div class="flex items-center justify-between">
+                                    <h3
+                                        class="text-lg font-medium text-gray-900"
+                                    >
+                                        Pengumuman
+                                    </h3>
+                                    <Link
+                                        v-if="mosque && mosque.id"
+                                        :href="
+                                            route(
+                                                'masjid.pengumuman.index',
+                                                mosque.id,
+                                            )
+                                        "
+                                        class="text-sm font-medium text-emerald-600 hover:text-emerald-500"
+                                    >
+                                        Lihat Semua
+                                    </Link>
+                                </div>
                             </div>
-                            <div class="divide-y divide-gray-200">
+                            <div
+                                v-if="announcements && announcements.length > 0"
+                                class="divide-y divide-gray-200"
+                            >
                                 <div
                                     v-for="announcement in announcements"
                                     :key="announcement.id"
@@ -706,40 +701,110 @@ const address = computed(() => {
                                                 <h4
                                                     class="text-base font-medium text-gray-900"
                                                 >
-                                                    {{ announcement.title }}
+                                                    <Link
+                                                        v-if="
+                                                            mosque && mosque.id
+                                                        "
+                                                        :href="
+                                                            route(
+                                                                'masjid.pengumuman.show',
+                                                                [
+                                                                    mosque.id,
+                                                                    announcement.id,
+                                                                ],
+                                                            )
+                                                        "
+                                                    >
+                                                        {{ announcement.title }}
+                                                    </Link>
+                                                    <span v-else>{{
+                                                        announcement.title
+                                                    }}</span>
                                                 </h4>
                                                 <span
                                                     :class="[
                                                         'ml-2 rounded-full px-2 py-0.5 text-xs font-medium',
-                                                        getPriorityClass(
-                                                            announcement.priority,
-                                                        ),
+                                                        announcement.type ===
+                                                        'emergency'
+                                                            ? 'bg-red-100 text-red-800'
+                                                            : announcement.type ===
+                                                                'important'
+                                                              ? 'bg-yellow-100 text-yellow-800'
+                                                              : 'bg-blue-100 text-blue-800',
                                                     ]"
                                                 >
                                                     {{
-                                                        announcement.priority ===
-                                                        'high'
-                                                            ? 'Penting'
-                                                            : announcement.priority ===
-                                                                'medium'
-                                                              ? 'Sederhana'
-                                                              : 'Biasa'
+                                                        announcement.type ===
+                                                        'emergency'
+                                                            ? 'Kecemasan'
+                                                            : announcement.type ===
+                                                                'important'
+                                                              ? 'Penting'
+                                                              : 'Umum'
                                                     }}
                                                 </span>
                                             </div>
                                             <p
-                                                class="mt-1 text-sm text-gray-500"
+                                                class="mt-1 line-clamp-2 text-sm text-gray-500"
                                             >
                                                 {{ announcement.content }}
                                             </p>
-                                            <p
-                                                class="mt-2 text-xs text-gray-400"
+                                            <div
+                                                class="mt-2 flex items-center text-xs text-gray-400"
                                             >
-                                                {{ announcement.date }}
-                                            </p>
+                                                <span>{{
+                                                    formatDate(
+                                                        announcement.published_at,
+                                                    )
+                                                }}</span>
+                                                <span
+                                                    v-if="
+                                                        announcement.expires_at
+                                                    "
+                                                    class="ml-2"
+                                                >
+                                                    • Tamat:
+                                                    {{
+                                                        formatDate(
+                                                            announcement.expires_at,
+                                                        )
+                                                    }}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div v-else class="px-6 py-8 text-center">
+                                <p class="text-sm text-gray-500">
+                                    Tiada pengumuman pada masa ini.
+                                </p>
+                                <Link
+                                    v-if="mosque && mosque.id"
+                                    :href="
+                                        route(
+                                            'masjid.pengumuman.create',
+                                            mosque.id,
+                                        )
+                                    "
+                                    class="mt-4 inline-flex items-center rounded-md border border-transparent bg-emerald-100 px-4 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-200"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        class="mr-2 h-4 w-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                        />
+                                    </svg>
+                                    Cipta Pengumuman
+                                </Link>
                             </div>
                         </div>
 

@@ -43,8 +43,6 @@ class Mosque extends Model
 
     /**
      * Get the user who created this mosque.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {
@@ -53,8 +51,6 @@ class Mosque extends Model
 
     /**
      * Get the user who verified this mosque.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function verifier(): BelongsTo
     {
@@ -63,8 +59,6 @@ class Mosque extends Model
 
     /**
      * Get all mosque users (both admins and committee members).
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function mosqueUsers(): HasMany
     {
@@ -73,8 +67,6 @@ class Mosque extends Model
 
     /**
      * Get the mosque admins.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function admins(): HasMany
     {
@@ -83,8 +75,6 @@ class Mosque extends Model
 
     /**
      * Get the committee members (AJK) of this mosque.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function committeeMembers(): HasMany
     {
@@ -93,8 +83,6 @@ class Mosque extends Model
 
     /**
      * Get the community members (kariah) of this mosque.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function communityMembers(): HasMany
     {
@@ -103,8 +91,6 @@ class Mosque extends Model
 
     /**
      * Get the events of this mosque.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function events(): HasMany
     {
@@ -113,8 +99,6 @@ class Mosque extends Model
 
     /**
      * Get the announcements of this mosque.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function announcements(): HasMany
     {
@@ -123,8 +107,6 @@ class Mosque extends Model
 
     /**
      * Get the published announcements of this mosque.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function publishedAnnouncements(): HasMany
     {
@@ -133,8 +115,6 @@ class Mosque extends Model
 
     /**
      * Get the upcoming events of this mosque.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function upcomingEvents(): HasMany
     {
@@ -143,8 +123,6 @@ class Mosque extends Model
 
     /**
      * Get the ongoing events of this mosque.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function ongoingEvents(): HasMany
     {
@@ -153,8 +131,6 @@ class Mosque extends Model
 
     /**
      * Get the past events of this mosque.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function pastEvents(): HasMany
     {
@@ -163,8 +139,6 @@ class Mosque extends Model
 
     /**
      * Check if the mosque is verified.
-     *
-     * @return bool
      */
     public function isVerified(): bool
     {
@@ -173,8 +147,6 @@ class Mosque extends Model
 
     /**
      * Check if the mosque is pending verification.
-     *
-     * @return bool
      */
     public function isPending(): bool
     {
@@ -183,8 +155,6 @@ class Mosque extends Model
 
     /**
      * Check if the mosque is rejected.
-     *
-     * @return bool
      */
     public function isRejected(): bool
     {
@@ -193,8 +163,6 @@ class Mosque extends Model
 
     /**
      * Get the full address as a formatted string.
-     *
-     * @return string
      */
     public function getFullAddressAttribute(): string
     {
@@ -203,12 +171,12 @@ class Mosque extends Model
             $this->address_line_2,
             $this->city,
             $this->district,
-            $this->postal_code . ' ' . $this->state,
+            $this->postal_code.' '.$this->state,
         ];
 
         // Filter out empty parts
         $parts = array_filter($parts, function ($part) {
-            return !empty($part);
+            return ! empty($part);
         });
 
         return implode(', ', $parts);

@@ -36,8 +36,6 @@ class Announcement extends Model
 
     /**
      * Get the mosque that owns the announcement.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function mosque(): BelongsTo
     {
@@ -46,8 +44,6 @@ class Announcement extends Model
 
     /**
      * Get the user who created the announcement.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function creator(): BelongsTo
     {
@@ -56,8 +52,6 @@ class Announcement extends Model
 
     /**
      * Check if the announcement is published.
-     *
-     * @return bool
      */
     public function isPublished(): bool
     {
@@ -69,8 +63,6 @@ class Announcement extends Model
 
     /**
      * Check if the announcement is expired.
-     *
-     * @return bool
      */
     public function isExpired(): bool
     {
@@ -79,8 +71,6 @@ class Announcement extends Model
 
     /**
      * Check if the announcement is a draft.
-     *
-     * @return bool
      */
     public function isDraft(): bool
     {
@@ -89,8 +79,6 @@ class Announcement extends Model
 
     /**
      * Check if the announcement is archived.
-     *
-     * @return bool
      */
     public function isArchived(): bool
     {
@@ -106,12 +94,12 @@ class Announcement extends Model
     public function scopePublished($query)
     {
         return $query->where('status', 'published')
-                     ->whereNotNull('published_at')
-                     ->where('published_at', '<=', now())
-                     ->where(function ($query) {
-                         $query->whereNull('expires_at')
-                               ->orWhere('expires_at', '>', now());
-                     });
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now())
+            ->where(function ($query) {
+                $query->whereNull('expires_at')
+                    ->orWhere('expires_at', '>', now());
+            });
     }
 
     /**
@@ -123,7 +111,7 @@ class Announcement extends Model
     public function scopeExpired($query)
     {
         return $query->whereNotNull('expires_at')
-                     ->where('expires_at', '<=', now());
+            ->where('expires_at', '<=', now());
     }
 
     /**

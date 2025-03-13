@@ -110,7 +110,7 @@ const updateFilters = () => {
         {
             preserveState: true,
             replace: true,
-        }
+        },
     );
 };
 
@@ -134,17 +134,34 @@ const truncateContent = (content, maxLength = 100) => {
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-white border-b border-gray-200">
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-                            <h2 class="text-2xl font-semibold text-gray-900 mb-4 sm:mb-0">
+                    <div class="border-b border-gray-200 bg-white p-6">
+                        <div
+                            class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between"
+                        >
+                            <h2
+                                class="mb-4 text-2xl font-semibold text-gray-900 sm:mb-0"
+                            >
                                 Pengumuman
                             </h2>
                             <Link
-                                :href="route('masjid.pengumuman.create', mosque.id)"
-                                class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-700 active:bg-emerald-800 focus:outline-none focus:border-emerald-800 focus:ring focus:ring-emerald-200 disabled:opacity-25 transition"
+                                :href="
+                                    route('masjid.pengumuman.create', mosque.id)
+                                "
+                                class="inline-flex items-center rounded-md border border-transparent bg-emerald-600 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition hover:bg-emerald-700 focus:border-emerald-800 focus:outline-none focus:ring focus:ring-emerald-200 active:bg-emerald-800 disabled:opacity-25"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="mr-2 h-4 w-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 4v16m8-8H4"
+                                    />
                                 </svg>
                                 Cipta Pengumuman
                             </Link>
@@ -153,31 +170,51 @@ const truncateContent = (content, maxLength = 100) => {
                         <!-- Filters -->
                         <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
                             <div>
-                                <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <label
+                                    for="status"
+                                    class="mb-1 block text-sm font-medium text-gray-700"
+                                    >Status</label
+                                >
                                 <select
                                     id="status"
                                     v-model="status"
-                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"
+                                    class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-emerald-500 focus:outline-none focus:ring-emerald-500 sm:text-sm"
                                 >
-                                    <option v-for="option in statusOptions" :key="option.value" :value="option.value">
+                                    <option
+                                        v-for="option in statusOptions"
+                                        :key="option.value"
+                                        :value="option.value"
+                                    >
                                         {{ option.label }}
                                     </option>
                                 </select>
                             </div>
                             <div>
-                                <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Jenis</label>
+                                <label
+                                    for="type"
+                                    class="mb-1 block text-sm font-medium text-gray-700"
+                                    >Jenis</label
+                                >
                                 <select
                                     id="type"
                                     v-model="type"
-                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm rounded-md"
+                                    class="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-emerald-500 focus:outline-none focus:ring-emerald-500 sm:text-sm"
                                 >
-                                    <option v-for="option in typeOptions" :key="option.value" :value="option.value">
+                                    <option
+                                        v-for="option in typeOptions"
+                                        :key="option.value"
+                                        :value="option.value"
+                                    >
                                         {{ option.label }}
                                     </option>
                                 </select>
                             </div>
                             <div>
-                                <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Carian</label>
+                                <label
+                                    for="search"
+                                    class="mb-1 block text-sm font-medium text-gray-700"
+                                    >Carian</label
+                                >
                                 <SearchInput
                                     id="search"
                                     v-model="search"
@@ -192,70 +229,154 @@ const truncateContent = (content, maxLength = 100) => {
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th
+                                            scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                        >
                                             Tajuk
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th
+                                            scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                        >
                                             Kandungan
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th
+                                            scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                        >
                                             Jenis
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th
+                                            scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                        >
                                             Status
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th
+                                            scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                        >
                                             Tarikh Terbit
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th
+                                            scope="col"
+                                            class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                                        >
                                             Tarikh Tamat
                                         </th>
-                                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th
+                                            scope="col"
+                                            class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500"
+                                        >
                                             Tindakan
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    <tr v-for="announcement in announcements.data" :key="announcement.id">
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm font-medium text-gray-900">
+                                <tbody
+                                    class="divide-y divide-gray-200 bg-white"
+                                >
+                                    <tr
+                                        v-for="announcement in announcements.data"
+                                        :key="announcement.id"
+                                    >
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <div
+                                                class="text-sm font-medium text-gray-900"
+                                            >
                                                 {{ announcement.title }}
                                             </div>
                                         </td>
                                         <td class="px-6 py-4">
-                                            <div class="text-sm text-gray-500 max-w-xs">
-                                                {{ truncateContent(announcement.content) }}
+                                            <div
+                                                class="max-w-xs text-sm text-gray-500"
+                                            >
+                                                {{
+                                                    truncateContent(
+                                                        announcement.content,
+                                                    )
+                                                }}
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <Badge :class="getTypeClass(announcement.type)">
-                                                {{ getTypeLabel(announcement.type) }}
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <Badge
+                                                :class="
+                                                    getTypeClass(
+                                                        announcement.type,
+                                                    )
+                                                "
+                                            >
+                                                {{
+                                                    getTypeLabel(
+                                                        announcement.type,
+                                                    )
+                                                }}
                                             </Badge>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <Badge :class="getStatusClass(announcement.status)">
-                                                {{ getStatusLabel(announcement.status) }}
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            <Badge
+                                                :class="
+                                                    getStatusClass(
+                                                        announcement.status,
+                                                    )
+                                                "
+                                            >
+                                                {{
+                                                    getStatusLabel(
+                                                        announcement.status,
+                                                    )
+                                                }}
                                             </Badge>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
+                                        <td class="whitespace-nowrap px-6 py-4">
                                             <div class="text-sm text-gray-500">
-                                                {{ announcement.published_at ? formatDate(announcement.published_at) : '-' }}
+                                                {{
+                                                    announcement.published_at
+                                                        ? formatDate(
+                                                              announcement.published_at,
+                                                          )
+                                                        : '-'
+                                                }}
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
+                                        <td class="whitespace-nowrap px-6 py-4">
                                             <div class="text-sm text-gray-500">
-                                                {{ announcement.expires_at ? formatDate(announcement.expires_at) : '-' }}
+                                                {{
+                                                    announcement.expires_at
+                                                        ? formatDate(
+                                                              announcement.expires_at,
+                                                          )
+                                                        : '-'
+                                                }}
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <td
+                                            class="whitespace-nowrap px-6 py-4 text-right text-sm font-medium"
+                                        >
                                             <Link
-                                                :href="route('masjid.pengumuman.show', [mosque.id, announcement.id])"
-                                                class="text-emerald-600 hover:text-emerald-900 mr-3"
+                                                :href="
+                                                    route(
+                                                        'masjid.pengumuman.show',
+                                                        [
+                                                            mosque.id,
+                                                            announcement.id,
+                                                        ],
+                                                    )
+                                                "
+                                                class="mr-3 text-emerald-600 hover:text-emerald-900"
                                             >
                                                 Lihat
                                             </Link>
                                             <Link
-                                                :href="route('masjid.pengumuman.edit', [mosque.id, announcement.id])"
+                                                :href="
+                                                    route(
+                                                        'masjid.pengumuman.edit',
+                                                        [
+                                                            mosque.id,
+                                                            announcement.id,
+                                                        ],
+                                                    )
+                                                "
                                                 class="text-indigo-600 hover:text-indigo-900"
                                             >
                                                 Edit
@@ -263,7 +384,10 @@ const truncateContent = (content, maxLength = 100) => {
                                         </td>
                                     </tr>
                                     <tr v-if="announcements.data.length === 0">
-                                        <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                        <td
+                                            colspan="7"
+                                            class="px-6 py-4 text-center text-gray-500"
+                                        >
                                             Tiada pengumuman dijumpai.
                                         </td>
                                     </tr>

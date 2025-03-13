@@ -40,7 +40,7 @@ return new class extends Migration
                 'state',
                 'postal_code',
                 'latitude',
-                'longitude'
+                'longitude',
             ]);
 
             // Rename street_address back to address

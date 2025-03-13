@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mosque;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
@@ -84,7 +82,6 @@ class AdminController extends Controller
     /**
      * Show the form for verifying a mosque.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @return \Inertia\Response
      */
     public function verifyMosque(Mosque $mosque)

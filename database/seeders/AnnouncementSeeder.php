@@ -20,6 +20,7 @@ class AnnouncementSeeder extends Seeder
 
         if ($mosques->isEmpty() || $adminUsers->isEmpty()) {
             $this->command->info('No verified mosques or admin users found. Skipping announcement seeding.');
+
             return;
         }
 

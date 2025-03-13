@@ -1,10 +1,13 @@
 <script setup>
 import { ref, computed } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import Modal from '@/Components/Modal.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import QrcodeVue from 'qrcode-vue';
 
 const props = defineProps({
     mosque: Object,
@@ -51,110 +54,125 @@ const formatTime = (timeString) => {
     return timeString;
 };
 
+const showQrCode = ref(false);
+
+// Generate the registration URL for QR code
+const registrationUrl = computed(() => {
+    return (
+        window.location.origin + route('events.public.register', props.event.id)
+    );
+});
+
+const toggleQrCode = () => {
+    showQrCode.value = !showQrCode.value;
+};
+
 // Get event status
 const getEventStatus = computed(() => {
     const today = new Date();
     const startDate = parseDate(props.event.start_date);
-    const endDate = parseDate(props.event.end_date);
+    const endDate = props.event.end_date
+        ? parseDate(props.event.end_date)
+        : startDate;
 
     if (props.event.status === 'cancelled') {
         return {
-            text: 'Dibatalkan',
-            class: 'bg-red-100 text-red-800',
+            label: 'Dibatalkan',
+            color: 'bg-red-100 text-red-800',
         };
-    }
-
-    if (isAfterDate(startDate, today)) {
+    } else if (props.event.status === 'postponed') {
         return {
-            text: 'Akan Datang',
-            class: 'bg-blue-100 text-blue-800',
+            label: 'Ditangguhkan',
+            color: 'bg-yellow-100 text-yellow-800',
         };
-    }
-
-    if (
-        (isAfterDate(today, startDate) || isSameDay(startDate, today)) &&
-        (isBeforeDate(today, endDate) || isSameDay(endDate, today))
-    ) {
+    } else if (props.event.status === 'completed') {
         return {
-            text: 'Sedang Berlangsung',
-            class: 'bg-green-100 text-green-800',
+            label: 'Selesai',
+            color: 'bg-gray-100 text-gray-800',
+        };
+    } else if (isAfterDate(today, endDate)) {
+        return {
+            label: 'Tamat',
+            color: 'bg-gray-100 text-gray-800',
+        };
+    } else if (isAfterDate(today, startDate) || isSameDay(today, startDate)) {
+        return {
+            label: 'Sedang Berlangsung',
+            color: 'bg-green-100 text-green-800',
+        };
+    } else {
+        return {
+            label: 'Akan Datang',
+            color: 'bg-blue-100 text-blue-800',
         };
     }
+});
 
-    return {
-        text: 'Telah Berlalu',
-        class: 'bg-gray-100 text-gray-800',
-    };
+// Check if user can edit the event
+const canEdit = computed(() => {
+    return (
+        props.mosque.user_role === 'admin' ||
+        props.mosque.user_role === 'committee'
+    );
 });
 
 // Helper functions for event registration
 const isRegistrationOpen = () => {
     if (!props.event.registration_required) return false;
 
-    const today = new Date();
+    // Check if event is cancelled or postponed
+    if (['cancelled', 'postponed'].includes(props.event.status)) return false;
 
     // If there's a registration deadline, check if today is before or on the deadline
     if (props.event.registration_deadline) {
         const deadline = parseDate(props.event.registration_deadline);
+        const today = new Date();
         return isBeforeDate(today, deadline) || isSameDay(today, deadline);
     }
 
-    // If no deadline, check if the event hasn't ended yet
-    const endDate = parseDate(props.event.end_date);
-    return isBeforeDate(today, endDate) || isSameDay(today, endDate);
+    // Otherwise, check if today is before the event start date
+    const startDate = parseDate(props.event.start_date);
+    const today = new Date();
+    return isBeforeDate(today, startDate) || isSameDay(today, startDate);
 };
 
-const isFull = () => {
+const isEventFull = () => {
     if (!props.event.max_participants) return false;
     return props.registrationCount >= props.event.max_participants;
 };
 
-// Notification function
-const notificationSent = ref(false);
-const notificationChannel = ref('');
-const notificationMessage = ref('');
-
-const sendNotification = (channel) => {
-    // In a real implementation, this would call an API endpoint to send notifications
-    // For now, we'll just simulate the notification being sent
-    notificationChannel.value = channel;
-
-    let channelName = '';
-    switch (channel) {
-        case 'whatsapp':
-            channelName = 'WhatsApp';
-            break;
-        case 'telegram':
-            channelName = 'Telegram';
-            break;
-        case 'email':
-            channelName = 'Email';
-            break;
+// Helper function for category class
+const categoryClass = computed(() => {
+    switch (props.event.category) {
+        case 'religious':
+            return 'bg-blue-100 text-blue-800';
+        case 'educational':
+            return 'bg-green-100 text-green-800';
+        case 'community':
+            return 'bg-yellow-100 text-yellow-800';
+        case 'charity':
+            return 'bg-red-100 text-red-800';
+        default:
+            return 'bg-gray-100 text-gray-800';
     }
+});
 
-    notificationMessage.value = `Notifikasi telah dihantar melalui ${channelName} kepada semua peserta.`;
-    notificationSent.value = true;
-
-    // Hide the notification message after 3 seconds
-    setTimeout(() => {
-        notificationSent.value = false;
-    }, 3000);
-};
-
-// Delete confirmation modal
-const showDeleteModal = ref(false);
-const confirmDelete = () => {
-    router.delete(
-        route('masjid.acara.destroy', [props.mosque.id, props.event.id]),
-        {
-            onSuccess: () => {
-                showDeleteModal.value = false;
-            },
-        },
-    );
-};
+// Helper function for category name
+const categoryName = computed(() => {
+    switch (props.event.category) {
+        case 'religious':
+            return 'Keagamaan';
+        case 'educational':
+            return 'Pendidikan';
+        case 'community':
+            return 'Komuniti';
+        case 'charity':
+            return 'Kebajikan';
+        default:
+            return 'Lain-lain';
+    }
+});
 </script>
-
 <template>
     <Head :title="`${event.title} - ${mosque.name}`" />
 
@@ -169,10 +187,7 @@ const confirmDelete = () => {
                         Kembali ke Senarai
                     </Link>
                     <Link
-                        v-if="
-                            $page.props.auth.user.id === event.created_by ||
-                            $page.props.auth.user.can.update_mosque
-                        "
+                        v-if="canEdit"
                         :href="
                             route('masjid.acara.edit', [mosque.id, event.id])
                         "
@@ -180,6 +195,18 @@ const confirmDelete = () => {
                     >
                         Edit
                     </Link>
+                </div>
+                <div v-if="event.registration_required && canEdit">
+                    <button
+                        @click="toggleQrCode"
+                        class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                    >
+                        {{
+                            showQrCode
+                                ? 'Tutup QR Code'
+                                : 'Tunjuk QR Code Pendaftaran'
+                        }}
+                    </button>
                 </div>
             </div>
         </template>
@@ -190,14 +217,31 @@ const confirmDelete = () => {
                     <div class="p-6">
                         <!-- Event Status -->
                         <div class="mb-6 flex items-center justify-between">
-                            <span
-                                :class="[
-                                    getEventStatus.class,
-                                    'inline-flex rounded-full px-3 py-1 text-sm font-semibold',
-                                ]"
-                            >
-                                {{ getEventStatus.text }}
-                            </span>
+                            <div class="flex items-center space-x-2">
+                                <span
+                                    :class="[
+                                        getEventStatus.color,
+                                        'inline-flex rounded-full px-3 py-1 text-sm font-semibold',
+                                    ]"
+                                >
+                                    {{ getEventStatus.label }}
+                                </span>
+                                <span
+                                    v-if="event.registration_required"
+                                    :class="[
+                                        isRegistrationOpen() && !isEventFull()
+                                            ? 'bg-emerald-100 text-emerald-800'
+                                            : 'bg-gray-100 text-gray-800',
+                                        'inline-flex rounded-full px-3 py-1 text-sm font-semibold',
+                                    ]"
+                                >
+                                    {{
+                                        isRegistrationOpen() && !isEventFull()
+                                            ? 'Pendaftaran Dibuka'
+                                            : 'Pendaftaran Ditutup'
+                                    }}
+                                </span>
+                            </div>
                             <div
                                 v-if="
                                     $page.props.auth.user.id ===
@@ -223,6 +267,62 @@ const confirmDelete = () => {
                             />
                         </div>
 
+                        <!-- QR Code Section -->
+                        <div
+                            v-if="
+                                showQrCode &&
+                                event.registration_required &&
+                                canEdit
+                            "
+                            class="mb-6 overflow-hidden bg-white shadow-sm sm:rounded-lg"
+                        >
+                            <div class="p-6">
+                                <h2
+                                    class="mb-4 text-xl font-semibold text-gray-900"
+                                >
+                                    QR Code Pendaftaran
+                                </h2>
+                                <p class="mb-4 text-gray-600">
+                                    Sila imbas QR code ini untuk mendaftar ke
+                                    acara ini. Anda juga boleh kongsi URL di
+                                    bawah.
+                                </p>
+                                <div class="mb-4 flex justify-center">
+                                    <div
+                                        class="rounded-lg bg-white p-4 shadow-md"
+                                    >
+                                        <QrcodeVue
+                                            :value="registrationUrl"
+                                            :size="200"
+                                            level="H"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <InputLabel value="URL Pendaftaran" />
+                                    <div class="mt-1 flex rounded-md shadow-sm">
+                                        <TextInput
+                                            type="text"
+                                            class="block w-full"
+                                            :value="registrationUrl"
+                                            readonly
+                                        />
+                                        <button
+                                            type="button"
+                                            class="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500"
+                                            @click="
+                                                navigator.clipboard.writeText(
+                                                    registrationUrl,
+                                                )
+                                            "
+                                        >
+                                            Salin
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Event Details -->
                         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
                             <!-- Main Content -->
@@ -234,7 +334,13 @@ const confirmDelete = () => {
                                     v-if="event.category"
                                     class="mt-1 text-sm text-gray-500"
                                 >
-                                    Kategori: {{ event.category }}
+                                    Kategori:
+                                    <span
+                                        class="inline-flex rounded-full px-2 py-1 text-sm font-semibold"
+                                        :class="categoryClass"
+                                    >
+                                        {{ categoryName }}
+                                    </span>
                                 </p>
 
                                 <div class="mt-6 space-y-6">

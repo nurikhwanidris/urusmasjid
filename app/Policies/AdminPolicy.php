@@ -11,9 +11,6 @@ class AdminPolicy
 
     /**
      * Determine whether the user can access admin features.
-     *
-     * @param  \App\Models\User  $user
-     * @return bool
      */
     public function access(User $user): bool
     {

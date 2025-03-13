@@ -6,7 +6,14 @@ const props = defineProps({
         type: String,
         default: 'secondary',
         validator: (value) => {
-            return ['primary', 'secondary', 'success', 'danger', 'warning', 'info'].includes(value);
+            return [
+                'primary',
+                'secondary',
+                'success',
+                'danger',
+                'warning',
+                'info',
+            ].includes(value);
         },
     },
 });

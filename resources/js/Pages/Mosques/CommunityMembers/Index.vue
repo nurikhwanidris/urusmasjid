@@ -126,7 +126,7 @@ const getStatusColor = (status) => {
                                                 <div
                                                     class="font-medium text-gray-900"
                                                 >
-                                                    {{ member.full_name }}
+                                                    {{ member.name }}
                                                 </div>
                                                 <div
                                                     v-if="member.ic_number"
@@ -157,15 +157,15 @@ const getStatusColor = (status) => {
                                                 <Badge
                                                     :color="
                                                         getStatusColor(
-                                                            member.membership_status,
+                                                            member.status,
                                                         )
                                                     "
                                                 >
                                                     {{
-                                                        member.membership_status ===
+                                                        member.status ===
                                                         'active'
                                                             ? 'Aktif'
-                                                            : member.membership_status ===
+                                                            : member.status ===
                                                                 'pending'
                                                               ? 'Menunggu'
                                                               : 'Tidak Aktif'

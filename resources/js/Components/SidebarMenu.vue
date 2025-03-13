@@ -24,7 +24,7 @@ const isOpen = ref(false);
 
 // Check if any child route is active
 const isActive = computed(() => {
-    return props.routes.some(routeName => route().current(routeName));
+    return props.routes.some((routeName) => route().current(routeName));
 });
 
 // Toggle submenu
@@ -123,7 +123,7 @@ const iconClasses = computed(() =>
         <!-- For collapsed state, show submenu items in a tooltip on hover -->
         <div
             v-if="collapsed && isOpen"
-            class="absolute left-full top-0 z-50 ml-2 mt-12 w-48 rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 opacity-0 group-hover:opacity-100"
+            class="absolute left-full top-0 z-50 ml-2 mt-12 w-48 rounded-md bg-white py-1 opacity-0 shadow-lg ring-1 ring-black ring-opacity-5 group-hover:opacity-100"
         >
             <slot></slot>
         </div>

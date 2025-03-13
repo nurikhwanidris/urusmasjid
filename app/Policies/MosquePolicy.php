@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Mosque;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class MosquePolicy
@@ -14,7 +13,7 @@ class MosquePolicy
     /**
      * Perform pre-authorization checks.
      */
-    public function before(User $user, string $ability): bool|null
+    public function before(User $user, string $ability): ?bool
     {
         if ($user->isSystemAdmin()) {
             return true;

@@ -2,12 +2,11 @@
 
 namespace App\Providers;
 
-use App\Models\User;
-use App\Models\Mosque;
 use App\Models\Announcement;
-use App\Policies\AdminPolicy;
-use App\Policies\MosquePolicy;
+use App\Models\Mosque;
+use App\Models\User;
 use App\Policies\AnnouncementPolicy;
+use App\Policies\MosquePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
