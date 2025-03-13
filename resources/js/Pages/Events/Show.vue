@@ -265,7 +265,11 @@ const confirmDelete = () => {
                                                 class="flex-shrink-0"
                                             >
                                                 <img
-                                                    :src="`/storage/${event.speaker_image}`"
+                                                    :src="
+                                                        event.speaker_image
+                                                            ? '/images/default-avatar.png'
+                                                            : `/storage/${event.speaker_image}`
+                                                    "
                                                     :alt="event.speaker"
                                                     class="h-12 w-12 rounded-full object-cover"
                                                 />

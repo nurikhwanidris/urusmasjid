@@ -36,9 +36,6 @@ class Event extends Model
         'status',
         'featured_image',
         'created_by',
-        'speaker',
-        'speaker_image',
-        'speaker_bio',
     ];
 
     /**

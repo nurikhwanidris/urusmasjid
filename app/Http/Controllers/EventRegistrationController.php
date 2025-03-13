@@ -14,7 +14,6 @@ class EventRegistrationController extends Controller
     /**
      * Display a listing of the registrations for an event.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @param  \App\Models\Event  $event
      * @return \Inertia\Response
      */
@@ -37,14 +36,13 @@ class EventRegistrationController extends Controller
     /**
      * Show the form for creating a new registration.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @param  \App\Models\Event  $event
      * @return \Inertia\Response
      */
     public function create(Mosque $mosque, Event $acara)
     {
         // Check if registration is open
-        if (!$acara->isRegistrationOpen() || $acara->isFull()) {
+        if (! $acara->isRegistrationOpen() || $acara->isFull()) {
             return redirect()->route('masjid.acara.show', [$mosque->id, $acara->id])
                 ->with('error', 'Pendaftaran untuk acara ini telah ditutup atau telah penuh.');
         }
@@ -70,15 +68,13 @@ class EventRegistrationController extends Controller
     /**
      * Store a newly created registration in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Mosque  $mosque
      * @param  \App\Models\Event  $event
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, Mosque $mosque, Event $acara)
     {
         // Check if registration is open
-        if (!$acara->isRegistrationOpen() || $acara->isFull()) {
+        if (! $acara->isRegistrationOpen() || $acara->isFull()) {
             return redirect()->route('masjid.acara.show', [$mosque->id, $acara->id])
                 ->with('error', 'Pendaftaran untuk acara ini telah ditutup atau telah penuh.');
         }
@@ -99,13 +95,12 @@ class EventRegistrationController extends Controller
         $registration = EventRegistration::create($validated);
 
         return redirect()->route('masjid.acara.show', [$mosque->id, $acara->id])
-            ->with('success', 'Pendaftaran anda telah berjaya. Nombor pendaftaran anda adalah ' . $registration->registration_number);
+            ->with('success', 'Pendaftaran anda telah berjaya. Nombor pendaftaran anda adalah '.$registration->registration_number);
     }
 
     /**
      * Display the specified registration.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @param  \App\Models\Event  $event
      * @param  \App\Models\EventRegistration  $registration
      * @return \Inertia\Response
@@ -113,7 +108,7 @@ class EventRegistrationController extends Controller
     public function show(Mosque $mosque, Event $acara, EventRegistration $pendaftaran)
     {
         // Check if user is authorized to view this registration
-        if (Auth::id() !== $pendaftaran->user_id && !Auth::user()->can('update', $mosque)) {
+        if (Auth::id() !== $pendaftaran->user_id && ! Auth::user()->can('update', $mosque)) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -127,8 +122,6 @@ class EventRegistrationController extends Controller
     /**
      * Update the specified registration in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Mosque  $mosque
      * @param  \App\Models\Event  $event
      * @param  \App\Models\EventRegistration  $registration
      * @return \Illuminate\Http\RedirectResponse
@@ -157,7 +150,6 @@ class EventRegistrationController extends Controller
     /**
      * Remove the specified registration from storage.
      *
-     * @param  \App\Models\Mosque  $mosque
      * @param  \App\Models\Event  $event
      * @param  \App\Models\EventRegistration  $registration
      * @return \Illuminate\Http\RedirectResponse
@@ -165,7 +157,7 @@ class EventRegistrationController extends Controller
     public function destroy(Mosque $mosque, Event $acara, EventRegistration $pendaftaran)
     {
         // Check if user is authorized to delete this registration
-        if (Auth::id() !== $pendaftaran->user_id && !Auth::user()->can('update', $mosque)) {
+        if (Auth::id() !== $pendaftaran->user_id && ! Auth::user()->can('update', $mosque)) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -183,8 +175,6 @@ class EventRegistrationController extends Controller
     /**
      * Mark attendance for a registration.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Mosque  $mosque
      * @param  \App\Models\Event  $event
      * @param  \App\Models\EventRegistration  $registration
      * @return \Illuminate\Http\RedirectResponse

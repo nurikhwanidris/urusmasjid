@@ -62,13 +62,33 @@ class Mosque extends Model
     }
 
     /**
+     * Get all mosque users (both admins and committee members).
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function mosqueUsers(): HasMany
+    {
+        return $this->hasMany(MosqueUser::class);
+    }
+
+    /**
      * Get the mosque admins.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function admins(): HasMany
     {
-        return $this->hasMany(MosqueAdmin::class);
+        return $this->mosqueUsers()->where('type', 'admin');
+    }
+
+    /**
+     * Get the committee members (AJK) of this mosque.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function committeeMembers(): HasMany
+    {
+        return $this->mosqueUsers()->where('type', 'committee');
     }
 
     /**
@@ -79,16 +99,6 @@ class Mosque extends Model
     public function communityMembers(): HasMany
     {
         return $this->hasMany(CommunityMember::class);
-    }
-
-    /**
-     * Get the committee members (AJK) of this mosque.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function committeeMembers(): HasMany
-    {
-        return $this->hasMany(MosqueCommittee::class);
     }
 
     /**
