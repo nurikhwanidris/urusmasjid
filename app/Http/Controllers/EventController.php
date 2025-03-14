@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Barryvdh\DomPDF\Facade\Pdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EventController extends Controller
 {
@@ -261,5 +263,97 @@ class EventController extends Controller
 
         return redirect()->route('masjid.acara.index', $mosque->id)
             ->with('success', 'Acara telah berjaya dipadam.');
+    }
+
+    /**
+     * Generate a PDF for the specified event with QR code.
+     *
+     * @param  \App\Models\Mosque  $mosque
+     * @param  \App\Models\Event  $acara
+     * @return \Illuminate\Http\Response
+     */
+    public function generatePdf(Mosque $mosque, Event $acara)
+    {
+        $this->authorize('view', $mosque);
+
+        $event = $acara->load('creator:id,name', 'volunteers:id,name');
+        $registrationCount = $event->registrations()->count();
+        $remainingSlots = $event->getRemainingSlots();
+
+        // Generate registration URL for QR code
+        $registrationUrl = route('events.public.register', $event->id);
+
+        // Generate QR code as SVG
+        $qrCode = base64_encode(QrCode::format('svg')
+            ->size(200)
+            ->errorCorrection('H')
+            ->generate($registrationUrl));
+
+        // Format dates
+        $startDate = $event->start_date->format('d F Y');
+        $endDate = $event->end_date->format('d F Y');
+
+        // Format times
+        $startTime = $event->start_time ?? '';
+        $endTime = $event->end_time ?? '';
+
+        // Get category name
+        $categoryName = '';
+        switch ($event->category) {
+            case 'religious':
+                $categoryName = 'Keagamaan';
+                break;
+            case 'educational':
+                $categoryName = 'Pendidikan';
+                break;
+            case 'community':
+                $categoryName = 'Komuniti';
+                break;
+            case 'charity':
+                $categoryName = 'Kebajikan';
+                break;
+            default:
+                $categoryName = 'Lain-lain';
+                break;
+        }
+
+        // Get event status
+        $eventStatus = '';
+        if ($event->status === 'cancelled') {
+            $eventStatus = 'Dibatalkan';
+        } elseif ($event->status === 'postponed') {
+            $eventStatus = 'Ditangguhkan';
+        } elseif ($event->status === 'completed') {
+            $eventStatus = 'Selesai';
+        } elseif ($event->end_date < now()) {
+            $eventStatus = 'Tamat';
+        } elseif ($event->start_date <= now()) {
+            $eventStatus = 'Sedang Berlangsung';
+        } else {
+            $eventStatus = 'Akan Datang';
+        }
+
+        // Generate PDF
+        $pdf = PDF::loadView('pdfs.event', [
+            'mosque' => $mosque,
+            'event' => $event,
+            'qrCode' => $qrCode,
+            'registrationUrl' => $registrationUrl,
+            'registrationCount' => $registrationCount,
+            'remainingSlots' => $remainingSlots,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'startTime' => $startTime,
+            'endTime' => $endTime,
+            'categoryName' => $categoryName,
+            'eventStatus' => $eventStatus,
+            'currentDate' => now()->format('d F Y'),
+        ]);
+
+        // Set paper size and orientation
+        $pdf->setPaper('a4', 'portrait');
+
+        // Return the PDF as a download
+        return $pdf->download($event->title . '.pdf');
     }
 }

@@ -82,6 +82,9 @@ Route::middleware(['auth', 'verified', EnsurePhoneIsVerified::class])->group(fun
         'destroy' => 'masjid.acara.destroy',
     ]);
 
+    // Event PDF generation route
+    Route::get('/masjid/{mosque}/acara/{acara}/pdf', [EventController::class, 'generatePdf'])->name('masjid.acara.pdf');
+
     // Masjid Event Registration routes
     Route::resource('masjid.acara.pendaftaran', EventRegistrationController::class, ['parameters' => ['masjid' => 'mosque', 'acara' => 'acara', 'pendaftaran' => 'pendaftaran']])->names([
         'index' => 'masjid.acara.pendaftaran.index',

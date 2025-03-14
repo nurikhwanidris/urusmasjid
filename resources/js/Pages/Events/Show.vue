@@ -23,7 +23,6 @@ const showQrCode = ref(false);
 const showDeleteModal = ref(false);
 const notificationSent = ref(false);
 const notificationMessage = ref('');
-const showPrintView = ref(false);
 
 // Helper function to parse ISO date string to Date object
 const parseDate = (dateString) => {
@@ -287,20 +286,6 @@ const showCopyError = () => {
         notificationSent.value = false;
     }, 3000);
 };
-
-// Function to open printable view
-const openPrintView = () => {
-    showPrintView.value = true;
-    // Wait for the DOM to update before printing
-    setTimeout(() => {
-        window.print();
-    }, 300);
-};
-
-// Function to close printable view
-const closePrintView = () => {
-    showPrintView.value = false;
-};
 </script>
 <template>
     <Head :title="`${event.title} - ${mosque.name}`" />
@@ -324,8 +309,8 @@ const closePrintView = () => {
                     >
                         Kemaskini
                     </Link>
-                    <button
-                        @click="openPrintView"
+                    <Link
+                        :href="route('masjid.acara.pdf', [mosque.id, event.id])"
                         class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     >
                         <span class="flex items-center">
@@ -340,12 +325,12 @@ const closePrintView = () => {
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
                                     stroke-width="2"
-                                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                                 />
                             </svg>
-                            Cetak
+                            Muat Turun PDF
                         </span>
-                    </button>
+                    </Link>
                 </div>
             </div>
         </template>
@@ -460,8 +445,13 @@ const closePrintView = () => {
                                     </div>
                                 </div>
                                 <div class="flex justify-center">
-                                    <button
-                                        @click="openPrintView"
+                                    <Link
+                                        :href="
+                                            route('masjid.acara.pdf', [
+                                                mosque.id,
+                                                event.id,
+                                            ])
+                                        "
                                         class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                                     >
                                         <svg
@@ -475,11 +465,11 @@ const closePrintView = () => {
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
                                                 stroke-width="2"
-                                                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                                             />
                                         </svg>
-                                        Cetak Acara dengan QR Code
-                                    </button>
+                                        Muat Turun PDF dengan QR Code
+                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -834,7 +824,7 @@ const closePrintView = () => {
                                                             viewBox="0 0 24 24"
                                                         >
                                                             <path
-                                                                d="M12 0c-6.626 0-12 5.372-12 12 0 6.627 5.374 12 12 12 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12zm3.224 17.871c.188.133.43.166.619.098.189-.068.34-.25.416-.439.728-1.841 2.261-7.268 2.686-9.144.068-.302-.037-.531-.288-.674-.253-.143-.566-.091-.756.068-1.833 1.523-7.358 6.244-8.073 6.859-.082.071-.275.005-.274-.151.003-.242.016-2.927.026-4.043.005-.517-.46-.966-.984-.929-.524.036-.904.511-.889 1.027.031 1.047.268 6.342.313 7.337.009.199.143.358.341.38.199.023.388-.105.443-.292.142-.481.509-1.773.669-2.33.028-.099.102-.145.197-.129.096.016.164.088.172.185.013.167.376 3.037.468 3.377.077.276.305.488.59.541.285.053.571-.075.732-.304.255-.363.754-1.265.944-1.607z"
+                                                                d="M12 0c-6.626 0-12 5.372-12 12 0 6.627 5.374 12 12 12 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12zm3.224 17.871c.188.133.43.166.619.098.189-.068.34-.25.416-.439.728-1.841 2.261-7.268 2.686-9.144.068-.302-.037-.531-.288-.674-.253-.143-.143-.566-.091-.756.068-1.833 1.523-7.358 6.244-8.073 6.859-.082.071-.275.005-.274-.151.003-.242.016-2.927.026-4.043.005-.517-.46-.966-.984-.929-.524.036-.904.511-.889 1.027.031 1.047.268 6.342.313 7.337.009.199.143.358.341.38.199.023.388-.105.443-.292.142-.481.509-1.773.669-2.33.028-.099.102-.145.197-.129.096.016.164.088.172.185.013.167.376 3.037.468 3.377.077.276.305.488.59.541.285.053.571-.075.732-.304.255-.363.754-1.265.944-1.607z"
                                                             />
                                                         </svg>
                                                         Telegram
@@ -1031,7 +1021,7 @@ const closePrintView = () => {
                                         <h4
                                             class="text-lg font-medium text-gray-900"
                                         >
-                                            Maklumat Hubungan
+                                            Hubungi
                                         </h4>
                                         <dl class="mt-4 space-y-4">
                                             <div v-if="event.contact_person">
@@ -1115,275 +1105,9 @@ const closePrintView = () => {
                 </div>
             </div>
         </Modal>
-
-        <!-- Printable View -->
-        <div
-            v-if="showPrintView"
-            class="printable-view fixed inset-0 z-50 bg-white p-8 print:static print:p-0"
-        >
-            <!-- Print View Header (only visible on screen) -->
-            <div class="mb-6 flex justify-between print:hidden">
-                <h2 class="text-2xl font-bold">Paparan Cetak Acara</h2>
-                <button
-                    @click="closePrintView"
-                    class="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                >
-                    Tutup
-                </button>
-            </div>
-
-            <!-- Print Content -->
-            <div class="mx-auto max-w-4xl">
-                <!-- Mosque and Event Header -->
-                <div class="mb-8 text-center">
-                    <h1 class="text-3xl font-bold text-gray-900">
-                        {{ mosque.name }}
-                    </h1>
-                    <p class="mt-2 text-gray-600">
-                        {{ mosque.street_address }}, {{ mosque.city }},
-                        {{ mosque.state }}
-                    </p>
-                </div>
-
-                <!-- Event Title -->
-                <h2 class="mb-6 text-center text-2xl font-bold text-gray-900">
-                    {{ event.title }}
-                </h2>
-
-                <!-- Event Status and Category -->
-                <div class="mb-6 flex justify-center space-x-2">
-                    <span
-                        :class="[
-                            getEventStatus.color,
-                            'inline-flex rounded-full px-3 py-1 text-sm font-semibold',
-                        ]"
-                    >
-                        {{ getEventStatus.label }}
-                    </span>
-                    <span
-                        v-if="event.category"
-                        class="inline-flex rounded-full px-2 py-1 text-sm font-semibold"
-                        :class="categoryClass"
-                    >
-                        {{ categoryName }}
-                    </span>
-                </div>
-
-                <!-- QR Code (if registration is required) -->
-                <div
-                    v-if="event.registration_required"
-                    class="mb-8 flex flex-col items-center"
-                >
-                    <h3 class="mb-4 text-xl font-semibold text-gray-900">
-                        QR Code Pendaftaran
-                    </h3>
-                    <div class="rounded-lg bg-white p-4 shadow-md">
-                        <QrcodeVue
-                            :value="registrationUrl"
-                            :size="200"
-                            render-as="svg"
-                        />
-                    </div>
-                    <p class="mt-4 text-center text-gray-600">
-                        Imbas QR code ini untuk mendaftar ke acara ini
-                    </p>
-                    <p class="mt-2 text-center text-sm text-gray-500">
-                        {{ registrationUrl }}
-                    </p>
-                </div>
-
-                <!-- Event Details -->
-                <div class="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <!-- Left Column -->
-                    <div class="space-y-4">
-                        <div>
-                            <h3 class="text-lg font-medium text-gray-900">
-                                Maklumat Acara
-                            </h3>
-                            <div class="mt-2 space-y-2">
-                                <p class="text-sm">
-                                    <span class="font-medium text-gray-700"
-                                        >Tarikh:</span
-                                    >
-                                    {{ formatDate(event.start_date) }}
-                                    <span
-                                        v-if="
-                                            event.start_date !== event.end_date
-                                        "
-                                    >
-                                        - {{ formatDate(event.end_date) }}
-                                    </span>
-                                </p>
-                                <p v-if="event.start_time" class="text-sm">
-                                    <span class="font-medium text-gray-700"
-                                        >Masa:</span
-                                    >
-                                    {{ formatTime(event.start_time) }}
-                                    <span v-if="event.end_time">
-                                        - {{ formatTime(event.end_time) }}
-                                    </span>
-                                </p>
-                                <p v-if="event.location" class="text-sm">
-                                    <span class="font-medium text-gray-700"
-                                        >Lokasi:</span
-                                    >
-                                    {{ event.location }}
-                                </p>
-                                <p
-                                    v-if="event.address"
-                                    class="whitespace-pre-line text-sm"
-                                >
-                                    <span class="font-medium text-gray-700"
-                                        >Alamat:</span
-                                    >
-                                    {{ event.address }}
-                                </p>
-                                <p v-if="event.is_online" class="text-sm">
-                                    <span class="font-medium text-gray-700"
-                                        >Jenis Acara:</span
-                                    >
-                                    Dalam Talian
-                                </p>
-                                <p
-                                    v-if="event.is_online && event.online_url"
-                                    class="text-sm"
-                                >
-                                    <span class="font-medium text-gray-700"
-                                        >URL:</span
-                                    >
-                                    {{ event.online_url }}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div v-if="event.registration_required">
-                            <h3 class="text-lg font-medium text-gray-900">
-                                Maklumat Pendaftaran
-                            </h3>
-                            <div class="mt-2 space-y-2">
-                                <p
-                                    v-if="event.registration_deadline"
-                                    class="text-sm"
-                                >
-                                    <span class="font-medium text-gray-700"
-                                        >Tarikh Tutup Pendaftaran:</span
-                                    >
-                                    {{
-                                        formatDate(event.registration_deadline)
-                                    }}
-                                </p>
-                                <p
-                                    v-if="event.max_participants"
-                                    class="text-sm"
-                                >
-                                    <span class="font-medium text-gray-700"
-                                        >Bilangan Peserta Maksimum:</span
-                                    >
-                                    {{ event.max_participants }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Column -->
-                    <div class="space-y-4">
-                        <div v-if="event.speaker">
-                            <h3 class="text-lg font-medium text-gray-900">
-                                Penceramah / Pembentang
-                            </h3>
-                            <div class="mt-2 space-y-2">
-                                <p class="text-sm">
-                                    <span class="font-medium text-gray-700"
-                                        >Nama:</span
-                                    >
-                                    {{ event.speaker }}
-                                </p>
-                                <p v-if="event.speaker_bio" class="text-sm">
-                                    <span class="font-medium text-gray-700"
-                                        >Biodata:</span
-                                    >
-                                    {{ event.speaker_bio }}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h3 class="text-lg font-medium text-gray-900">
-                                Maklumat Hubungan
-                            </h3>
-                            <div class="mt-2 space-y-2">
-                                <p v-if="event.contact_person" class="text-sm">
-                                    <span class="font-medium text-gray-700"
-                                        >Pegawai Hubungan:</span
-                                    >
-                                    {{ event.contact_person }}
-                                </p>
-                                <p v-if="event.contact_phone" class="text-sm">
-                                    <span class="font-medium text-gray-700"
-                                        >Nombor Telefon:</span
-                                    >
-                                    {{ event.contact_phone }}
-                                </p>
-                                <p v-if="event.contact_email" class="text-sm">
-                                    <span class="font-medium text-gray-700"
-                                        >Emel:</span
-                                    >
-                                    {{ event.contact_email }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Event Description -->
-                <div v-if="event.description" class="mb-8">
-                    <h3 class="mb-2 text-lg font-medium text-gray-900">
-                        Penerangan
-                    </h3>
-                    <p class="whitespace-pre-line text-gray-700">
-                        {{ event.description }}
-                    </p>
-                </div>
-
-                <!-- Footer -->
-                <div
-                    class="mt-8 border-t border-gray-200 pt-4 text-center text-sm text-gray-500"
-                >
-                    <p>
-                        Dicetak pada
-                        {{ new Date().toLocaleDateString('ms-MY') }}
-                    </p>
-                </div>
-            </div>
-        </div>
     </AuthenticatedLayout>
 </template>
 
 <style scoped>
-@media print {
-    /* Hide everything except the printable view when printing */
-    body > *:not(.printable-view) {
-        display: none !important;
-    }
-
-    /* Remove background colors and shadows for better printing */
-    .bg-white,
-    .bg-gray-50,
-    .bg-gray-100,
-    .shadow-sm,
-    .shadow-md {
-        background-color: transparent !important;
-        box-shadow: none !important;
-    }
-
-    /* Ensure text is black for better printing */
-    * {
-        color: black !important;
-    }
-
-    /* Add page breaks where needed */
-    .page-break {
-        page-break-after: always;
-    }
-}
+/* Styles removed since we're now using PDF generation */
 </style>
