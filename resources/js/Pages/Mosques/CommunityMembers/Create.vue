@@ -14,14 +14,14 @@ const props = defineProps({
 });
 
 const form = useForm({
-    full_name: '',
+    name: '',
     ic_number: '',
     phone_number: '',
     email: '',
     address: '',
     date_of_birth: '',
     gender: '',
-    membership_status: 'pending',
+    status: 'pending',
     notes: '',
 });
 
@@ -62,20 +62,20 @@ const submit = () => {
                                 <!-- Full Name -->
                                 <div>
                                     <InputLabel
-                                        for="full_name"
+                                        for="name"
                                         value="Nama Penuh"
                                     />
                                     <TextInput
-                                        id="full_name"
+                                        id="name"
                                         type="text"
                                         class="mt-1 block w-full"
-                                        v-model="form.full_name"
+                                        v-model="form.name"
                                         required
                                         autofocus
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="form.errors.full_name"
+                                        :message="form.errors.name"
                                     />
                                 </div>
 
@@ -168,19 +168,19 @@ const submit = () => {
                                 <!-- Membership Status -->
                                 <div>
                                     <InputLabel
-                                        for="membership_status"
+                                        for="status"
                                         value="Status Keahlian"
                                     />
                                     <SelectInput
-                                        id="membership_status"
+                                        id="status"
                                         class="mt-1 block w-full"
-                                        v-model="form.membership_status"
+                                        v-model="form.status"
                                         :options="statusOptions"
                                         required
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="form.errors.membership_status"
+                                        :message="form.errors.status"
                                     />
                                 </div>
                             </div>
