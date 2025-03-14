@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class MosqueUser extends Model
 {
@@ -185,5 +187,22 @@ class MosqueUser extends Model
     public function publishedAnnouncements()
     {
         return $this->mosque->publishedAnnouncements;
+    }
+
+    /**
+     * Create the mosque user in user table.
+     */
+    public function createUser()
+    {
+        $user = User::create([
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => Hash::make(Str::random(10)),
+            'ic_number' => $this->ic_number,
+            'phone_number' => $this->phone_number,
+        ]);
+
+        $this->user_id = $user->id;
+        $this->save();
     }
 }

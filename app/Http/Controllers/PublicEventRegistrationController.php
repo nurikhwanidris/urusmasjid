@@ -108,7 +108,7 @@ class PublicEventRegistrationController extends Controller
 
                 if (! $existingMember) {
                     // Create new kariah member
-                    MosqueUser::create([
+                    $mosqueUser = MosqueUser::create([
                         'mosque_id' => $event->mosque_id,
                         'type' => 'community',
                         'name' => $validated['name'],
@@ -120,6 +120,9 @@ class PublicEventRegistrationController extends Controller
                         'notes' => 'Registered via event: '.$event->title,
                         'joined_at' => now(),
                     ]);
+
+                    // Create corresponding user record
+                    $mosqueUser->createUser();
                 }
             }
 
