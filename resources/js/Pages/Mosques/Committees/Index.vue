@@ -216,7 +216,7 @@ const formatDate = (dateString) => {
                                                             ? 'Aktif'
                                                             : committee.status ===
                                                                 'pending'
-                                                              ? 'Menunggu'
+                                                              ? 'Belum Disahkan'
                                                               : 'Tidak Aktif'
                                                     }}
                                                 </Badge>

@@ -167,7 +167,7 @@ const getStatusColor = (status) => {
                                                             ? 'Aktif'
                                                             : member.status ===
                                                                 'pending'
-                                                              ? 'Menunggu'
+                                                              ? 'Belum Disahkan'
                                                               : 'Tidak Aktif'
                                                     }}
                                                 </Badge>

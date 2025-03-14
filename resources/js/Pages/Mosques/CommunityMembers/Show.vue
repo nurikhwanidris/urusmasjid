@@ -101,7 +101,7 @@ const cancelDelete = () => {
                                     member.status === 'active'
                                         ? 'Aktif'
                                         : member.status === 'pending'
-                                          ? 'Menunggu'
+                                          ? 'Belum Disahkan'
                                           : 'Tidak Aktif'
                                 }}
                             </Badge>

@@ -34,7 +34,7 @@ const form = useForm({
 const statusOptions = [
     { value: 'active', label: 'Aktif' },
     { value: 'inactive', label: 'Tidak Aktif' },
-    { value: 'pending', label: 'Menunggu' },
+    { value: 'pending', label: 'Belum Disahkan' },
 ];
 
 // Form submission

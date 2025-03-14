@@ -636,7 +636,7 @@ const address = computed(() => {
                                                                         ? 'Aktif'
                                                                         : committee.status ===
                                                                             'pending'
-                                                                          ? 'Menunggu'
+                                                                          ? 'Belum Disahkan'
                                                                           : 'Tidak Aktif'
                                                                 }}
                                                             </Badge>
@@ -821,7 +821,7 @@ const address = computed(() => {
                                                                         ? 'Aktif'
                                                                         : member.membership_status ===
                                                                             'pending'
-                                                                          ? 'Menunggu'
+                                                                          ? 'Belum Disahkan'
                                                                           : 'Tidak Aktif'
                                                                 }}
                                                             </Badge>

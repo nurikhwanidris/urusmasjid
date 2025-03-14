@@ -115,7 +115,7 @@ const deleteCommittee = () => {
                                             committee.status === 'active'
                                                 ? 'Aktif'
                                                 : committee.status === 'pending'
-                                                  ? 'Menunggu'
+                                                  ? 'Belum Disahkan'
                                                   : 'Tidak Aktif'
                                         }}
                                     </Badge>
@@ -163,7 +163,7 @@ const deleteCommittee = () => {
                                                             ? 'Aktif'
                                                             : committee.status ===
                                                                 'pending'
-                                                              ? 'Menunggu'
+                                                              ? 'Belum Disahkan'
                                                               : 'Tidak Aktif'
                                                     }}
                                                 </Badge>

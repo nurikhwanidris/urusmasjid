@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Mosque;
 use App\Models\MosqueUser;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 /**
  * Controller for managing mosque community members (Ahli Kariah).
@@ -25,7 +28,7 @@ class MosqueCommunityMemberController extends Controller
         }
 
         // Get filter parameters with defaults
-        $status = $request->input('status', 'active');
+        $status = $request->input('status');
         $search = $request->input('search');
         $perPage = $request->input('per_page', 10);
         $sortField = $request->input('sort_field', 'name');
@@ -33,8 +36,7 @@ class MosqueCommunityMemberController extends Controller
 
         // Start building the query
         $query = MosqueUser::with('user')
-            ->where('mosque_id', $mosque->id)
-            ->where('type', 'community');
+            ->where('mosque_id', $mosque->id);
 
         // Filter by status if provided
         if ($status && $status !== 'all') {
@@ -62,7 +64,7 @@ class MosqueCommunityMemberController extends Controller
         $statuses = [
             ['value' => 'all', 'label' => 'Semua'],
             ['value' => 'active', 'label' => 'Aktif'],
-            ['value' => 'pending', 'label' => 'Menunggu'],
+            ['value' => 'pending', 'label' => 'Belum Disahkan'],
             ['value' => 'inactive', 'label' => 'Tidak Aktif'],
         ];
 
@@ -129,6 +131,8 @@ class MosqueCommunityMemberController extends Controller
             'notes' => $validated['notes'],
             'joined_at' => now(),
         ]);
+
+        $member->createUser();
 
         return redirect()->route('masjid.kariah.show', [$mosque->id, $member->id])
             ->with('success', 'Ahli kariah berjaya ditambah.');

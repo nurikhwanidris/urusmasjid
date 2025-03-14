@@ -137,7 +137,7 @@ const getAttendanceBadgeClass = (status) => {
 const statusOptions = [
     { label: 'Semua', value: 'all' },
     { label: 'Disahkan', value: 'confirmed' },
-    { label: 'Menunggu', value: 'pending' },
+    { label: 'Belum Disahkan', value: 'pending' },
     { label: 'Dibatalkan', value: 'cancelled' },
     { label: 'Hadir', value: 'attended' },
     { label: 'Tidak Hadir', value: 'absent' },
@@ -374,7 +374,7 @@ const statusOptions = [
                                                         ? 'Disahkan'
                                                         : registration.status ===
                                                             'pending'
-                                                          ? 'Menunggu'
+                                                          ? 'Belum Disahkan'
                                                           : registration.status ===
                                                               'cancelled'
                                                             ? 'Dibatalkan'
