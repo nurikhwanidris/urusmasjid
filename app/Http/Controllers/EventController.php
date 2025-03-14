@@ -353,7 +353,10 @@ class EventController extends Controller
         // Set paper size and orientation
         $pdf->setPaper('a4', 'portrait');
 
-        // Return the PDF as a download
-        return $pdf->download($event->title . '.pdf');
+        // Create a clean filename
+        $filename = str_replace(' ', '_', $event->title) . '.pdf';
+
+        // Return the PDF as a stream with proper headers
+        return $pdf->stream($filename);
     }
 }

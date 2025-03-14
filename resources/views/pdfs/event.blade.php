@@ -84,11 +84,22 @@
             margin-top: 10px;
             word-break: break-all;
         }
+        /* Replace CSS grid with table layout for better compatibility */
         .details-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            width: 100%;
             margin-bottom: 30px;
+        }
+        .details-column {
+            width: 48%;
+            float: left;
+        }
+        .details-column:first-child {
+            margin-right: 4%;
+        }
+        .clearfix:after {
+            content: "";
+            display: table;
+            clear: both;
         }
         .details-section {
             margin-bottom: 20px;
@@ -109,6 +120,7 @@
         }
         .description-section {
             margin-bottom: 30px;
+            clear: both;
         }
         .footer {
             text-align: center;
@@ -117,6 +129,7 @@
             margin-top: 30px;
             border-top: 1px solid #eee;
             padding-top: 20px;
+            clear: both;
         }
         @page {
             margin: 40px;
@@ -191,9 +204,9 @@
         @endif
 
         <!-- Event Details -->
-        <div class="details-grid">
+        <div class="details-grid clearfix">
             <!-- Left Column -->
-            <div>
+            <div class="details-column">
                 <div class="details-section">
                     <h3 class="details-title">Maklumat Acara</h3>
                     <div class="details-item">
@@ -268,7 +281,7 @@
             </div>
 
             <!-- Right Column -->
-            <div>
+            <div class="details-column">
                 @if($event->speaker)
                     <div class="details-section">
                         <h3 class="details-title">Penceramah / Pembentang</h3>
