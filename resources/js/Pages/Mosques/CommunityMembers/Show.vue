@@ -137,7 +137,7 @@ const cancelDelete = () => {
                                     <h4
                                         class="text-lg font-medium text-gray-900"
                                     >
-                                        Maklumat Hubungan
+                                        Hubungi
                                     </h4>
                                     <dl class="mt-2 divide-y divide-gray-200">
                                         <div

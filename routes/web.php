@@ -25,6 +25,11 @@ Route::get('/', function () {
 Route::get('/events/{eventId}/register', [PublicEventRegistrationController::class, 'showRegistrationForm'])->name('events.public.register');
 Route::post('/events/{eventId}/register', [PublicEventRegistrationController::class, 'processRegistration'])->name('events.public.register.store');
 
+// PDF generation route - separate from Inertia routes
+Route::get('/masjid/{mosque}/acara/{acara}/pdf', [EventController::class, 'generatePdf'])
+    ->middleware(['auth', 'verified', EnsurePhoneIsVerified::class])
+    ->name('masjid.acara.pdf');
+
 // Routes that only require authentication
 Route::middleware(['auth'])->group(function () {
     // Mosque creation route - accessible after phone verification
@@ -81,9 +86,6 @@ Route::middleware(['auth', 'verified', EnsurePhoneIsVerified::class])->group(fun
         'update' => 'masjid.acara.update',
         'destroy' => 'masjid.acara.destroy',
     ]);
-
-    // Event PDF generation route
-    Route::get('/masjid/{mosque}/acara/{acara}/pdf', [EventController::class, 'generatePdf'])->name('masjid.acara.pdf');
 
     // Masjid Event Registration routes
     Route::resource('masjid.acara.pendaftaran', EventRegistrationController::class, ['parameters' => ['masjid' => 'mosque', 'acara' => 'acara', 'pendaftaran' => 'pendaftaran']])->names([

@@ -833,10 +833,10 @@ const submit = () => {
                                             : 'text-gray-900'
                                     "
                                 >
-                                    Maklumat Hubungan
+                                    Hubungi
                                 </h3>
                                 <p class="mt-1 text-sm text-gray-500">
-                                    Tetapkan maklumat hubungan untuk acara ini.
+                                    Tetapkan Hubungi untuk acara ini.
                                 </p>
 
                                 <div

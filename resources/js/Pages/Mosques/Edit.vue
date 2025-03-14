@@ -620,7 +620,7 @@ const submit = () => {
                                             : 'text-gray-900'
                                     "
                                 >
-                                    Maklumat Hubungan
+                                    Hubungi
                                 </h3>
                                 <div class="mt-4 grid gap-6 sm:grid-cols-2">
                                     <div

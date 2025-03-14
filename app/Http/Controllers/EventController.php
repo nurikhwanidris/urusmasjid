@@ -356,7 +356,11 @@ class EventController extends Controller
         // Create a clean filename
         $filename = str_replace(' ', '_', $event->title) . '.pdf';
 
-        // Return the PDF as a stream with proper headers
-        return $pdf->stream($filename);
+        // Return the PDF as a download with explicit headers
+        return response($pdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $filename . '"',
+            'Cache-Control' => 'public, max-age=0'
+        ]);
     }
 }

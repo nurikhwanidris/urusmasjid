@@ -286,6 +286,12 @@ const showCopyError = () => {
         notificationSent.value = false;
     }, 3000);
 };
+
+// Function to download PDF
+const downloadPdf = () => {
+    const url = route('masjid.acara.pdf', [props.mosque.id, props.event.id]);
+    window.open(url, '_blank');
+};
 </script>
 <template>
     <Head :title="`${event.title} - ${mosque.name}`" />
@@ -309,8 +315,8 @@ const showCopyError = () => {
                     >
                         Kemaskini
                     </Link>
-                    <Link
-                        :href="route('masjid.acara.pdf', [mosque.id, event.id])"
+                    <button
+                        @click="downloadPdf"
                         class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                     >
                         <span class="flex items-center">
@@ -330,7 +336,7 @@ const showCopyError = () => {
                             </svg>
                             Muat Turun PDF
                         </span>
-                    </Link>
+                    </button>
                 </div>
             </div>
         </template>
@@ -445,13 +451,8 @@ const showCopyError = () => {
                                     </div>
                                 </div>
                                 <div class="flex justify-center">
-                                    <Link
-                                        :href="
-                                            route('masjid.acara.pdf', [
-                                                mosque.id,
-                                                event.id,
-                                            ])
-                                        "
+                                    <button
+                                        @click="downloadPdf"
                                         class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                                     >
                                         <svg
@@ -469,7 +470,7 @@ const showCopyError = () => {
                                             />
                                         </svg>
                                         Muat Turun PDF dengan QR Code
-                                    </Link>
+                                    </button>
                                 </div>
                             </div>
                         </div>
