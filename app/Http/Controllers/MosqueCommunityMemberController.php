@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /**
  * Controller for managing mosque community members (Ahli Kariah).
@@ -99,25 +100,92 @@ class MosqueCommunityMemberController extends Controller
     }
 
     /**
+     * Generate QR code for kariah registration
+     *
+     * @param  \App\Models\Mosque  $mosque
+     * @return \Inertia\Response
+     */
+    public function generateQR(Mosque $mosque, Request $request)
+    {
+        if (Gate::denies('view', $mosque)) {
+            abort(403);
+        }
+
+        // Generate registration URL
+        $registrationUrl = route('masjid.kariah.register', $mosque);
+
+        // Generate QR code as base64 encoded SVG
+        $qrCode = base64_encode(QrCode::format('svg')
+            ->size(300)
+            ->errorCorrection('H')
+            ->generate($registrationUrl));
+
+        // If PDF is requested
+        if ($request->has('pdf')) {
+            return $this->generateQRPdf($mosque, $qrCode);
+        }
+
+        return Inertia::render('Mosques/CommunityMembers/QR', [
+            'mosque' => $mosque,
+            'qrCode' => $qrCode,
+        ]);
+    }
+
+    /**
+     * Generate PDF version of QR code
+     *
+     * @param  \App\Models\Mosque  $mosque
+     * @param  string  $qrCode
+     * @return \Illuminate\Http\Response
+     */
+    private function generateQRPdf(Mosque $mosque, $qrCode)
+    {
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdfs.qr-code', [
+            'mosque' => $mosque,
+            'qrCode' => $qrCode,
+        ]);
+
+        return $pdf->download('qr-code-pendaftaran-kariah.pdf');
+    }
+
+    /**
+     * Show registration form via QR code
+     *
+     * @param  \App\Models\Mosque  $mosque
+     * @return \Inertia\Response
+     */
+    public function showRegistrationForm(Mosque $mosque)
+    {
+        return Inertia::render('Mosques/CommunityMembers/Register', [
+            'mosque' => $mosque,
+        ]);
+    }
+
+    /**
      * Store a newly created community member in storage.
      *
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, Mosque $mosque)
     {
-        if (Gate::denies('update', $mosque)) {
-            abort(403);
+        // For QR registrations, skip Gate check
+        if (!$request->is('*/register')) {
+            if (Gate::denies('update', $mosque)) {
+                abort(403);
+            }
         }
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'ic_number' => 'nullable|string|max:20',
-            'phone_number' => 'nullable|string|max:20',
+            'ic_number' => 'required|string|max:20',
+            'phone_number' => 'required|string|max:20',
             'email' => 'nullable|email|max:255',
-            'address' => 'nullable|string|max:500',
-            'status' => 'required|in:active,pending,inactive',
+            'address' => 'required|string|max:500',
             'notes' => 'nullable|string|max:1000',
         ]);
+
+        // Set default status based on registration type
+        $status = $request->is('*/register') ? 'pending' : ($request->input('status', 'active'));
 
         $member = MosqueUser::create([
             'mosque_id' => $mosque->id,
@@ -127,12 +195,16 @@ class MosqueCommunityMemberController extends Controller
             'phone_number' => $validated['phone_number'],
             'email' => $validated['email'],
             'address' => $validated['address'],
-            'status' => $validated['status'],
-            'notes' => $validated['notes'],
+            'status' => $status,
+            'notes' => $validated['notes'] ?? null,
             'joined_at' => now(),
         ]);
 
         $member->createUser();
+
+        if ($request->is('*/register')) {
+            return redirect()->back()->with('success', 'Pendaftaran anda telah berjaya dihantar. Sila tunggu pengesahan dari pihak masjid.');
+        }
 
         return redirect()->route('masjid.kariah.show', [$mosque->id, $member->id])
             ->with('success', 'Ahli kariah berjaya ditambah.');

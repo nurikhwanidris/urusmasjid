@@ -30,6 +30,10 @@ class MosqueUser extends Model
         'status', // For committee members and community members: 'active', 'inactive', 'pending'
         'notes', // For committee members and community members
         'joined_at', // For community members
+        'relationship_status', // For community members: 'Bujang', 'Berkahwin', 'Duda', 'Janda'
+        'occupation', // For community members
+        'emergency_contact', // For community members
+        'emergency_phone', // For community members
     ];
 
     /**

@@ -23,13 +23,13 @@ const props = defineProps({
 
 const classes = computed(() =>
     props.active
-        ? 'relative flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-all duration-200 ease-in-out'
-        : 'relative flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-gray-50 transition-all duration-200 ease-in-out',
+        ? 'relative flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-all duration-200 ease-in-out group'
+        : 'relative flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-gray-50 transition-all duration-200 ease-in-out group',
 );
 
 const iconClasses = computed(() =>
     props.active
-        ? 'text-emerald-600'
+        ? 'text-emerald-600 group-hover:text-emerald-700'
         : 'text-gray-500 group-hover:text-emerald-500',
 );
 </script>

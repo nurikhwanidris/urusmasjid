@@ -9,7 +9,6 @@ use App\Http\Controllers\MosqueCommitteeController;
 use App\Http\Controllers\MosqueCommunityMemberController;
 use App\Http\Controllers\MosqueController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PublicEventRegistrationController;
 use App\Http\Middleware\EnsurePhoneIsVerified;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,8 +21,8 @@ Route::get('/', function () {
 });
 
 // Public routes for event registration via QR code (no auth required)
-Route::get('/events/{eventId}/register', [PublicEventRegistrationController::class, 'showRegistrationForm'])->name('events.public.register');
-Route::post('/events/{eventId}/register', [PublicEventRegistrationController::class, 'processRegistration'])->name('events.public.register.store');
+Route::get('/events/{eventId}/register', [EventController::class, 'showPublicRegistrationForm'])->name('events.public.register');
+Route::post('/events/{eventId}/register', [EventController::class, 'processPublicRegistration'])->name('events.public.register.store');
 
 // PDF generation route - separate from Inertia routes
 Route::get('/masjid/{mosque}/acara/{acara}/pdf', [EventController::class, 'generatePdf'])
@@ -66,16 +65,19 @@ Route::middleware(['auth', 'verified', EnsurePhoneIsVerified::class])->group(fun
         'destroy' => 'masjid.jawatankuasa.destroy',
     ]);
 
-    // Masjid Community Member (Ahli Kariah) routes
-    Route::resource('masjid.kariah', MosqueCommunityMemberController::class, ['parameters' => ['masjid' => 'mosque', 'kariah' => 'kariah']])->names([
-        'index' => 'masjid.kariah.index',
-        'create' => 'masjid.kariah.create',
-        'store' => 'masjid.kariah.store',
-        'show' => 'masjid.kariah.show',
-        'edit' => 'masjid.kariah.edit',
-        'update' => 'masjid.kariah.update',
-        'destroy' => 'masjid.kariah.destroy',
-    ]);
+    // Masjid Community Members (Kariah) Routes
+    Route::prefix('masjid/{mosque}/kariah')->name('masjid.kariah.')->group(function () {
+        Route::get('/', [MosqueCommunityMemberController::class, 'index'])->name('index');
+        Route::get('/create', [MosqueCommunityMemberController::class, 'create'])->name('create');
+        Route::get('/qr', [MosqueCommunityMemberController::class, 'generateQR'])->name('qr');
+        Route::get('/register', [MosqueCommunityMemberController::class, 'showRegistrationForm'])->name('register');
+        Route::post('/register', [MosqueCommunityMemberController::class, 'store'])->name('register.store');
+        Route::post('/', [MosqueCommunityMemberController::class, 'store'])->name('store');
+        Route::get('/{id}', [MosqueCommunityMemberController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [MosqueCommunityMemberController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [MosqueCommunityMemberController::class, 'update'])->name('update');
+        Route::delete('/{id}', [MosqueCommunityMemberController::class, 'destroy'])->name('destroy');
+    });
 
     // Masjid Event routes
     Route::resource('masjid.acara', EventController::class, ['parameters' => ['masjid' => 'mosque', 'acara' => 'acara']])->names([

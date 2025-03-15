@@ -20,12 +20,22 @@ const props = defineProps({
     },
 });
 
-const isOpen = ref(false);
-
-// Check if any child route is active
 const isActive = computed(() => {
-    return props.routes.some((routeName) => route().current(routeName));
+    // Check if any child route is active
+    if (props.routes && props.routes.length > 0) {
+        return props.routes.some((routeInfo) => {
+            if (typeof routeInfo === 'string') {
+                return route().current(routeInfo);
+            }
+            // Handle route objects with params
+            return route().current(routeInfo.route, routeInfo.params);
+        });
+    }
+    return false;
 });
+
+// Toggle submenu - auto open if a child is active
+const isOpen = ref(isActive.value);
 
 // Toggle submenu
 const toggleMenu = () => {
@@ -35,14 +45,14 @@ const toggleMenu = () => {
 // Classes for the menu header
 const menuClasses = computed(() =>
     isActive.value
-        ? 'relative flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-all duration-200 ease-in-out'
-        : 'relative flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-gray-50 transition-all duration-200 ease-in-out',
+        ? 'relative flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-all duration-200 ease-in-out group'
+        : 'relative flex w-full items-center rounded-md px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-gray-50 transition-all duration-200 ease-in-out group',
 );
 
 // Classes for the icon
 const iconClasses = computed(() =>
     isActive.value
-        ? 'text-emerald-600'
+        ? 'text-emerald-600 group-hover:text-emerald-700'
         : 'text-gray-500 group-hover:text-emerald-500',
 );
 </script>
