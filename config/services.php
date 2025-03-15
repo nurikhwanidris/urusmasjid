@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'duitnow' => [
+        'merchant_id' => env('DUITNOW_MERCHANT_ID'),
+        'secret_key' => env('DUITNOW_SECRET_KEY'),
+        'callback_url' => env('DUITNOW_CALLBACK_URL'),
+    ],
+
 ];

@@ -171,16 +171,37 @@ const donationsIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" f
                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                        </svg>`;
 
-const donationsItems = [
-    {
-        name: 'Senarai Derma',
-        route: 'masjid.index', // Update with actual route
-    },
-    {
-        name: 'Cipta Derma',
-        route: 'masjid.index', // Update with actual route
-    },
-];
+const donationsItems = computed(() => {
+    // If we have a current mosque, use its ID for the routes
+    if (currentMosque.value) {
+        return [
+            {
+                name: 'Senarai Derma',
+                route: 'masjid.donations.index',
+                params: [currentMosque.value.id],
+            },
+            {
+                name: 'Derma Sekarang',
+                route: 'masjid.donations.show',
+                params: [currentMosque.value.id],
+            },
+        ];
+    }
+
+    // Otherwise, just link to the mosque list
+    return [
+        {
+            name: 'Senarai Derma',
+            route: 'masjid.index',
+            params: [],
+        },
+        {
+            name: 'Derma Sekarang',
+            route: 'masjid.index',
+            params: [],
+        },
+    ];
+});
 
 // Settings item
 const settingsItem = computed(() => {
@@ -433,8 +454,15 @@ const logout = () => {
                         <SidebarSubmenuItem
                             v-for="item in donationsItems"
                             :key="item.name"
-                            :href="route(item.route)"
-                            :active="route().current(item.route)"
+                            :href="route(item.route, item.params)"
+                            :active="
+                                route().current(
+                                    item.route,
+                                    item.params && item.params.length > 0
+                                        ? { mosque: item.params[0] }
+                                        : {},
+                                )
+                            "
                         >
                             {{ item.name }}
                         </SidebarSubmenuItem>
@@ -652,8 +680,15 @@ const logout = () => {
                         <MobileSidebarLink
                             v-for="item in donationsItems"
                             :key="item.name"
-                            :href="route(item.route)"
-                            :active="route().current(item.route)"
+                            :href="route(item.route, item.params)"
+                            :active="
+                                route().current(
+                                    item.route,
+                                    item.params && item.params.length > 0
+                                        ? { mosque: item.params[0] }
+                                        : {},
+                                )
+                            "
                         >
                             {{ item.name }}
                         </MobileSidebarLink>

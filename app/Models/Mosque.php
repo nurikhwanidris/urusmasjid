@@ -181,4 +181,20 @@ class Mosque extends Model
 
         return implode(', ', $parts);
     }
+
+    /**
+     * Get the donations for the mosque.
+     */
+    public function donations(): HasMany
+    {
+        return $this->hasMany(Donation::class);
+    }
+
+    /**
+     * Get the completed donations for the mosque.
+     */
+    public function completedDonations(): HasMany
+    {
+        return $this->hasMany(Donation::class)->completed();
+    }
 }

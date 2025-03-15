@@ -9,6 +9,7 @@ use App\Http\Controllers\MosqueCommitteeController;
 use App\Http\Controllers\MosqueCommunityMemberController;
 use App\Http\Controllers\MosqueController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MosqueDonationController;
 use App\Http\Middleware\EnsurePhoneIsVerified;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -112,6 +113,18 @@ Route::middleware(['auth', 'verified', EnsurePhoneIsVerified::class])->group(fun
         'update' => 'masjid.pengumuman.update',
         'destroy' => 'masjid.pengumuman.destroy',
     ]);
+
+    // Donation routes
+    Route::prefix('masjid/{mosque}/donations')->name('masjid.donations.')->group(function () {
+        Route::get('/', [MosqueDonationController::class, 'index'])->name('index');
+        Route::get('/donate', [MosqueDonationController::class, 'showDonationPage'])->name('show');
+        Route::post('/', [MosqueDonationController::class, 'store'])->name('store');
+    });
+
+    // DuitNow callback route (no CSRF)
+    Route::post('duitnow/callback', [MosqueDonationController::class, 'handleDuitNowCallback'])
+        ->name('duitnow.callback')
+        ->withoutMiddleware(['web', 'csrf']);
 
     // Admin routes
     Route::prefix('admin')->name('admin.')->middleware('can:admin')->group(function () {
