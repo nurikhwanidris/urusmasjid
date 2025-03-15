@@ -53,7 +53,7 @@ const filter = () => {
         {
             preserveState: true,
             preserveScroll: true,
-        }
+        },
     );
 };
 
@@ -96,13 +96,19 @@ const formatAmount = (amount) => {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <div class="flex items-center justify-between mb-6">
+                        <div class="mb-6 flex items-center justify-between">
                             <div>
-                                <h2 class="text-xl font-semibold text-gray-900">Senarai Derma</h2>
-                                <p class="mt-1 text-sm text-gray-600">Senarai semua derma yang diterima</p>
+                                <h2 class="text-xl font-semibold text-gray-900">
+                                    Senarai Derma
+                                </h2>
+                                <p class="mt-1 text-sm text-gray-600">
+                                    Senarai semua derma yang diterima
+                                </p>
                             </div>
                             <Link
-                                :href="route('masjid.donations.show', mosque.id)"
+                                :href="
+                                    route('masjid.donations.show', mosque.id)
+                                "
                                 class="inline-flex items-center rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
                             >
                                 Derma Sekarang
@@ -125,7 +131,11 @@ const formatAmount = (amount) => {
                                 @change="filter"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
                             >
-                                <option v-for="status in statuses" :key="status.value" :value="status.value">
+                                <option
+                                    v-for="status in statuses"
+                                    :key="status.value"
+                                    :value="status.value"
+                                >
                                     {{ status.label }}
                                 </option>
                             </select>
@@ -134,7 +144,11 @@ const formatAmount = (amount) => {
                                 @change="filter"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm"
                             >
-                                <option v-for="method in paymentMethods" :key="method.value" :value="method.value">
+                                <option
+                                    v-for="method in paymentMethods"
+                                    :key="method.value"
+                                    :value="method.value"
+                                >
                                     {{ method.label }}
                                 </option>
                             </select>
@@ -145,45 +159,128 @@ const formatAmount = (amount) => {
                             <table class="min-w-full divide-y divide-gray-300">
                                 <thead>
                                     <tr>
-                                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">No. Resit</th>
-                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Tarikh</th>
-                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Penderma</th>
-                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Tujuan</th>
-                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Jumlah</th>
-                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Kaedah</th>
-                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                                        <th
+                                            scope="col"
+                                            class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                                        >
+                                            No. Resit
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                        >
+                                            Tarikh
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                        >
+                                            Penderma
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                        >
+                                            Tujuan
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                        >
+                                            Jumlah
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                        >
+                                            Kaedah
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                        >
+                                            Status
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
-                                    <tr v-for="donation in donations.data" :key="donation.id">
-                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                                    <tr
+                                        v-for="donation in donations.data"
+                                        :key="donation.id"
+                                    >
+                                        <td
+                                            class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                                        >
                                             {{ donation.receipt_number }}
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                            {{ formatDate(donation.created_at) }}
+                                        <td
+                                            class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                        >
+                                            {{
+                                                formatDate(donation.created_at)
+                                            }}
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td
+                                            class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                        >
                                             <div>
-                                                <div>{{ donation.donor_name || 'Tanpa Nama' }}</div>
-                                                <div v-if="donation.donor_phone" class="text-sm text-gray-500">
+                                                <div>
+                                                    {{
+                                                        donation.donor_name ||
+                                                        'Tanpa Nama'
+                                                    }}
+                                                </div>
+                                                <div
+                                                    v-if="donation.donor_phone"
+                                                    class="text-sm text-gray-500"
+                                                >
                                                     {{ donation.donor_phone }}
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td
+                                            class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                        >
                                             {{ donation.purpose || '-' }}
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        <td
+                                            class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                        >
                                             {{ formatAmount(donation.amount) }}
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                            <span class="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
-                                                {{ paymentMethods.find(m => m.value === donation.payment_method)?.label }}
+                                        <td
+                                            class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                        >
+                                            <span
+                                                class="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600"
+                                            >
+                                                {{
+                                                    paymentMethods.find(
+                                                        (m) =>
+                                                            m.value ===
+                                                            donation.payment_method,
+                                                    )?.label
+                                                }}
                                             </span>
                                         </td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                            <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium" :class="getStatusColor(donation.status)">
-                                                {{ statuses.find(s => s.value === donation.status)?.label }}
+                                        <td
+                                            class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"
+                                        >
+                                            <span
+                                                class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium"
+                                                :class="
+                                                    getStatusColor(
+                                                        donation.status,
+                                                    )
+                                                "
+                                            >
+                                                {{
+                                                    statuses.find(
+                                                        (s) =>
+                                                            s.value ===
+                                                            donation.status,
+                                                    )?.label
+                                                }}
                                             </span>
                                         </td>
                                     </tr>
