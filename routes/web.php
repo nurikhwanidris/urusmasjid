@@ -53,6 +53,7 @@ Route::middleware(['auth', 'verified', EnsurePhoneIsVerified::class])->group(fun
         'destroy' => 'masjid.destroy',
     ]);
     Route::patch('/masjid/{mosque}/verify', [MosqueController::class, 'verify'])->name('masjid.verify');
+    Route::get('/masjid/{mosque}/settings', [MosqueController::class, 'settings'])->name('masjid.settings');
 
     // Masjid Committee routes
     Route::resource('masjid.jawatankuasa', MosqueCommitteeController::class, ['parameters' => ['masjid' => 'mosque', 'jawatankuasa' => 'committee']])->names([

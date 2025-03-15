@@ -311,4 +311,29 @@ class MosqueController extends Controller
 
         return back()->with('success', 'Mosque verification status updated successfully.');
     }
+
+    /**
+     * Display the mosque settings page.
+     *
+     * @param \App\Models\Mosque $mosque
+     * @return \Inertia\Response
+     */
+    public function settings(Mosque $mosque)
+    {
+        if (Gate::denies('update', $mosque)) {
+            abort(403);
+        }
+
+        // Load committee members
+        $mosque->load(['user']);
+        $committees = MosqueUser::with('user')
+            ->where('mosque_id', $mosque->id)
+            ->where('type', 'committee')
+            ->orderBy('role')
+            ->get();
+
+        return Inertia::render('Mosques/Settings', [
+            'mosque' => array_merge($mosque->toArray(), ['committees' => $committees]),
+        ]);
+    }
 }
