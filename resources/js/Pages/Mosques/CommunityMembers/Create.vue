@@ -61,10 +61,7 @@ const submit = () => {
                             <div class="mb-6 grid gap-6 md:grid-cols-2">
                                 <!-- Full Name -->
                                 <div>
-                                    <InputLabel
-                                        for="name"
-                                        value="Nama Penuh"
-                                    />
+                                    <InputLabel for="name" value="Nama Penuh" />
                                     <TextInput
                                         id="name"
                                         type="text"

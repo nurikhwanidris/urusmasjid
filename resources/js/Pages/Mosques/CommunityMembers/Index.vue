@@ -52,7 +52,9 @@ const getStatusColor = (status) => {
                         <PrimaryButton>Tambah Ahli Kariah</PrimaryButton>
                     </Link>
                     <Link :href="route('masjid.kariah.qr', mosque.id)">
-                        <SecondaryButton class="border-emerald-600 text-emerald-600 hover:bg-emerald-50 focus:bg-emerald-50 active:bg-emerald-100">
+                        <SecondaryButton
+                            class="border-emerald-600 text-emerald-600 hover:bg-emerald-50 focus:bg-emerald-50 active:bg-emerald-100"
+                        >
                             Jana QR Code Pendaftaran
                         </SecondaryButton>
                     </Link>
