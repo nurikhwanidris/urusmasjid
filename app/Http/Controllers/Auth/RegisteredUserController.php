@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -63,10 +64,12 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        // Generate a verification code for the user
-        $user->generateVerificationCode();
+        // If user is mosque admin, redirect to mosque registration
+        if ($request->role === 'mosque_admin') {
+            return redirect()->route('masjid.create')
+                ->with('success', 'Akaun berjaya didaftarkan! Sila daftar masjid anda.');
+        }
 
-        // Redirect to phone verification page
-        return redirect('/verify-phone');
+        return redirect(RouteServiceProvider::HOME);
     }
 }

@@ -40,98 +40,108 @@ Route::middleware(['auth'])->group(function () {
 
 // Routes that require phone verification
 Route::middleware(['auth', 'verified', EnsurePhoneIsVerified::class])->group(function () {
+    // Add mosque.admin.has.mosque middleware to dashboard for mosque admins
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->middleware('mosque.admin.has.mosque')
+        ->name('dashboard');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Masjid routes (except create and store)
-    Route::resource('masjid', MosqueController::class, ['parameters' => ['masjid' => 'mosque'], 'except' => ['create', 'store']])->names([
-        'index' => 'masjid.index',
-        'show' => 'masjid.show',
-        'edit' => 'masjid.edit',
-        'update' => 'masjid.update',
-        'destroy' => 'masjid.destroy',
-    ]);
-    Route::patch('/masjid/{mosque}/verify', [MosqueController::class, 'verify'])->name('masjid.verify');
-    Route::get('/masjid/{mosque}/settings', [MosqueController::class, 'settings'])->name('masjid.settings');
+    // Mosque routes that don't require mosque registration
+    Route::get('/masjid/create', [MosqueController::class, 'create'])->name('masjid.create');
+    Route::post('/masjid', [MosqueController::class, 'store'])->name('masjid.store');
 
-    // Masjid Committee routes
-    Route::resource('masjid.jawatankuasa', MosqueCommitteeController::class, ['parameters' => ['masjid' => 'mosque', 'jawatankuasa' => 'committee']])->names([
-        'index' => 'masjid.jawatankuasa.index',
-        'create' => 'masjid.jawatankuasa.create',
-        'store' => 'masjid.jawatankuasa.store',
-        'show' => 'masjid.jawatankuasa.show',
-        'edit' => 'masjid.jawatankuasa.edit',
-        'update' => 'masjid.jawatankuasa.update',
-        'destroy' => 'masjid.jawatankuasa.destroy',
-    ]);
+    // All other mosque routes require mosque registration
+    Route::middleware('mosque.admin.has.mosque')->group(function () {
+        // Masjid routes (except create and store)
+        Route::resource('masjid', MosqueController::class, ['parameters' => ['masjid' => 'mosque'], 'except' => ['create', 'store']])->names([
+            'index' => 'masjid.index',
+            'show' => 'masjid.show',
+            'edit' => 'masjid.edit',
+            'update' => 'masjid.update',
+            'destroy' => 'masjid.destroy',
+        ]);
+        Route::patch('/masjid/{mosque}/verify', [MosqueController::class, 'verify'])->name('masjid.verify');
+        Route::get('/masjid/{mosque}/settings', [MosqueController::class, 'settings'])->name('masjid.settings');
 
-    // Masjid Community Members (Kariah) Routes
-    Route::prefix('masjid/{mosque}/kariah')->name('masjid.kariah.')->group(function () {
-        Route::get('/', [MosqueCommunityMemberController::class, 'index'])->name('index');
-        Route::get('/create', [MosqueCommunityMemberController::class, 'create'])->name('create');
-        Route::get('/qr', [MosqueCommunityMemberController::class, 'generateQR'])->name('qr');
-        Route::get('/register', [MosqueCommunityMemberController::class, 'showRegistrationForm'])->name('register');
-        Route::post('/register', [MosqueCommunityMemberController::class, 'store'])->name('register.store');
-        Route::post('/', [MosqueCommunityMemberController::class, 'store'])->name('store');
-        Route::get('/{id}', [MosqueCommunityMemberController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [MosqueCommunityMemberController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [MosqueCommunityMemberController::class, 'update'])->name('update');
-        Route::delete('/{id}', [MosqueCommunityMemberController::class, 'destroy'])->name('destroy');
-    });
+        // Masjid Committee routes
+        Route::resource('masjid.jawatankuasa', MosqueCommitteeController::class, ['parameters' => ['masjid' => 'mosque', 'jawatankuasa' => 'committee']])->names([
+            'index' => 'masjid.jawatankuasa.index',
+            'create' => 'masjid.jawatankuasa.create',
+            'store' => 'masjid.jawatankuasa.store',
+            'show' => 'masjid.jawatankuasa.show',
+            'edit' => 'masjid.jawatankuasa.edit',
+            'update' => 'masjid.jawatankuasa.update',
+            'destroy' => 'masjid.jawatankuasa.destroy',
+        ]);
 
-    // Masjid Event routes
-    Route::resource('masjid.acara', EventController::class, ['parameters' => ['masjid' => 'mosque', 'acara' => 'acara']])->names([
-        'index' => 'masjid.acara.index',
-        'create' => 'masjid.acara.create',
-        'store' => 'masjid.acara.store',
-        'show' => 'masjid.acara.show',
-        'edit' => 'masjid.acara.edit',
-        'update' => 'masjid.acara.update',
-        'destroy' => 'masjid.acara.destroy',
-    ]);
+        // Masjid Community Members (Kariah) Routes
+        Route::prefix('masjid/{mosque}/kariah')->name('masjid.kariah.')->group(function () {
+            Route::get('/', [MosqueCommunityMemberController::class, 'index'])->name('index');
+            Route::get('/create', [MosqueCommunityMemberController::class, 'create'])->name('create');
+            Route::get('/qr', [MosqueCommunityMemberController::class, 'generateQR'])->name('qr');
+            Route::post('/', [MosqueCommunityMemberController::class, 'store'])->name('store');
+            Route::get('/{id}', [MosqueCommunityMemberController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [MosqueCommunityMemberController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [MosqueCommunityMemberController::class, 'update'])->name('update');
+            Route::delete('/{id}', [MosqueCommunityMemberController::class, 'destroy'])->name('destroy');
+        });
 
-    // Masjid Event Registration routes
-    Route::resource('masjid.acara.pendaftaran', EventRegistrationController::class, ['parameters' => ['masjid' => 'mosque', 'acara' => 'acara', 'pendaftaran' => 'pendaftaran']])->names([
-        'index' => 'masjid.acara.pendaftaran.index',
-        'create' => 'masjid.acara.pendaftaran.create',
-        'store' => 'masjid.acara.pendaftaran.store',
-        'show' => 'masjid.acara.pendaftaran.show',
-        'edit' => 'masjid.acara.pendaftaran.edit',
-        'update' => 'masjid.acara.pendaftaran.update',
-        'destroy' => 'masjid.acara.pendaftaran.destroy',
-    ]);
-    Route::patch('/masjid/{mosque}/acara/{acara}/pendaftaran/{pendaftaran}/attendance', [EventRegistrationController::class, 'markAttendance'])->name('masjid.acara.pendaftaran.attendance');
+        // Masjid Event routes
+        Route::resource('masjid.acara', EventController::class, ['parameters' => ['masjid' => 'mosque', 'acara' => 'acara']])->names([
+            'index' => 'masjid.acara.index',
+            'create' => 'masjid.acara.create',
+            'store' => 'masjid.acara.store',
+            'show' => 'masjid.acara.show',
+            'edit' => 'masjid.acara.edit',
+            'update' => 'masjid.acara.update',
+            'destroy' => 'masjid.acara.destroy',
+        ]);
 
-    // Masjid Announcement routes
-    Route::resource('masjid.pengumuman', AnnouncementController::class, ['parameters' => ['masjid' => 'mosque', 'pengumuman' => 'announcement']])->names([
-        'index' => 'masjid.pengumuman.index',
-        'create' => 'masjid.pengumuman.create',
-        'store' => 'masjid.pengumuman.store',
-        'show' => 'masjid.pengumuman.show',
-        'edit' => 'masjid.pengumuman.edit',
-        'update' => 'masjid.pengumuman.update',
-        'destroy' => 'masjid.pengumuman.destroy',
-    ]);
+        // Masjid Event Registration routes
+        Route::resource('masjid.acara.pendaftaran', EventRegistrationController::class, ['parameters' => ['masjid' => 'mosque', 'acara' => 'acara', 'pendaftaran' => 'pendaftaran']])->names([
+            'index' => 'masjid.acara.pendaftaran.index',
+            'create' => 'masjid.acara.pendaftaran.create',
+            'store' => 'masjid.acara.pendaftaran.store',
+            'show' => 'masjid.acara.pendaftaran.show',
+            'edit' => 'masjid.acara.pendaftaran.edit',
+            'update' => 'masjid.acara.pendaftaran.update',
+            'destroy' => 'masjid.acara.pendaftaran.destroy',
+        ]);
+        Route::patch('/masjid/{mosque}/acara/{acara}/pendaftaran/{pendaftaran}/attendance', [EventRegistrationController::class, 'markAttendance'])->name('masjid.acara.pendaftaran.attendance');
 
-    // Donation routes
-    Route::prefix('masjid/{mosque}/donations')->name('masjid.donations.')->group(function () {
-        Route::get('/', [MosqueDonationController::class, 'index'])->name('index');
-        Route::get('/donate', [MosqueDonationController::class, 'showDonationPage'])->name('show');
-        Route::post('/', [MosqueDonationController::class, 'store'])->name('store');
-    });
+        // Masjid Announcement routes
+        Route::resource('masjid.pengumuman', AnnouncementController::class, ['parameters' => ['masjid' => 'mosque', 'pengumuman' => 'announcement']])->names([
+            'index' => 'masjid.pengumuman.index',
+            'create' => 'masjid.pengumuman.create',
+            'store' => 'masjid.pengumuman.store',
+            'show' => 'masjid.pengumuman.show',
+            'edit' => 'masjid.pengumuman.edit',
+            'update' => 'masjid.pengumuman.update',
+            'destroy' => 'masjid.pengumuman.destroy',
+        ]);
 
-    // DuitNow callback route (no CSRF)
-    Route::post('duitnow/callback', [MosqueDonationController::class, 'handleDuitNowCallback'])
-        ->name('duitnow.callback')
-        ->withoutMiddleware(['web', 'csrf']);
+        // Donation routes
+        Route::prefix('masjid/{mosque}/donations')->name('masjid.donations.')->group(function () {
+            Route::get('/', [MosqueDonationController::class, 'index'])->name('index');
+            Route::get('/donate', [MosqueDonationController::class, 'showDonationPage'])->name('show');
+            Route::post('/', [MosqueDonationController::class, 'store'])->name('store');
+        });
 
-    // Admin routes
-    Route::prefix('admin')->name('admin.')->middleware('can:admin')->group(function () {
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-        Route::get('/mosques/pending', [AdminController::class, 'pendingMosques'])->name('mosques.pending');
-        Route::get('/mosques/all', [AdminController::class, 'allMosques'])->name('mosques.all');
-        Route::get('/mosques/{mosque}/verify', [AdminController::class, 'verifyMosque'])->name('mosques.verify');
+        // DuitNow callback route (no CSRF)
+        Route::post('duitnow/callback', [MosqueDonationController::class, 'handleDuitNowCallback'])
+            ->name('duitnow.callback')
+            ->withoutMiddleware(['web', 'csrf']);
+
+        // Admin routes
+        Route::prefix('admin')->name('admin.')->middleware('can:admin')->group(function () {
+            Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+            Route::get('/mosques/pending', [AdminController::class, 'pendingMosques'])->name('mosques.pending');
+            Route::get('/mosques/all', [AdminController::class, 'allMosques'])->name('mosques.all');
+            Route::get('/mosques/{mosque}/verify', [AdminController::class, 'verifyMosque'])->name('mosques.verify');
+        });
     });
 });
 
