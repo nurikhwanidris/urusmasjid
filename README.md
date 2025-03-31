@@ -7,59 +7,96 @@
 - 🕌 **Event Management** – Schedule and manage mosque activities, including prayers, classes, and community events.  
 - 💰 **Donation Tracking** – Record and manage donations, with transparency reports for the community.  
 - 🤝 **Volunteer Coordination** – Assign and track volunteer duties for different mosque programs.  
-- 📊 **Financial Management** – Keep track of mosque expenses and financial reports.  
+- 📊 **Financial Management** – Keep track of mosque expenses and generate financial reports.  
 - 📢 **Announcements & Notifications** – Send important updates to congregants via email or SMS.  
+- 📅 **Prayer Timetable** – Display and manage prayer times based on the mosque's location.  
+- 📑 **Document Management** – Store and manage mosque-related documents securely.  
 
 ## Tech Stack
 
 - **Backend:** Laravel  
 - **Frontend:** Vue.js  
 - **Database:** MySQL  
+- **Authentication:** Laravel Sanctum  
+- **Storage:** Supabase (optional for file storage)  
 - **Hosting:** Nginx  
+- **Deployment:** Docker (Optional)  
 
 ## Installation
 
-1. Clone the repository:  
-   ```sh
-   git clone https://github.com/nurikhwanidris/urus-masjid.git
+Follow these steps to set up the project on your local machine.
 
-	2.	Navigate to the project directory:
-
+### 1. Clone the Repository  
+```sh
+git clone https://github.com/nurikhwanidris/urus-masjid.git
 cd urus-masjid
+```
 
-
-	3.	Install dependencies:
-
+### 2. Install Dependencies  
+```sh
 composer install
 npm install
+```
 
-
-	4.	Set up environment variables:
-
+### 3. Set Up Environment Variables  
+```sh
 cp .env.example .env
 php artisan key:generate
+```
+Edit the `.env` file to configure your database settings.
 
-
-	5.	Configure database in .env and run migrations:
-
+### 4. Configure the Database and Run Migrations  
+```sh
 php artisan migrate --seed
+```
 
-
-	6.	Start the development server:
-
+### 5. Start the Development Server  
+```sh
 php artisan serve
 npm run dev
+```
 
+## API Endpoints
 
+| Method | Endpoint                | Description                    |
+|--------|-------------------------|--------------------------------|
+| GET    | `/api/events`           | Get all mosque events         |
+| POST   | `/api/donations`        | Record a new donation         |
+| GET    | `/api/volunteers`       | List volunteer activities     |
+| POST   | `/api/announcements`    | Send a new announcement       |
 
-Contributing
+For a full API reference, check the documentation folder.
 
-Contributions are welcome! Feel free to fork this repo, submit issues, or create pull requests.
+## Deployment
 
-License
+### Docker (Optional)  
+You can run the project using Docker by setting up a `docker-compose.yml` file.
 
-This project is licensed under the MIT License.
+### Manual Deployment  
+For manual deployment:  
+1. Set up an Nginx server with a Laravel configuration.  
+2. Set proper permissions for storage:  
+   ```sh
+   chmod -R 775 storage bootstrap/cache
+   ```
+3. Configure your `.env` file for production.  
+4. Use a process manager like Supervisor to keep the Laravel queue running.
 
-⸻
+## Contributing
 
-Built with ❤️ for the community.
+Contributions are welcome! To contribute:  
+1. Fork the repository.  
+2. Create a new feature branch:  
+   ```sh
+   git checkout -b feature-branch
+   ```
+3. Make your changes and commit them.  
+4. Push to your fork and submit a pull request.  
+
+## License
+
+This project is licensed under the **MIT License**.
+
+---
+
+### Built with ❤️ for the community.
