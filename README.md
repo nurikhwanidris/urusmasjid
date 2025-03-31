@@ -5,12 +5,12 @@
 ## Features
 
 - 🕌 **Event Management** – Schedule and manage mosque activities, including prayers, classes, and community events.  
-- 💰 **Donation Tracking** – Record and manage donations, with transparency reports for the community.  
+- 💰 [Incoming]**Donation Tracking** – Record and manage donations, with transparency reports for the community.  
 - 🤝 **Volunteer Coordination** – Assign and track volunteer duties for different mosque programs.  
-- 📊 **Financial Management** – Keep track of mosque expenses and generate financial reports.  
+- 📊 [Incoming]**Financial Management** – Keep track of mosque expenses and generate financial reports.  
 - 📢 **Announcements & Notifications** – Send important updates to congregants via email or SMS.  
 - 📅 **Prayer Timetable** – Display and manage prayer times based on the mosque's location.  
-- 📑 **Document Management** – Store and manage mosque-related documents securely.  
+- 📑 [Incoming]**Document Management** – Store and manage mosque-related documents securely.  
 
 ## Tech Stack
 
