@@ -63,5 +63,3 @@ This project is licensed under the MIT License.
 ⸻
 
 Built with ❤️ for the community.
-
-Would you like to add any branding, a logo, or more details about specific modules?
