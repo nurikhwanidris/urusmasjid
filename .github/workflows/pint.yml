@@ -1,0 +1,26 @@
+name: Laravel Pint
+
+on: [push, pull_request]
+
+jobs:
+  pint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write # Required to report annotations
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2' # Adjust if you use a different PHP version
+          extensions: mbstring, dom, fileinfo
+          coverage: none # Disable Xdebug/pcov unless needed for coverage
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Run Laravel Pint
+        run: ./vendor/bin/pint --test
