@@ -2,18 +2,16 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\MosqueUser;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\MosqueUser;
 
 class EnsureMosqueAdminHasMosque
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
@@ -28,7 +26,7 @@ class EnsureMosqueAdminHasMosque
                 ->exists();
 
             // If no mosque found, redirect to mosque registration
-            if (!$hasMosque) {
+            if (! $hasMosque) {
                 return redirect()->route('masjid.create')
                     ->with('warning', 'Sila daftar masjid anda terlebih dahulu.');
             }

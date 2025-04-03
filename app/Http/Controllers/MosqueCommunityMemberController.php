@@ -4,12 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Mosque;
 use App\Models\MosqueUser;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
-use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 /**
@@ -102,7 +99,6 @@ class MosqueCommunityMemberController extends Controller
     /**
      * Generate QR code for kariah registration
      *
-     * @param  \App\Models\Mosque  $mosque
      * @return \Inertia\Response
      */
     public function generateQR(Mosque $mosque, Request $request)
@@ -134,7 +130,6 @@ class MosqueCommunityMemberController extends Controller
     /**
      * Generate PDF version of QR code
      *
-     * @param  \App\Models\Mosque  $mosque
      * @param  string  $qrCode
      * @return \Illuminate\Http\Response
      */
@@ -151,7 +146,6 @@ class MosqueCommunityMemberController extends Controller
     /**
      * Show registration form via QR code
      *
-     * @param  \App\Models\Mosque  $mosque
      * @return \Inertia\Response
      */
     public function showRegistrationForm(Mosque $mosque)
@@ -169,7 +163,7 @@ class MosqueCommunityMemberController extends Controller
     public function store(Request $request, Mosque $mosque)
     {
         // For QR registrations, skip Gate check
-        if (!$request->is('*/register')) {
+        if (! $request->is('*/register')) {
             if (Gate::denies('update', $mosque)) {
                 abort(403);
             }

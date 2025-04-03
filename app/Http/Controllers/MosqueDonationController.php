@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Mosque;
 use App\Models\Donation;
+use App\Models\Mosque;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -111,7 +111,7 @@ class MosqueDonationController extends Controller
     public function handleDuitNowCallback(Request $request)
     {
         // Verify the callback signature
-        if (!$this->verifyDuitNowCallback($request)) {
+        if (! $this->verifyDuitNowCallback($request)) {
             return response()->json(['error' => 'Invalid signature'], 400);
         }
 

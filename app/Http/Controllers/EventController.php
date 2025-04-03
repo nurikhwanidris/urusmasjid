@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
-use App\Models\Mosque;
 use App\Models\EventRegistration;
+use App\Models\Mosque;
 use App\Models\MosqueUser;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Barryvdh\DomPDF\Facade\Pdf;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class EventController extends Controller
@@ -131,7 +131,7 @@ class EventController extends Controller
 
         $mosque = $mosque->load('user');
 
-        $event = $acara->load('creator:id,name', 'volunteers:id,name',);
+        $event = $acara->load('creator:id,name', 'volunteers:id,name');
 
         // Get registration count
         $registrationCount = $event->registrations()->count();
@@ -271,8 +271,6 @@ class EventController extends Controller
     /**
      * Generate a PDF for the specified event with QR code.
      *
-     * @param  \App\Models\Mosque  $mosque
-     * @param  \App\Models\Event  $acara
      * @return \Illuminate\Http\Response
      */
     public function generatePdf(Mosque $mosque, Event $acara)
@@ -357,13 +355,13 @@ class EventController extends Controller
         $pdf->setPaper('a4', 'portrait');
 
         // Create a clean filename
-        $filename = str_replace(' ', '_', $event->title) . '.pdf';
+        $filename = str_replace(' ', '_', $event->title).'.pdf';
 
         // Return the PDF as a download with explicit headers
         return response($pdf->output(), 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $filename . '"',
-            'Cache-Control' => 'public, max-age=0'
+            'Content-Disposition' => 'inline; filename="'.$filename.'"',
+            'Cache-Control' => 'public, max-age=0',
         ]);
     }
 

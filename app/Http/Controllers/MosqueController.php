@@ -315,7 +315,6 @@ class MosqueController extends Controller
     /**
      * Display the mosque settings page.
      *
-     * @param \App\Models\Mosque $mosque
      * @return \Inertia\Response
      */
     public function settings(Mosque $mosque)
